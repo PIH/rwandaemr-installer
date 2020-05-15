@@ -6,7 +6,6 @@ VERSION=""
 CLASSIFIER=""
 TYPE=""
 TARGET_DIR=""
-UPDATE="true"
 
 function usage() {
   echo "USAGE:"
