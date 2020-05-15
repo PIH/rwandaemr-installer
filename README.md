@@ -25,6 +25,10 @@ allowing for the usage of these technologies to expand in a tranparent and scala
 * Provision Rwanda EMR
   * This would use the shell scripts and other tools provided in this package
   * These tools should be agnostic to environment (should be useful in dev/test/prod/etc)
+  * Entire provisioned distribution should be managed within a single directory, managed by a named user
+    * In a single-instance prod/test environment, likely under "/opt/openmrs", owned and executed by user "openmrs"
+    * In a multi-instance prod/test environment, under alternative dirs/users, eg: "/opt/butaro1x", user "butaro1x"
+    * On a developer machine, in the user's directory of choice, as their user (eg. ~/environments/butaro1x, user $user)
   * Main functions would do steps like the following:
     * Download/install the appropriate distribution artifact (eg. rwandaemr-imb-butaro-2.0.0-SNAPSHOT)
     * Download/install appropriate version of docker containers (eg. docker pull partnersinhealth/openmrs-server:latest)
