@@ -1,0 +1,33 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:5.6
+    command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G"
+    environment:
+      MYSQL_DATABASE: "openmrs"
+      MYSQL_USER: "root"
+      MYSQL_PASSWORD: "password"
+      MYSQL_ROOT_PASSWORD: "password"
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    ports:
+      - "3306:3306"
+
+  server:
+    image: partnersinhealth/openmrs-server:latest
+    depends_on:
+      - db
+    environment:
+      OMRS_CONFIG_CONNECTION_SERVER: "db"
+      OMRS_CONFIG_CONNECTION_USERNAME: "root"
+      OMRS_CONFIG_CONNECTION_PASSWORD: "password"
+      OMRS_CONFIG_CONNECTION_EXTRA_ARGS: "&zeroDateTimeBehavior=convertToNull"
+    volumes:
+      - ./distribution:/openmrs/distribution
+      - openmrs-data:/openmrs/data
+    ports:
+      - "8080:8080"
+
+volumes:
+  openmrs-data:
