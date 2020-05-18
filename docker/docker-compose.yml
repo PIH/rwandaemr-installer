@@ -1,0 +1,37 @@
+version: '2'
+
+services:
+  db:
+    image: mysql:5.6
+    container_name: ${Site_Name}-db
+    command: "mysqld --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G"
+    environment:
+      MYSQL_DATABASE: "${MySQL_DB}"
+      MYSQL_USER: "${MySQL_User}"
+      MYSQL_PASSWORD: "${MySQL_Password}"
+      MYSQL_ROOT_PASSWORD: "${MySQL_Root_Password}"
+    volumes:
+      - ${MySQL_Data_Dir}:/var/lib/mysql
+    ports:
+      - "${DB_Port}:3306"
+    restart: always
+
+  server:
+    image: partnersinhealth/openmrs-server:latest
+    container_name: ${Site_Name}-openmrs-server
+    depends_on:
+      - db
+    environment:
+      OMRS_CONFIG_CONNECTION_SERVER: "db"
+      OMRS_CONFIG_CONNECTION_USERNAME: "${MySQL_User}"
+      OMRS_CONFIG_CONNECTION_PASSWORD: "${MySQL_Password}"
+      OMRS_CONFIG_CONNECTION_EXTRA_ARGS: "&zeroDateTimeBehavior=convertToNull"
+    volumes:
+      - ${Distribution}:/openmrs/distribution
+      - openmrs-data:/openmrs/data
+    ports:
+      - "${App_Port}:8080"
+    restart: always
+
+volumes:
+  openmrs-data:
