@@ -5,3 +5,9 @@ Classifier="distribution"
 Type="zip"
 Base_Dir="/opt/butaro-1.x"
 Target_Dir="${Base_Dir}/distribution"
+
+#####Installer
+Installer_Dir="installer"
+Installer_Artifact_ID="rwandaemr-installer"
+Installer_Version="2.0.0-SNAPSHOT"
+Installer_classifier="installer"
