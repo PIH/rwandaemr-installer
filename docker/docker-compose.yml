@@ -17,7 +17,7 @@ services:
     restart: always
 
   server:
-    image: partnersinhealth/openmrs-server:latest
+    image: partnersinhealth/openmrs-server:${Server_Image_Version}
     container_name: ${Site_Name}-openmrs-server
     depends_on:
       - db
