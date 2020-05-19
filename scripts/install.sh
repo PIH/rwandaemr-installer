@@ -18,11 +18,11 @@ download_maven_distribution(){
 }
 
 set_image_version(){
-    ./set-image-version.sh
+    bash set-image-version.sh
 }
 
 set_ports(){
-    ./set-ports.sh
+    bash set-ports.sh
 }
 
 download_maven_distribution
