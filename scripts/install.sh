@@ -7,6 +7,10 @@ create_base_dir(){
     mkdir -p ${Base_Dir}
 }
 
+create_data_dir(){
+  mkdir -p ../data
+}
+
 download_maven_distribution(){
     create_base_dir
     mkdir -p ${Target_Dir}
@@ -25,6 +29,7 @@ set_ports(){
     bash set-ports.sh
 }
 
+create_data_dir
 download_maven_distribution
 set_image_version
 set_ports
