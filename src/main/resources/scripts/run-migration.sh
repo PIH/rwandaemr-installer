@@ -58,7 +58,7 @@ fi
 echo "Got input arguments:"
 echo "SITE NAME: ${SITE_NAME}"
 echo "RUN ID: $RUN_ID"
-RUN_SITE_ID="${SITE_NAME}_$RUN_ID"
+RUN_SITE_ID="${SITE_NAME}$RUN_ID"
 echo "RUN_SITE_ID: $RUN_SITE_ID"
 
 echo "Creating directory for this run"
