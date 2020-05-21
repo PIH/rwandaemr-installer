@@ -63,6 +63,12 @@ echo "RUN_SITE_ID: $RUN_SITE_ID"
 
 echo "Creating directory for this run"
 mkdir -p "$RUN_SITE_ID"
+# have to create .env file in the same directory with docker-compose.yml file
+rm -rf  "$RUN_SITE_ID/.env"
+cat > "$RUN_SITE_ID/.env" << EOF1
+OMRS_DB_PORT=$OMRS_DB_PORT
+OMRS_SERVER_PORT=$OMRS_SERVER_PORT
+EOF1
 mkdir -p "dbs"
 
 DB_ZIP_NAME="$SITE_NAME-anonymized"
@@ -103,7 +109,6 @@ DB_VOLUME_DIR=$(pwd)/$RUN_SITE_ID/data/mysql
 echo "DB_VOLUME_DIR: $DB_VOLUME_DIR"
 
 echo "Starting MySQL container using DB"
-
 docker stop $RUN_SITE_ID || true
 docker rm $RUN_SITE_ID || true
 docker run --name $RUN_SITE_ID -d -p 3308:3306 -v $DB_VOLUME_DIR:/var/lib/mysql mysql:5.6 --character-set-server=utf8 --collation-server=utf8_unicode_ci --max_allowed_packet=1G
@@ -174,25 +179,25 @@ fi
 if [ ! -d "$RUN_SITE_ID/distribution" ]; then
   echo "Downloading distribution artifact"
   mkdir -p $RUN_SITE_ID/distribution
-  ./$RUN_SITE_ID/rwandaemr-installer/src/main/resources/scripts/download-maven-artifact.sh --groupId=org.openmrs.distro --artifactId=rwandaemr-imb-$SITE_NAME --version=2.0.0-SNAPSHOT --classifier=distribution --type=zip --targetDir=$RUN_SITE_ID
+  ./$RUN_SITE_ID/rwandaemr-installer/src/main/resources/scripts/download-maven-artifact.sh --groupId=org.openmrs.distro --artifactId=rwandaemr-imb --version=2.0.0-SNAPSHOT --classifier=distribution --type=zip --targetDir=$RUN_SITE_ID
   RETURN_CODE=$?
   if [[ $RETURN_CODE != 0 ]]; then
     echo "failed to download distribution artifact"
     exit $RETURN_CODE
   fi
-  unzip $RUN_SITE_ID/rwandaemr-imb-$SITE_NAME-2.0.0-SNAPSHOT-distribution.zip -d $RUN_SITE_ID/distribution
+  unzip $RUN_SITE_ID/rwandaemr-imb-2.0.0-SNAPSHOT-distribution.zip -d $RUN_SITE_ID/distribution
   RETURN_CODE=$?
   if [[ $RETURN_CODE != 0 ]]; then
     echo "failed to unzip distribution artifact to $RUN_SITE_ID/distribution"
     exit $RETURN_CODE
   fi
-  mv $RUN_SITE_ID/distribution/rwandaemr-imb-$SITE_NAME-2.0.0-SNAPSHOT/* $RUN_SITE_ID/distribution/
+  mv $RUN_SITE_ID/distribution/rwandaemr-imb-2.0.0-SNAPSHOT/* $RUN_SITE_ID/distribution/
   RETURN_CODE=$?
   if [[ $RETURN_CODE != 0 ]]; then
     echo "failed to move distribution artifact to $RUN_SITE_ID/distribution"
     exit $RETURN_CODE
   fi
-  rm -fR $RUN_SITE_ID/distribution/rwandaemr-imb-$SITE_NAME-2.0.0-SNAPSHOT/
+  rm -fR $RUN_SITE_ID/distribution/rwandaemr-imb-2.0.0-SNAPSHOT/
 else
   echo "Distribution already downloaded"
 fi
@@ -213,4 +218,3 @@ popd
 
 SERVER_CONTAINER="${RUN_SITE_ID}_server_1"
 docker logs -f $SERVER_CONTAINER
-
