@@ -9,7 +9,7 @@ SITE_NAME=""
 RUN_ID=""
 
 # read environment variables DB_REPO_USER, DB_REPO_PASSWORD and DB_REPO_BASE_URL from env_vars file located in the same directory
-source env_vars
+source .env
 RETURN_CODE=$?
 
 if [[ $RETURN_CODE != 0 ]]; then
