@@ -60,6 +60,8 @@ echo "SITE NAME: ${SITE_NAME}"
 echo "RUN ID: $RUN_ID"
 RUN_SITE_ID="${SITE_NAME}$RUN_ID"
 echo "RUN_SITE_ID: $RUN_SITE_ID"
+DB_CONTAINER="${RUN_SITE_ID}_db_1"
+SERVER_CONTAINER="${RUN_SITE_ID}_server_1"
 
 echo "Creating directory for this run"
 mkdir -p "$RUN_SITE_ID"
@@ -70,6 +72,16 @@ OMRS_DB_PORT=$OMRS_DB_PORT
 OMRS_SERVER_PORT=$OMRS_SERVER_PORT
 EOF1
 mkdir -p "dbs"
+
+# Stop and remove any existing docker containers
+docker ps --all
+docker stop $RUN_SITE_ID || true
+docker rm $RUN_SITE_ID || true
+docker stop SERVER_CONTAINER || true
+docker rm SERVER_CONTAINER || true
+docker stop DB_CONTAINER || true
+docker rm DB_CONTAINER || true
+docker ps --all
 
 DB_ZIP_NAME="$SITE_NAME-anonymized"
 echo "DB_ZIP_NAME: $DB_ZIP_NAME"
@@ -86,31 +98,29 @@ else
   echo "DB zip already downloaded"
 fi
 
-if [ ! -d "$RUN_SITE_ID/data/mysql" ]; then
-  echo "Extracting DB from zip"
-  mkdir -p $RUN_SITE_ID/data
-  unzip dbs/$DB_ZIP_NAME.zip -d $RUN_SITE_ID/data
-  RETURN_CODE=$?
-  if [[ $RETURN_CODE != 0 ]]; then
+if [ -d "$RUN_SITE_ID/data/mysql" ]; then
+  echo "Remove existing db"
+  rm -rf "$RUN_SITE_ID/data"
+fi
+echo "Extracting DB from zip"
+mkdir -p $RUN_SITE_ID/data
+unzip dbs/$DB_ZIP_NAME.zip -d $RUN_SITE_ID/data
+RETURN_CODE=$?
+if [[ $RETURN_CODE != 0 ]]; then
     echo "failed to download unzip dbs/$DB_ZIP_NAME.zip to $RUN_SITE_ID/data"
     exit $RETURN_CODE
-  fi
-  mv $RUN_SITE_ID/data/data $RUN_SITE_ID/data/mysql
-  RETURN_CODE=$?
-  if [[ $RETURN_CODE != 0 ]]; then
+fi
+mv $RUN_SITE_ID/data/data $RUN_SITE_ID/data/mysql
+RETURN_CODE=$?
+if [[ $RETURN_CODE != 0 ]]; then
     echo "failed to download move $RUN_SITE_ID/data/data to $RUN_SITE_ID/data/mysql"
     exit $RETURN_CODE
-  fi
-else
-  echo "DB zip already extracted"
 fi
 
 DB_VOLUME_DIR=$(pwd)/$RUN_SITE_ID/data/mysql
 echo "DB_VOLUME_DIR: $DB_VOLUME_DIR"
 
 echo "Starting MySQL container using DB"
-docker stop $RUN_SITE_ID || true
-docker rm $RUN_SITE_ID || true
 docker run --name $RUN_SITE_ID -d -p 3308:3306 -v $DB_VOLUME_DIR:/var/lib/mysql mysql:5.6 --character-set-server=utf8 --collation-server=utf8_unicode_ci --max_allowed_packet=1G
 
 RETURN_CODE=$?
@@ -151,8 +161,6 @@ if [[ $RETURN_CODE != 0 ]]; then
 fi
 popd
 
-docker stop $RUN_SITE_ID
-docker rm $RUN_SITE_ID
 
 if [ ! -d "$RUN_SITE_ID/rwandaemr-installer" ]; then
   echo "Downloading Installer code"
@@ -216,5 +224,4 @@ cp ./rwandaemr-installer/src/main/resources/docker/docker-compose.yml .
 docker-compose up -d
 popd
 
-SERVER_CONTAINER="${RUN_SITE_ID}_server_1"
 docker logs -f $SERVER_CONTAINER
