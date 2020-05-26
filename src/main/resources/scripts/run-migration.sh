@@ -77,10 +77,10 @@ mkdir -p "dbs"
 docker ps --all
 docker stop $RUN_SITE_ID || true
 docker rm $RUN_SITE_ID || true
-docker stop SERVER_CONTAINER || true
-docker rm SERVER_CONTAINER || true
-docker stop DB_CONTAINER || true
-docker rm DB_CONTAINER || true
+docker stop $SERVER_CONTAINER || true
+docker rm $SERVER_CONTAINER || true
+docker stop $DB_CONTAINER || true
+docker rm $DB_CONTAINER || true
 docker ps --all
 
 DB_ZIP_NAME="$SITE_NAME-anonymized"
