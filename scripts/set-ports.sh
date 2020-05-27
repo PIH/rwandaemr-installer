@@ -1,35 +1,55 @@
 #!/bin/bash -eu
 
-source vars
+Tomcat_Port="8080"
 
-#tomcat port
-#use the range of 9090 - 9095 if
-echo "Using the next available port in the range of 9090 - 9095 for tomcat docker"
+source .env
 
-function unused_tomcat_port() {
-  for tomcat_port in $(seq 9090 9096);
+#Tomcat and Mysql default port
+Tomcat_Default_Port=$(lsof -i -P -n | grep LISTEN | grep  8080)
+MySQL_Default_Port=$(lsof -i -P -n | grep LISTEN | grep  3306)
+
+# Use Tomcat default port if open, if it is not ask a user
+# to specify port. If the port is also in use. Exit
+if [ -z "$Tomcat_Default_Port" ]
+then
+  echo "Using port 8080"
+  sed -i 's/App_Port=.*/App_Port=8080/g' ../docker/.env
+else
+  echo "Port 8080 in use,"
+  while read -p 'Specify Tomcat Port to use: ' Tomcat_Port ;
   do
-    echo -ne "\035" | telnet 127.0.0.1 $tomcat_port > /dev/null 2>&1;
-    [ $? -eq 1 ] && echo $tomcat_port && break;
+    Check_Tomcat_Port=$(lsof -i -P -n | grep LISTEN | grep  ${Tomcat_Port})
+    if [ -z "$Check_Tomcat_Port" ];
+    then
+      echo "Using port $Tomcat_Port"
+      sed -i "s/App_Port=.*/App_Port=$Tomcat_Port/g" ../docker/.env
+    break
+    else
+      echo "Port $Tomcat_Port in use, specify another port"
+      continue
+    fi
   done
-}
+fi
 
-free_tomcat_port="$(unused_tomcat_port)"
-echo $free_tomcat_port
-sed -i "s/App_Port=.*/App_Port=$free_tomcat_port/g" ../docker/.env
-
-#mysql port
-#use the range of 3336 - 3342
-echo "Using the next available port in the range 3336 to 3342 for mysql docker"
-
-function unused_mysql_port() {
-  for mysql_port in $(seq 3336 3342);
+# Use MySQL default port if open, if it doesn't ask a user
+# to specify port. If the port is also in use, exit
+if [ -z "$MySQL_Default_Port" ]
+then
+  echo "Using port 3306"
+  sed -i 's/DB_Port=.*/DB_Port=8080/g' ../docker/.env
+else
+  echo "Port 3306 in use,"
+  while read -p 'Specify MySQL Port to use: ' MySQL_Port ;
   do
-    echo -ne "\035" | telnet 127.0.0.1 $mysql_port > /dev/null 2>&1;
-    [ $? -eq 1 ] && echo $mysql_port && break;
+    Check_MySQL_Port=$(lsof -i -P -n | grep LISTEN | grep  ${MySQL_Port})
+    if [ -z "$Check_MySQL_Port" ];
+    then
+      echo "Using port $MySQL_Port"
+      sed -i "s/DB_Port=.*/DB_Port=$MySQL_Port/g" ../docker/.env
+    break
+    else
+      echo "Port $MySQL_Port in use, specify another port"
+      continue
+    fi
   done
-}
-
-free_mysql_port="$(unused_mysql_port)"
-echo $free_mysql_port
-sed -i "s/DB_Port=.*/DB_Port=$free_mysql_port/g" ../docker/.env
+fi

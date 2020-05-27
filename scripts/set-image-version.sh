@@ -1,6 +1,6 @@
 #!/bin/bash -eu
 
-source vars
+source .env
 
 #if distribution is 2.x download latest image, if images is 1.x download 1.x image
 # setups container name
