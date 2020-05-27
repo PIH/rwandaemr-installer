@@ -1,4 +1,4 @@
-version: '2'
+version: '3'
 
 services:
   db:
@@ -18,7 +18,7 @@ services:
 
   server:
     image: partnersinhealth/openmrs-server:${Server_Image_Version}
-    container_name: ${Site_Name}-openmrs-server
+    container_name: ${Site_Name}-tomcat
     depends_on:
       - db
     environment:
