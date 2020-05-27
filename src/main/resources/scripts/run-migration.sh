@@ -107,13 +107,13 @@ mkdir -p $RUN_SITE_ID/data
 unzip dbs/$DB_ZIP_NAME.zip -d $RUN_SITE_ID/data
 RETURN_CODE=$?
 if [[ $RETURN_CODE != 0 ]]; then
-    echo "failed to download unzip dbs/$DB_ZIP_NAME.zip to $RUN_SITE_ID/data"
+    echo "failed to unzip dbs/$DB_ZIP_NAME.zip to $RUN_SITE_ID/data"
     exit $RETURN_CODE
 fi
 mv $RUN_SITE_ID/data/data $RUN_SITE_ID/data/mysql
 RETURN_CODE=$?
 if [[ $RETURN_CODE != 0 ]]; then
-    echo "failed to download move $RUN_SITE_ID/data/data to $RUN_SITE_ID/data/mysql"
+    echo "failed to move $RUN_SITE_ID/data/data to $RUN_SITE_ID/data/mysql"
     exit $RETURN_CODE
 fi
 
@@ -161,6 +161,8 @@ if [[ $RETURN_CODE != 0 ]]; then
 fi
 popd
 
+docker stop $RUN_SITE_ID || true
+docker rm $RUN_SITE_ID || true
 
 if [ ! -d "$RUN_SITE_ID/rwandaemr-installer" ]; then
   echo "Downloading Installer code"
