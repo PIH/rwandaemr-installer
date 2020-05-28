@@ -182,3 +182,12 @@ fi
 echo "OpenMRS has started"
 # now print the entire openmrs.log
 docker logs $SERVER_CONTAINER
+
+echo "check url: http://localhost:$OMRS_SERVER_PORT/openmrs/"
+RESPONSE=$(curl --write-out %{http_code} --silent --output /dev/null "http://localhost:$OMRS_SERVER_PORT/openmrs/")
+echo "curl RESPONSE= $RESPONSE"
+if [[ $RESPONSE != 200 ]]; then
+    echo "OpenMRS web app is not responding"
+    exit 1
+fi
+echo "OpenMRS web app is app and running"
