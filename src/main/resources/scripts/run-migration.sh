@@ -226,4 +226,13 @@ cp ./rwandaemr-installer/src/main/resources/docker/docker-compose.yml .
 docker-compose up -d
 popd
 
-docker logs -f $SERVER_CONTAINER
+# it will stop reading the logs when OpenMRS starts up
+docker logs -f --tail 20 $SERVER_CONTAINER 2>&1 | grep -q "INFO: Server startup in"
+RETURN_CODE=$?
+if [[ $RETURN_CODE != 0 ]]; then
+    echo "RETURN_CODE when looking for server startup message: $RETURN_CODE"
+    # OpenMRS started
+fi
+echo "OpenMRS has started"
+# now print the entire openmrs.log
+docker logs $SERVER_CONTAINER
