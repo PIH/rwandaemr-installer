@@ -42,3 +42,27 @@ allowing for the usage of these technologies to expand in a tranparent and scala
     * Updating to new versions
     * Installing metadata and updating configurations
     * etc.
+    
+##### Current scripts usage
+ Ensure that you have git, docker and docker-compose installed.
+ Tips to install these can be found:
+ - https://docs.docker.com/engine/install/ubuntu/
+ - https://docs.docker.com/compose/install/
+ 
+##### Clone the rwanda installer repository
+ Note that I used butaro1.x as the directory to clone in my installer. butaro is the site name and 1.x is the openmrs version distribution that I want to install
+ cd /opt
+ gtt clone https://github.com/PIH/rwandaemr-installer.git butaro1.x
+ 
+##### Checkout the correct branch
+ git checkout RWA-766-env-setup-scripts
+ 
+##### Run the below to start your server
+ cd scripts
+ bash install.sh
+ bash download-db.sh (you may have to include url, username and password)
+ bash start-docker.sh
+ 
+###### Other available script
+ stop-docker to stop docker
+ restart-docker to restart docker

@@ -36,7 +36,7 @@ fi
 if [ -z "$MySQL_Default_Port" ]
 then
   echo "Using port 3306"
-  sed -i 's/DB_Port=.*/DB_Port=8080/g' ../docker/.env
+  sed -i 's/DB_Port=.*/DB_Port=3306/g' ../docker/.env
 else
   echo "Port 3306 in use,"
   while read -p 'Specify MySQL Port to use: ' MySQL_Port ;
