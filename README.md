@@ -58,6 +58,9 @@ Note that I used butaro1.x as the directory to clone in my installer. butaro is 
 - cd butaro1.x
 - git checkout RWA-766-env-setup-scripts
  
+#### Ensure you have the correct config under .env
+i.e scripts/.env and docker/.env
+ 
 ##### Run the below to start your server
 - cd scripts
 - bash install.sh
