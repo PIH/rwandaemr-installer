@@ -23,6 +23,7 @@ services:
       OMRS_CONFIG_CONNECTION_USERNAME: "root"
       OMRS_CONFIG_CONNECTION_PASSWORD: "password"
       OMRS_CONFIG_CONNECTION_EXTRA_ARGS: "&zeroDateTimeBehavior=convertToNull"
+      OMRS_CONFIG_AUTO_UPDATE_DATABASE: "true"
     volumes:
       - ./distribution:/openmrs/distribution
       - openmrs-data:/openmrs/data
