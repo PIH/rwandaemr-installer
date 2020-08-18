@@ -1,6 +1,35 @@
 # rwandaemr-installer
 Tools to support installation, upgrades, and maintenance of a RwandaEMR implementation
 
+### Current CI usage
+
+Currently, the main usage of this project is in the provisioning of CI servers for testing.  The scripts are executed
+from the Bamboo CI server, using a command in the format of:
+
+```-vv <host> /bin/bash -c "'cd <workdir> && ./rwandaemr-installer/src/main/resources/scripts/<script> <args>'"```
+
+#### Weekly job
+
+* Runs once per week (Monday 9pm)
+* Purpose is full refresh using the latest data from an anonymized backup, and testing the full migration and installation process
+* Executes the following stages (script and args shown):
+  * Download database:
+    ```download-rwanda-db.sh --siteName=butaro```
+  * Refresh 1.x environment:
+    ```deploy-rwandaemr.sh --siteName=butaro --version=1x --omrsDbPort=3308 --omrsServerPort=8080 --recreate=true```
+  * Refresh 2.x environment:
+    ```deploy-rwandaemr.sh --siteName=butaro --version=2x --omrsDbPort=3307 --omrsServerPort=8081 --recreate=true```
+
+#### Nightly job
+
+* Runs once per day at 9pm (excluding Monday, which is reserved for the full refresh job)
+* Purpose is to update servers to the latest distribution (modules, war, etc) but not recreating the database
+* Executes the following stages (script and args shown):
+  * Refresh 1.x environment:
+    ```deploy-rwandaemr.sh --siteName=butaro --version=1x --omrsDbPort=3308 --omrsServerPort=8080```
+  * Refresh 2.x environment:
+    ```deploy-rwandaemr.sh --siteName=butaro --version=2x --omrsDbPort=3307 --omrsServerPort=8081```
+ 
 ### Overall goals
 
 Develop and publish a set of tools that facilitate the installation of the RwandaEMR across a variety of
