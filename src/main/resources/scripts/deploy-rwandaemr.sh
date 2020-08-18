@@ -193,8 +193,6 @@ fi
 
 echo "Updating Installer code"
 pushd $RUN_SITE_ID/rwandaemr-installer
-# TODO: Remove this line
-git checkout post-migrations
 git pull --rebase
 RETURN_CODE=$?
 if [[ $RETURN_CODE != 0 ]]; then
