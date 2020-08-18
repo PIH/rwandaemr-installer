@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- In 1.10+, all orders must have a valid encounter associated with them -->
+
+    <!-- First, we ensure that an encounter type exists to associate with new Encounters for Drug Orders -->
+
+    <changeSet id="rwandaemr-ensure-drug-order-encounter-type-exists" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(*) FROM encounter_type where name = 'Drug Order Encounter'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO encounter_type (
+                name,
+                description,
+                creator,
+                date_created,
+                uuid
+            )
+            VALUES (
+                'Drug Order Encounter',
+                'Encounter type used for recording drug orders in an encounter when no existing encounter is available',
+                1,
+                now(),
+                'a9ef19d1-8875-11ea-8c74-7a7919290ad6'
+            );
+        </sql>
+    </changeSet>
+
+    <!-- 
+        Next, we create new Encounters for Drug Orders using the above Encounter Type
+        1. We sanity check that only one Encounter Type is found that matches what we are expecting
+        2. We create encounters for all patient/creator/date_created order combinations,
+           using earliest order date as encounter date
+        3. We then associate these back to orders by linking to patient/creator/date_created
+        4. We then void any of these encounters if all of the orders associated with them are voided
+        5. Finally, we create and associate providers with these encounters based on their creators
+     -->
+
+    <changeSet id="rwandaemr-ensure-orders-have-encounters" author="IMB">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="1">
+                SELECT count(*) FROM encounter_type where name = 'Drug Order Encounter'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+
+            select encounter_type_id into @encTypeId from encounter_type where name = 'Drug Order Encounter';
+
+            INSERT INTO encounter (
+                encounter_type,
+                patient_id,
+                encounter_datetime,
+                creator,
+                date_created,
+                uuid
+            )
+            SELECT
+                @encTypeId,
+                patient_id,
+                min(start_date),
+                creator,
+                date_created,
+                UUID()
+            FROM
+                orders
+            WHERE
+                encounter_id is null
+            GROUP BY
+                patient_id, creator, date_created
+            ;
+
+            UPDATE
+                orders O
+            LEFT JOIN
+                encounter ENC
+            ON
+                O.patient_id = ENC.patient_id AND O.creator = ENC.creator AND O.date_created = ENC.date_created
+            SET
+                O.encounter_id = ENC.encounter_id
+            WHERE
+                O.encounter_id is null AND ENC.encounter_type=@encTypeId;
+
+            UPDATE
+                encounter ENC
+            LEFT JOIN
+                (select encounter_id, count(*) AS non_voided_count from orders where voided = 0 group by encounter_id) O
+            ON
+                ENC.encounter_id = O.encounter_id
+            SET
+                ENC.voided = 1,
+                ENC.voided_by = 1,
+                ENC.date_voided = now(),
+                ENC.void_reason = 'All associated orders are voided'
+            WHERE
+                ENC.encounter_type = @encTypeId AND
+                O.non_voided_count = 0
+            ;
+
+            INSERT INTO encounter_provider (
+                encounter_id,
+                provider_id,
+                encounter_role_id,
+                creator,
+                date_created,
+                changed_by,
+                date_changed,
+                voided,
+                date_voided,
+                voided_by,
+                void_reason,
+                uuid
+            )
+            SELECT
+                enc.encounter_id,
+                pr.provider_id,
+                1,
+                enc.creator,
+                enc.date_created,
+                enc.changed_by,
+                enc.date_changed,
+                enc.voided,
+                enc.date_voided,
+                enc.voided_by,
+                enc.void_reason,
+                UUID()
+            FROM
+                encounter enc
+            INNER JOIN
+                users US ON enc.creator = US.user_id
+            INNER JOIN (
+                SELECT   person_id, max(provider_id) as provider_id
+                FROM     provider
+                GROUP BY person_id ) pr ON US.person_id = pr.person_id
+            WHERE
+                enc.encounter_type = @encTypeId
+            ;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

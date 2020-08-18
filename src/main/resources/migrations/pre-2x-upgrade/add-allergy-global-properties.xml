@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        active_lists for allergies require migration to a new allergy construct.
+        This requires configuring three global properties with the appropriate concepts for MILD,MODERATE,SEVERE
+     -->
+
+    <changeSet id="rwandaemr-add-allergy-gp-mild" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(property) from global_property where property = 'allergy.concept.severity.mild'
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT count(*) from concept_name where name = 'MILD' and concept_name_type = 'FULLY_SPECIFIED'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO global_property
+                (property, property_value, description, uuid)
+            SELECT
+                'allergy.concept.severity.mild', c.uuid, 'UUID for the MILD severity concept', uuid()
+            FROM
+                concept_name n
+            INNER JOIN
+                concept c on n.concept_id = c.concept_id
+            WHERE
+                name = 'MILD' and concept_name_type = 'FULLY_SPECIFIED'
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-add-allergy-gp-moderate" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(property) from global_property where property = 'allergy.concept.severity.moderate'
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT count(*) from concept_name where name = 'MODERATE' and concept_name_type = 'FULLY_SPECIFIED'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO global_property
+            (property, property_value, description, uuid)
+            SELECT
+                'allergy.concept.severity.moderate', c.uuid, 'UUID for the MODERATE severity concept', uuid()
+            FROM
+                concept_name n
+            INNER JOIN
+                concept c on n.concept_id = c.concept_id
+            WHERE
+                name = 'MODERATE' and concept_name_type = 'FULLY_SPECIFIED'
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-add-allergy-gp-severe" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(property) from global_property where property = 'allergy.concept.severity.severe'
+            </sqlCheck>
+            <sqlCheck expectedResult="1">
+                SELECT count(*) from concept_name where name = 'SEVERE' and concept_name_type = 'FULLY_SPECIFIED'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO global_property
+                (property, property_value, description, uuid)
+            SELECT
+                'allergy.concept.severity.severe', c.uuid, 'UUID for the SEVERE severity concept', uuid()
+            FROM
+                concept_name n
+            INNER JOIN
+                concept c on n.concept_id = c.concept_id
+            WHERE
+                name = 'SEVERE' and concept_name_type = 'FULLY_SPECIFIED'
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

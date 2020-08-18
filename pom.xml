@@ -10,7 +10,22 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <db_host>localhost</db_host>
+        <db_port>3306</db_port>
+        <db_name>openmrs</db_name>
+        <db_user>openmrs</db_user>
+        <db_password>openmrs</db_password>
+        <changelog_dir>pre-2x-upgrade</changelog_dir>
     </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>5.1.8</version>
+            <scope>compile</scope>
+        </dependency>
+    </dependencies>
 
     <scm>
         <developerConnection>scm:git:https://github.com/pih/rwandaemr-installer</developerConnection>
@@ -117,6 +132,20 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <version>3.8.8</version>
+                <configuration>
+                    <changeLogFile>src/main/resources/migrations/${changelog_dir}/migrations.xml</changeLogFile>
+                    <driver>com.mysql.jdbc.Driver</driver>
+                    <url>jdbc:mysql://${db_host}:${db_port}/${db_name}?autoReconnect=true&amp;sessionVariables=default_storage_engine%3DInnoDB&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;zeroDateTimeBehavior=convertToNull</url>
+                    <username>${db_user}</username>
+                    <password>${db_password}</password>
+                    <databaseChangeLogTableName>liquibasechangelog</databaseChangeLogTableName>
+                    <databaseChangeLogLockTableName>liquibasechangeloglock</databaseChangeLogLockTableName>
+                </configuration>
             </plugin>
         </plugins>
 

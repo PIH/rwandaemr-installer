@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="rwandaemr-imb-create-dose-units-set" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept where uuid = '162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            set @doseUnitsConceptUuid = '162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept(@doseUnitsConceptUuid, 'N/A', 'ConvSet', 1);
+            call ensure_concept_name('47664f7e-d5cb-11ea-b2b0-0242ac110002', @doseUnitsConceptUuid, 'Dosing unit', 'FULLY_SPECIFIED');
+            update global_property set property_value = @doseUnitsConceptUuid where property = 'order.drugDosingUnitsConceptUuid';
+        </sql>
+    </changeSet>
+
+    <!--
+        Remaining from butaro db that need mapping (rwink db still tbd):
+        count(*),units_non_coded
+        61716,
+        1526,OR
+        818,ml/m2
+        196,mcg
+        104,mg/5ml
+        60,ml/kg
+        52,""
+        22,mg/1.25ml
+        7,L
+        6,mg/ml
+        5,SUSPENDED
+        4,mg/k
+        4,units/kg
+        2,UI
+        1,200 mg
+        1,ORAL
+        1,INTRAVENOUS
+
+        The following units exist in refapp:
+
+        Ampule(s) (162335)
+        Application (162376)
+        Bar (162351)
+        Biscuit wafer (162383)
+        Can (162354)
+        Capsule (1608)
+        Container (162355)
+        Drop (162356)
+        Enema (162357)
+        Fluid ounce (162358)
+        Gallon (162359)
+        Gram (161554)
+        Gum (162360)
+        Inch (162361)
+        International units (162264)
+        Kilogram (162362)
+        Liter (162262)
+        Lozenge (162363)
+        Milliequivalent (162364)
+        Metric drop (162365)
+        Microgram (162366)
+        Milligram (161553)
+        Milligram per meter squared (165171)
+        Milliliter (162263)
+        Million units (162367)
+        Nebulizer (162368)
+        Pad (162369)
+        Patch (162370)
+        Pint (162371)
+        Puff (162372)
+        Ring pessary (162373)
+        Scoopful (162374)
+        Spray (162375)
+        Suppository (1518)
+        Syringe (162377)
+        Tablet (1513)
+        Tablespoon (162378)
+        Teaspoon (162379)
+        Tube (162380)
+        Unit (162381)
+        Vial (162382)
+    -->
+    <changeSet id="rwandaemr-imb--migrate-dose-units" author="IMB">
+        <sql>
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'mg/m2' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded = 'mg/m2';
+
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'mg' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded = 'mg';
+
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'mL' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded = 'ml';
+
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'TABLET' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded in ('TABLET', 'tab(s)');
+
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'units/m2' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded = 'units/m2';
+
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'mg/kg' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded = 'mg/kg';
+
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'AUC' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded = 'AUC';
+
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'CAPSULE' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded = 'CAPSULE';
+
+            update drug_order set dose_units =
+                (select concept_id from concept_name where name = 'Units' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
+            where
+                units_non_coded = 'units';
+
+            update drug_order set units_non_coded = null where dose_units is not null;
+
+            select concept_id into @unitSetId from concept where uuid = '162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+
+            delete from concept_set where concept_set = @unitSetId;
+
+            insert into concept_set (concept_id, concept_set, sort_weight, creator, date_created, uuid)
+                select  distinct dose_units, @unitSetId, 1, 1, now(), uuid()
+                from    drug_order
+                where   dose_units is not null;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

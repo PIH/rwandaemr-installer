@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        TODO: Determine if there are other concept properties we want to configure.  Or if we want to add this in pre-migration.
+
+        TODO: These routes are available in refapp associated with this concept:
+        Oral (160240)
+        Intravenous (160242)
+        Intramuscular (160243)
+        Subcutaneous (160245)
+        Inhalation (160241)
+        Intranasal (161253)
+        In left ear (162385)
+        In right ear (162386)
+        In both ears (162387)
+        In left eye (162388)
+        In right eye (162389)
+        In both eyes (162390)
+        Transdermal (162391)
+        Vaginally (162392)
+        Rectally (162393)
+        Per NG tube (162798)
+        Intraosseous (162824)
+    -->
+    <changeSet id="rwandaemr-imb-create-route-concept-set" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept where uuid = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            set @routeConceptUuid = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept(@routeConceptUuid, 'N/A', 'ConvSet', 1);
+            call ensure_concept_name('84d6759c-d819-11ea-8a42-0242ac110002', @routeConceptUuid, 'Routes of administration', 'FULLY_SPECIFIED');
+            update global_property set property_value = @routeConceptUuid where property = 'order.drugRoutesConceptUuid';
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-imb-populate-route-concept-set" author="IMB">
+        <sql>
+            select concept_id into @routeSetId from concept where uuid = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+
+            delete from concept_set where concept_set = @routeSetId;
+
+            insert into concept_set (concept_id, concept_set, sort_weight, creator, date_created, uuid)
+                select  distinct route, @routeSetId, 1, 1, now(), uuid()
+                from    orderextension_order_set_member
+                where   route is not null;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

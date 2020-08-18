@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- First we ensure the global property exists.  If it does, mark as ran, otherwise, create it -->
+
+    <changeSet id="rwandaemr-ensure-unknown-provider-property-created" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                SELECT count(property) FROM global_property where property='provider.unknownProviderUuid'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            INSERT INTO global_property
+                (property, description, uuid)
+            VALUES
+                ('provider.unknownProviderUuid', 'Specifies the uuid of the Unknown Provider account', uuid());
+        </sql>
+    </changeSet>
+
+    <!--
+        Now that we know that the global property exists, we update it to reflect the correct value
+        In Butaro and Rwink this can be found by looking for a provider whose person name is "UNKNOWN" "PROVIDER"
+        However, on an anonymized DB (eg. in test environments) this cannot be used.
+        In Butaro, the uuid of the provider that matches this is "c6f220e4-b238-11e1-b05b-001e68a9fdcf"
+        In Rwink, the uuid of the provider that matches this is "f9badd80-ab76-11e2-9e96-0800200c9a66"
+        To account for these different scenarios, include each of these criteria below.
+     -->
+
+    <changeSet id="rwandaemr-ensure-unknown-provider-configured" author="IMB">
+        <preConditions>
+            <sqlCheck expectedResult="1">
+                select      count(*)
+                from        provider p
+                inner join  person_name n on p.person_id = n.person_id and n.voided = 0
+                where       (n.given_name = 'UNKNOWN' and n.family_name = 'PROVIDER')
+                or          p.uuid in ( 'c6f220e4-b238-11e1-b05b-001e68a9fdcf', 'f9badd80-ab76-11e2-9e96-0800200c9a66' )
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            UPDATE global_property SET property_value = (
+                select      p.uuid
+                from        provider p
+                inner join  person_name n on p.person_id = n.person_id and n.voided = 0
+                where       (n.given_name = 'UNKNOWN' and n.family_name = 'PROVIDER')
+                or          p.uuid in ( 'c6f220e4-b238-11e1-b05b-001e68a9fdcf', 'f9badd80-ab76-11e2-9e96-0800200c9a66' )
+            )
+            where property="provider.unknownProviderUuid"
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

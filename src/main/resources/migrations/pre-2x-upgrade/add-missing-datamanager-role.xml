@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- In Butaro, there are entries in the role_privilege table for a Data Manager role that does not exist -->
+
+    <changeSet id="rwandaemr-add-missing-datamanager-role" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not><sqlCheck expectedResult="0">
+                SELECT count(*) from role_privilege where role = 'Data Manager' and role not in (select role from role)
+            </sqlCheck></not>
+        </preConditions>
+        <sql>
+            INSERT into role (
+                role,
+                description,
+                uuid
+            )
+            VALUES (
+                'Data Manager',
+                'User who maintains clinical data stored within the OpenMRS repository.',
+                'd2fcc14e-2700-102b-80cb-0017a47871b2'
+            );
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

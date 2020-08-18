@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- In 1.10+, all drugs must specify units if dose_strength is not null -->
+
+    <changeSet id="rwandaemr-populate-missing-dose-units" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">
+                select  count(*)
+                from    drug
+                where   name = 'Cimetidine (400 mg)'
+                AND     dose_strength = 400
+                AND     (units IS NULL OR units = '')
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            UPDATE drug
+            SET
+                units = 'mg'
+            WHERE
+                name = 'Cimetidine (400 mg)'
+            AND dose_strength = 400
+            AND (units IS NULL OR units = '')
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

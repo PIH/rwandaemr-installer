@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- In 1.10+, all discontinued orders should have the discontinued_date and discontinued_by fields set. -->
+
+    <changeSet id="rwandaemr-ensure-orders-discontinued-date" author="IMB">
+        <sql>
+            update orders set discontinued_date=start_date where discontinued=1 and discontinued_date is null;
+            update orders set discontinued_by=creator where discontinued=1 and discontinued_by is null;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

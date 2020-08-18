@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- In Rwinkwavu, there is an invalid date_voided in the person table -->
+
+    <changeSet id="rwandaemr-fix-invalid-person-date-voided" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not><sqlCheck expectedResult="0">
+                SELECT count(*) from person where date_format(date_voided,'%Y-%m-%d') = '0000-00-00'
+            </sqlCheck></not>
+        </preConditions>
+        <sql>
+            update person set date_voided = null where date_format(date_voided,'%Y-%m-%d') = '0000-00-00';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

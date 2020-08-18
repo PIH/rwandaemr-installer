@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        In 1.10+, we need to link orders.orderer and encounter providers to provider
+        accounts rather than user accounts.  This migration ensures all users are associated with a provider account
+        so that any later migration can proceed with this assumption, and any 2.x UI functionality that
+        requires users to be providers in order to create encounters will work as expected.
+    -->
+
+    <changeSet id="rwandaemr-ensure-users-are-providers" author="IMB">
+        <sql>
+            insert into provider
+                (person_id, identifier, creator, date_created, retired, retired_by, date_retired, retire_reason, uuid)
+            select
+                u.person_id, u.system_id, 1, now(), u.retired, u.retired_by, u.date_retired, u.retire_reason, UUID()
+            from
+                users u
+            left join
+                provider p on u.person_id = p.person_id
+            where
+                p.provider_id is null ;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

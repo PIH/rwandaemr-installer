@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        In OpenMRS 1.10, drug_order.units are converted from a free-text column to a coded column, referencing concept
+        In addition, drug_order.frequency is also converted from free-text to coded, referencing a new order_frequency table
+        In order to enable upgrading the overall software to 2.3 without first determining how to create and map the
+        500+ non-coded items, we move this data into a new set of columns that we can access after the core platform
+        upgrade has completed.  This also allows us access to all of the new data structures that have been added
+        from 1.10 to 2.3, which will enable more accurate and correct migration of data.
+    -->
+    <changeSet id="rwandaemr-create-drug-order-units-non-coded" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="drug_order" columnName="units_non_coded" /></not>
+        </preConditions>
+        <addColumn tableName="drug_order">
+            <column name="units_non_coded" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="rwandaemr-move-drug-order-units-to-units-non-coded" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not><sqlCheck expectedResult="0">
+                select count(*) from drug_order where units is not null
+            </sqlCheck></not>
+        </preConditions>
+        <sql>
+            update drug_order set units_non_coded = units;
+            update drug_order set units = null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-create-drug-order-frequency-non-coded" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="drug_order" columnName="frequency_non_coded" /></not>
+        </preConditions>
+        <addColumn tableName="drug_order">
+            <column name="frequency_non_coded" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
+
+    <changeSet id="rwandaemr-move-drug-order-frequency-to-frequency-non-coded" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not><sqlCheck expectedResult="0">
+                select count(*) from drug_order where frequency is not null
+            </sqlCheck></not>
+        </preConditions>
+        <sql>
+            update drug_order set frequency_non_coded = frequency;
+            update drug_order set frequency = null;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

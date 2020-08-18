@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        Migrations that need to be executed after the upgrade has been completed and the 2.3 data model is present
+    -->
+    <changeSet id="rwandaemr-imb-setup-post-migration-stored-procedures" author="IMB" runAlways="true" runOnChange="true">
+        <sqlFile path="sql/procedures.sql" relativeToChangelogFile="true" endDelimiter="#"/>
+    </changeSet>
+    <include file="migrate-units.xml" relativeToChangelogFile="true" />
+    <include file="migrate-frequencies.xml" relativeToChangelogFile="true" />
+  
+</databaseChangeLog>

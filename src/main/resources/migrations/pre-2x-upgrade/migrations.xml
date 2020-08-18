@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+    <!--
+        OpenMRS 1.9-2.3 Upgrade Migration
+        Credit and Help from:
+            https://wiki.openmrs.org/display/docs/Prepare+for+Upgrading+From+a+Pre-1.10+to+1.10+or+Later+Version
+            https://github.com/rwanda-rbc-emr/openmrs-module-mohbeforeoneelevenupgrade
+    -->
+    <changeSet id="rwandaemr-imb-setup-pre-migration-stored-procedures" author="IMB" runAlways="true" runOnChange="true">
+        <sqlFile path="sql/procedures.sql" relativeToChangelogFile="true" endDelimiter="#"/>
+    </changeSet>
+    <include file="ensure-users-are-providers.xml" relativeToChangelogFile="true" />
+    <include file="ensure-orders-have-start-dates.xml" relativeToChangelogFile="true" />
+    <include file="ensure-orders-have-encounters.xml" relativeToChangelogFile="true" />
+    <include file="ensure-unknown-provider-configured.xml" relativeToChangelogFile="true" />
+    <include file="ensure-orders-have-discontinued-date.xml" relativeToChangelogFile="true" />
+    <include file="ensure-order-type-has-java-class-name-column.xml" relativeToChangelogFile="true" />
+    <include file="ensure-drug-units-are-populated.xml" relativeToChangelogFile="true" />
+    <include file="move-non-coded-units-and-frequencies.xml" relativeToChangelogFile="true" />
+    <include file="add-missing-datamanager-role.xml" relativeToChangelogFile="true" />
+    <include file="fix-invalid-person-date-voided.xml" relativeToChangelogFile="true" />
+    <include file="add-allergy-global-properties.xml" relativeToChangelogFile="true" />
+    <include file="update-configurations-prior-to-2x-upgrade.xml" relativeToChangelogFile="true" />
+    <include file="ensure-concept-set-for-routes.xml" relativeToChangelogFile="true" />
+  
+</databaseChangeLog>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        These changes are needed currently to get systems to start up where not all modules have been upgraded
+        It is expected that some or all of these migration statements will be removed during the course of development
+    -->
+
+    <changeSet id="rwandaemr-update-configurations-prior-to-2x-upgrade" author="IMB">
+        <sql>
+            update global_property set property_value='false' where property='sync.mandatory';
+            delete from global_property where property like 'sync%';
+            delete from scheduler_task_config_property where task_config_id in (
+                select task_config_id from scheduler_task_config where name like '%Sync%'
+            );
+            delete from scheduler_task_config where name like '%Sync%';
+            delete from scheduler_task_config where name ='Register Reports';
+            delete from scheduler_task_config where name ='Process Usage Statistics Data';
+            delete from scheduler_task_config where name ='Send Usage Statistics Reports';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

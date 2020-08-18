@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="rwandaemr-imb-migrate-1-per-day" author="IMB">
+        <sql>
+            set @freqUuid = '707ad8b7-d902-11ea-80fb-0242ac110002';
+            set @conceptUuid = '160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 1);
+            call ensure_concept_name('109555BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Once daily', 'FULLY_SPECIFIED');
+            call ensure_concept_name('109553BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'OD (once daily)', 'SHORT');
+            call ensure_concept_name('109556BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'QD (once daily)', null);
+            call ensure_concept_name('125286BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Once per day', null);
+            call ensure_concept_name('126442BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Daily', null);
+            call ensure_concept_name('126444BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, '1 time per day', null);
+            call ensure_concept_name('109554BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Once a day', null);
+
+            call migrate_frequency(@freqUuid, '1/day x Take every day');
+            call migrate_frequency(@freqUuid, '1/d 7d/w');
+            call migrate_frequency(@freqUuid, '1/day x 7 days/week');
+            call migrate_frequency(@freqUuid, '1/day');
+            call migrate_frequency(@freqUuid, '1/day Take every day');
+
+            update drug_order set frequency_non_coded = null where frequency is not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-imb-migrate-2-per-day" author="IMB">
+        <sql>
+            set @freqUuid = '87ea7c89-d8f9-11ea-80fb-0242ac110002';
+            set @conceptUuid = '160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 2);
+            call ensure_concept_name('109543BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Twice daily', 'FULLY_SPECIFIED');
+            call ensure_concept_name('109541BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'BD', 'SHORT');
+            call ensure_concept_name('126443BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, '2 times per day', null);
+            call ensure_concept_name('109542BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Twice a day', null);
+            call ensure_concept_name('125228BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'BID', null);
+            call ensure_concept_name('125282BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Twice per day', null);
+
+            call migrate_frequency(@freqUuid, '2/day x Take every day');
+            call migrate_frequency(@freqUuid, '2/day x 7 days/week');
+            call migrate_frequency(@freqUuid, '2/d 7d/w');
+            call migrate_frequency(@freqUuid, '2/day Take every day');
+            call migrate_frequency(@freqUuid, '2/day');
+
+            update drug_order set frequency_non_coded = null where frequency is not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-imb-migrate-3-per-day" author="IMB">
+        <sql>
+            set @freqUuid = 'd8290a00-d926-11ea-8b36-0242ac110002';
+            set @conceptUuid = '160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 3);
+            call ensure_concept_name('109568BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Thrice daily', 'FULLY_SPECIFIED');
+            call ensure_concept_name('109566BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'TD', 'SHORT');
+            call ensure_concept_name('109567BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Three times a day', null);
+            call ensure_concept_name('125229BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'TID', null);
+            call ensure_concept_name('125290BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Three times per day', null);
+            call ensure_concept_name('126445BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, '3 times per day', null);
+
+            call migrate_frequency(@freqUuid, '3/day x Take every day');
+            call migrate_frequency(@freqUuid, '3/day');
+            call migrate_frequency(@freqUuid, '3/day x 7 days/week');
+            call migrate_frequency(@freqUuid, '3/d 7d/w');
+
+            update drug_order set frequency_non_coded = null where frequency is not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-imb-migrate-4-per-day" author="IMB">
+        <sql>
+            set @freqUuid = '405a5af1-d927-11ea-8b36-0242ac110002';
+            set @conceptUuid = '160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 4);
+            call ensure_concept_name('109579BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Four times daily', 'FULLY_SPECIFIED');
+            call ensure_concept_name('109578BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'QID', 'SHORT');
+            call ensure_concept_name('109581BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'QDS (four times a day)', null);
+            call ensure_concept_name('125294BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Four times per day', null);
+            call ensure_concept_name('126446BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, '4 times per day', null);
+            call ensure_concept_name('109580BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Four times a day', null);
+
+            call migrate_frequency(@freqUuid, '4/day x 7 days/week');
+            call migrate_frequency(@freqUuid, '4/day x Take every day');
+            call migrate_frequency(@freqUuid, '4/day');
+
+            update drug_order set frequency_non_coded = null where frequency is not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-imb-migrate-single-dose" author="IMB">
+        <sql>
+            set @freqUuid = 'b7ce2f36-d927-11ea-8b36-0242ac110002';
+            set @conceptUuid = '162135AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 1);
+            call ensure_concept_name('124906BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'One time', 'FULLY_SPECIFIED');
+            call ensure_concept_name('124907BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Single event', null);
+            call ensure_concept_name('125298BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Once', null);
+            call ensure_concept_name('', @conceptUuid, '', null);
+            call ensure_concept_name('', @conceptUuid, '', null);
+
+            call migrate_frequency(@freqUuid, 'Single dose');
+
+            update drug_order set frequency_non_coded = null where frequency is not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-imb-migrate-every-6-hours" author="IMB">
+        <sql>
+            set @freqUuid = '06a2322b-d928-11ea-8b36-0242ac110002';
+            set @conceptUuid = '162249AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 4);
+            call ensure_concept_name('125244BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Every six hours', 'FULLY_SPECIFIED');
+            call ensure_concept_name('125243BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'q6h', 'SHORT');
+            call ensure_concept_name('125271BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Every 6 hours', null);
+
+            call migrate_frequency(@freqUuid, 'Every 6 hours');
+
+            update drug_order set frequency_non_coded = null where frequency is not null;
+        </sql>
+    </changeSet>
+
+    <!-- TODO: use template below for other migrations
+
+    <changeSet id="rwandaemr-imb-migrate-x-per-day" author="IMB">
+        <sql>
+            set @freqUuid = '';
+            set @conceptUuid = '';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, );
+            call ensure_concept_name('', @conceptUuid, '', 'FULLY_SPECIFIED');
+            call ensure_concept_name('', @conceptUuid, '', 'SHORT');
+            call ensure_concept_name('', @conceptUuid, '', null);
+            call ensure_concept_name('', @conceptUuid, '', null);
+            call ensure_concept_name('', @conceptUuid, '', null);
+            call ensure_concept_name('', @conceptUuid, '', null);
+
+            call migrate_frequency(@freqUuid, '');
+            call migrate_frequency(@freqUuid, '');
+            call migrate_frequency(@freqUuid, '');
+            call migrate_frequency(@freqUuid, '');
+            call migrate_frequency(@freqUuid, '');
+
+            update drug_order set frequency_non_coded = null where frequency is not null;
+        </sql>
+    </changeSet>
+    -->
+
+</databaseChangeLog>

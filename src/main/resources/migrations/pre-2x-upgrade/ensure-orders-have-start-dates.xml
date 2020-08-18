@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- In 1.10+, all orders must have a valid start date
+         Null start dates are a known issue that occur occasionally within some code used point of care.
+         The solution that is generally used is to update the start date to the date created of the order
+    -->
+
+    <changeSet id="rwandaemr-populate-missing-order-start-dates" author="IMB">
+        <sql>UPDATE orders set start_date = date_created where start_date is null;</sql>
+    </changeSet>
+
+</databaseChangeLog>
