@@ -37,7 +37,6 @@
             set @routeConceptUuid = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
             call ensure_concept(@routeConceptUuid, 'N/A', 'ConvSet', 1);
             call ensure_concept_name('84d6759c-d819-11ea-8a42-0242ac110002', @routeConceptUuid, 'Routes of administration', 'FULLY_SPECIFIED');
-            update global_property set property_value = @routeConceptUuid where property = 'order.drugRoutesConceptUuid';
         </sql>
     </changeSet>
 
@@ -51,6 +50,8 @@
                 select  distinct route, @routeSetId, 1, 1, now(), uuid()
                 from    orderextension_order_set_member
                 where   route is not null;
+
+            update global_property set property_value = @routeSetId where property = 'order.drugRoutesConceptUuid';
         </sql>
     </changeSet>
 
