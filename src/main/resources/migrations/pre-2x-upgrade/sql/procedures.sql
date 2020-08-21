@@ -84,7 +84,7 @@ BEGIN
 
     END IF;
 
-    UPDATE global_property SET property_value = _value WHERE property = _name;
+    UPDATE global_property SET property_value = _value WHERE property = _name COLLATE utf8_unicode_ci;
 
 END;
 
