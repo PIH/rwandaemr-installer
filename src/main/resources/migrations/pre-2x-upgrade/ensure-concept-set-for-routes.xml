@@ -42,7 +42,8 @@
 
     <changeSet id="rwandaemr-imb-populate-route-concept-set" author="IMB">
         <sql>
-            select concept_id into @routeSetId from concept where uuid = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            set @routeConceptUuid = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            select concept_id into @routeSetId from concept where uuid = @routeConceptUuid;
 
             delete from concept_set where concept_set = @routeSetId;
 
@@ -53,7 +54,7 @@
 
             call ensure_global_property(
                 'order.drugRoutesConceptUuid',
-                @routeSetId,
+                @routeConceptUuid,
                 'Specifies the uuid of the concept set where its members represent the possible drug routes'
             );
         </sql>
