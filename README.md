@@ -80,7 +80,7 @@ This is not packaged but is intended to be used standalone from the command line
 
 To execute this, you should run the following command from this directory:
 
-`mvn liquibase:update -Pmigration`
+`mvn liquibase:update`
 
 This accepts several arguments to control access to the database to execute the migrations against.  
 The arguments are as follows, which show their default values that will be used if they are not explicity included:
@@ -95,5 +95,5 @@ The arguments are as follows, which show their default values that will be used 
 So, to execute 2x pre-upgrade migrations, followed by post-upgrade migrations on an instance of MySQL, 
 where the above are accurate aside from db_port and db_password, you would run:
 
-`mvn liquibase:update -Pmigration -Ddb_port=3308 -Ddb_password=MyRootPassword123`
-`mvn liquibase:update -Pmigration -Ddb_port=3308 -Ddb_password=MyRootPassword123 -Dchangelog_dir=post-2x-upgrade`
+`mvn liquibase:update -Ddb_port=3308 -Ddb_password=MyRootPassword123`
+`mvn liquibase:update -Ddb_port=3308 -Ddb_password=MyRootPassword123 -Dchangelog_dir=post-2x-upgrade`

@@ -51,7 +51,11 @@
                 from    orderextension_order_set_member
                 where   route is not null;
 
-            update global_property set property_value = @routeSetId where property = 'order.drugRoutesConceptUuid';
+            ensure_global_property(
+                'order.drugRoutesConceptUuid',
+                @routeSetId,
+                'Specifies the uuid of the concept set where its members represent the possible drug routes'
+            );
         </sql>
     </changeSet>
 

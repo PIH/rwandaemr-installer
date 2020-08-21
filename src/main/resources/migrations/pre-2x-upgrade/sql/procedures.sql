@@ -63,3 +63,29 @@ END;
 
 #
 
+DROP PROCEDURE IF EXISTS ensure_global_property;
+
+#
+
+CREATE PROCEDURE ensure_global_property (
+    _name VARCHAR(255),
+    _value MEDIUMTEXT,
+    _description TEXT
+)
+BEGIN
+    DECLARE _gp_uuid CHAR(38);
+
+    SELECT uuid INTO _gp_uuid FROM global_property WHERE property = _name;
+
+    IF ( _gp_uuid IS NULL ) THEN
+
+        INSERT INTO global_property (property, property_value, description, uuid)
+        values (_name, _value, _description, uuid());
+
+    END IF;
+
+    UPDATE global_property SET property_value = _value WHERE property = _name;
+
+END;
+
+#
