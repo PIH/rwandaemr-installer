@@ -15,5 +15,6 @@
     </changeSet>
     <include file="migrate-units.xml" relativeToChangelogFile="true" />
     <include file="migrate-frequencies.xml" relativeToChangelogFile="true" />
+    <include file="migrate-care-settings.xml" relativeToChangelogFile="true" />
   
 </databaseChangeLog>
