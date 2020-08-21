@@ -75,7 +75,7 @@ CREATE PROCEDURE ensure_global_property (
 BEGIN
     DECLARE _gp_uuid CHAR(38);
 
-    SELECT uuid INTO _gp_uuid FROM global_property WHERE property = _name;
+    SELECT uuid INTO _gp_uuid FROM global_property WHERE property = _name COLLATE utf8_unicode_ci;;
 
     IF ( _gp_uuid IS NULL ) THEN
 
