@@ -16,5 +16,6 @@
     <include file="migrate-units.xml" relativeToChangelogFile="true" />
     <include file="migrate-frequencies.xml" relativeToChangelogFile="true" />
     <include file="migrate-care-settings.xml" relativeToChangelogFile="true" />
+    <include file="add-privileges-to-anonymous-role.xml" relativeToChangelogFile="true" />
   
 </databaseChangeLog>

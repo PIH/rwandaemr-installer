@@ -281,7 +281,7 @@ if [ ! -z "$POST_MIGRATIONS" ]; then
   if [[ $RETURN_CODE != 0 ]]; then
     echo "Core liquibase updates have finished, executing post-upgrade migrations"
 
-    echo "Executing pre-upgrade migrations"
+    echo "Executing post-upgrade migrations"
 
     pushd $RUN_SITE_ID/rwandaemr-installer
     mvn liquibase:update -Ddb_port=$OMRS_DB_PORT -Ddb_user=root -Ddb_password=password -Dchangelog_dir=post-2x-upgrade
