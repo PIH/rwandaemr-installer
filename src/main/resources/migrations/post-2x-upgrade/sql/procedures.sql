@@ -13,12 +13,12 @@ BEGIN
     DECLARE class_id INT;
     DECLARE _concept_id INT;
 
-    SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid COLLATE utf8_unicode_ci;
+    SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
 
     IF ( _concept_id IS NULL ) THEN
 
-        SELECT concept_datatype_id INTO data_type_id FROM concept_datatype WHERE name = data_type_name COLLATE utf8_unicode_ci;
-        SELECT concept_class_id INTO class_id FROM concept_class WHERE name = class_name COLLATE utf8_unicode_ci;
+        SELECT concept_datatype_id INTO data_type_id FROM concept_datatype WHERE name = data_type_name;
+        SELECT concept_class_id INTO class_id FROM concept_class WHERE name = class_name;
 
         INSERT INTO concept (datatype_id, class_id, is_set, creator, date_created, changed_by, date_changed, uuid)
         values (data_type_id, class_id, _is_set, 1, now(), 1, now(), _concept_uuid);
@@ -50,8 +50,8 @@ BEGIN
             SET _locale_preferred_val = '0';
         END CASE;
 
-    SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid COLLATE utf8_unicode_ci;
-    SELECT concept_name_id INTO _concept_name_id FROM concept_name WHERE uuid = _concept_name_uuid COLLATE utf8_unicode_ci;
+    SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
+    SELECT concept_name_id INTO _concept_name_id FROM concept_name WHERE uuid = _concept_name_uuid;
 
     IF ( _concept_name_id IS NULL ) THEN
 
@@ -76,15 +76,15 @@ BEGIN
     DECLARE _concept_id INT;
     DECLARE _frequency_id INT;
 
-    SELECT order_frequency_id INTO _frequency_id FROM order_frequency WHERE uuid = _frequency_uuid COLLATE utf8_unicode_ci;
+    SELECT order_frequency_id INTO _frequency_id FROM order_frequency WHERE uuid = _frequency_uuid;
 
     IF ( _frequency_id IS NULL ) THEN
 
-        SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid COLLATE utf8_unicode_ci;
+        SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
 
         IF ( _concept_id IS NULL ) THEN
             CALL ensure_concept(_concept_uuid, 'N/A', 'Frequency', 0);
-            SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid COLLATE utf8_unicode_ci;
+            SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
         END IF;
 
         INSERT INTO order_frequency (concept_id, frequency_per_day, creator, date_created, uuid)
@@ -105,9 +105,9 @@ CREATE PROCEDURE migrate_frequency (
 )
 BEGIN
     DECLARE _frequency_id INT;
-    SELECT order_frequency_id INTO _frequency_id FROM order_frequency WHERE uuid = _frequency_uuid COLLATE utf8_unicode_ci;
+    SELECT order_frequency_id INTO _frequency_id FROM order_frequency WHERE uuid = _frequency_uuid;
     IF ( _frequency_id IS NOT NULL ) THEN
-        UPDATE drug_order SET frequency = _frequency_id where frequency_non_coded = _frequency_non_coded COLLATE utf8_unicode_ci;
+        UPDATE drug_order SET frequency = _frequency_id where frequency_non_coded = _frequency_non_coded;
     END IF;
 END;
 

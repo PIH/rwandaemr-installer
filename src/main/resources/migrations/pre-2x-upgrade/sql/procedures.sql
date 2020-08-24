@@ -13,12 +13,12 @@ BEGIN
     DECLARE class_id INT;
     DECLARE _concept_id INT;
 
-    SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid COLLATE utf8_unicode_ci;
+    SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
 
     IF ( _concept_id IS NULL ) THEN
 
-        SELECT concept_datatype_id INTO data_type_id FROM concept_datatype WHERE name = data_type_name COLLATE utf8_unicode_ci;
-        SELECT concept_class_id INTO class_id FROM concept_class WHERE name = class_name COLLATE utf8_unicode_ci;
+        SELECT concept_datatype_id INTO data_type_id FROM concept_datatype WHERE name = data_type_name;
+        SELECT concept_class_id INTO class_id FROM concept_class WHERE name = class_name;
 
         INSERT INTO concept (datatype_id, class_id, is_set, creator, date_created, changed_by, date_changed, uuid)
         values (data_type_id, class_id, _is_set, 1, now(), 1, now(), _concept_uuid);
@@ -50,8 +50,8 @@ BEGIN
             SET _locale_preferred_val = '0';
         END CASE;
 
-    SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid COLLATE utf8_unicode_ci;
-    SELECT concept_name_id INTO _concept_name_id FROM concept_name WHERE uuid = _concept_name_uuid COLLATE utf8_unicode_ci;
+    SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
+    SELECT concept_name_id INTO _concept_name_id FROM concept_name WHERE uuid = _concept_name_uuid;
 
     IF ( _concept_name_id IS NULL ) THEN
 
@@ -75,7 +75,7 @@ CREATE PROCEDURE ensure_global_property (
 BEGIN
     DECLARE _gp_uuid CHAR(38);
 
-    SELECT uuid INTO _gp_uuid FROM global_property WHERE property = _name COLLATE utf8_unicode_ci;
+    SELECT uuid INTO _gp_uuid FROM global_property WHERE property = _name;
 
     IF ( _gp_uuid IS NULL ) THEN
 
@@ -84,7 +84,7 @@ BEGIN
 
     END IF;
 
-    UPDATE global_property SET property_value = _value WHERE property = _name COLLATE utf8_unicode_ci;
+    UPDATE global_property SET property_value = _value WHERE property = _name;
 
 END;
 
