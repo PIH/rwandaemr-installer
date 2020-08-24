@@ -246,7 +246,7 @@ if [ ! -z "$PRE_MIGRATIONS" ]; then
 
   docker stop $MIGRATION_CONTAINER || true
   docker rm $MIGRATION_CONTAINER || true
-  docker run --name $MIGRATION_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_VOLUME_DIR:/var/lib/mysql mysql:5.6 --character-set-server=utf8 --collation-server=utf8_unicode_ci --max_allowed_packet=1G
+  docker run --name $MIGRATION_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_VOLUME_DIR:/var/lib/mysql mysql:5.6 --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
 
   echo "Executing pre-upgrade migrations"
 
