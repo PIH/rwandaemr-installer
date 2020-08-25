@@ -292,7 +292,7 @@ echo "OpenMRS is starting up"
 # If there are post-migration updates, perform these after core liquibase updates have finished
 if [ ! -z "$POST_MIGRATIONS" ]; then
   echo "Waiting for core updates to complete before running post-upgrade migrations: $POST_MIGRATIONS"
-  docker logs -f --tail 20 $SERVER_CONTAINER 2>&1 | grep -q "liquibase: Successfully released change log lock"
+  docker logs --tail 1000 $SERVER_CONTAINER 2>&1 | grep -q "liquibase: Successfully released change log lock"
   RETURN_CODE=$?
   if [[ $RETURN_CODE != 0 ]]; then
     echo "Core liquibase updates have finished, executing post-upgrade migrations"
@@ -315,7 +315,7 @@ fi
 
 # Watch for OpenMRS startup message in the logs
 echo "Waiting for OpenMRS startup message..."
-docker logs -f --tail 100 $SERVER_CONTAINER 2>&1 | grep -q "INFO: Server startup in"
+docker logs --tail 1000 $SERVER_CONTAINER 2>&1 | grep -q "INFO: Server startup in"
 RETURN_CODE=$?
 if [[ $RETURN_CODE != 0 ]]; then
     echo "RETURN_CODE when looking for server startup message: $RETURN_CODE"
