@@ -210,8 +210,8 @@ docker run --name $DB_UPDATE_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_UPDATE_
 sleep 5
 docker exec $DB_UPDATE_CONTAINER /scripts/change-db-to-utf8.sh openmrs password
 RETURN_CODE=$?
-#docker stop $DB_UPDATE_CONTAINER || true
-#docker rm $DB_UPDATE_CONTAINER || true
+docker stop $DB_UPDATE_CONTAINER || true
+docker rm $DB_UPDATE_CONTAINER || true
 if [[ $RETURN_CODE != 0 ]]; then
   echo "Failed to update database character set and collation"
   exit $RETURN_CODE
