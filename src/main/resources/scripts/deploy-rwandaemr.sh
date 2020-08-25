@@ -248,6 +248,10 @@ if [ ! -z "$PRE_MIGRATIONS" ]; then
   docker rm $MIGRATION_CONTAINER || true
   docker run --name $MIGRATION_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_VOLUME_DIR:/var/lib/mysql mysql:5.6 --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
 
+  echo "Updating DB to utf8 and utf8_general_ci encoding"
+  docker cp $RUN_SITE_ID/rwandaemr-installer/src/main/resources/scripts/change-db-to-utf8.sh $MIGRATION_CONTAINER:/change-db-to-utf8.sh
+  docker exec $MIGRATION_CONTAINER /change-db-to-utf8.sh openmrs password
+
   echo "Executing pre-upgrade migrations"
 
   pushd $RUN_SITE_ID/rwandaemr-installer
