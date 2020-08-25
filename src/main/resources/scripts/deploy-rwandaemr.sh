@@ -201,7 +201,22 @@ fi
 popd
 
 echo "Updating DB to utf8 and utf8_general_ci encoding"
-docker run --rm -v $(pwd)/${RUN_SITE_ID}/rwandaemr-installer/src/main/resources/scripts:/scripts -v $(pwd)/${RUN_SITE_ID}/data/mysql:/var/lib/mysql mysql:5.6 sh -c "/scripts/change-db-to-utf8.sh openmrs password"
+DB_UPDATE_CONTAINER="${RUN_SITE_ID}_db_update_db"
+DB_UPDATE_DATA_DIR=$(pwd)/${RUN_SITE_ID}/data/mysql
+DB_UPDATE_SCRIPT_DIR=$(pwd)/${RUN_SITE_ID}/rwandaemr-installer/src/main/resources/scripts
+docker stop $DB_UPDATE_CONTAINER || true
+docker rm $DB_UPDATE_CONTAINER || true
+docker run --name $DB_UPDATE_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_UPDATE_DATA_DIR:/var/lib/mysql -v $DB_UPDATE_SCRIPT_DIR:/scripts mysql:5.6 --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
+docker exec $DB_UPDATE_CONTAINER /scripts/change-db-to-utf8.sh openmrs password
+RETURN_CODE=$?
+docker stop $DB_UPDATE_CONTAINER || true
+docker rm $DB_UPDATE_CONTAINER || true
+if [[ $RETURN_CODE != 0 ]]; then
+  echo "Failed to update database character set and collation"
+  exit $RETURN_CODE
+fi
+
+docker run --rm -v $(pwd)/${RUN_SITE_ID}/:/scripts -v $(pwd)/${RUN_SITE_ID}/data/mysql:/var/lib/mysql mysql:5.6 sh -c "/scripts/change-db-to-utf8.sh openmrs password"
 
 if [ -d "$RUN_SITE_ID/distribution" ]; then
   echo "Removing the existing distribution"
@@ -244,7 +259,6 @@ if [ ! -z "$PRE_MIGRATIONS" ]; then
 
   MIGRATION_CONTAINER="${RUN_SITE_ID}_migration_db"
   DB_VOLUME_DIR=$(pwd)/${RUN_SITE_ID}/data/mysql
-
   echo "Starting DB container for migration: $MIGRATION_CONTAINER" using volume $DB_VOLUME_DIR
 
   docker stop $MIGRATION_CONTAINER || true
