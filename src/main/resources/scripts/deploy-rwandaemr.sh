@@ -217,8 +217,6 @@ if [[ $RETURN_CODE != 0 ]]; then
   exit $RETURN_CODE
 fi
 
-docker run --rm -v $(pwd)/${RUN_SITE_ID}/:/scripts -v $(pwd)/${RUN_SITE_ID}/data/mysql:/var/lib/mysql mysql:5.6 sh -c "/scripts/change-db-to-utf8.sh openmrs password"
-
 if [ -d "$RUN_SITE_ID/distribution" ]; then
   echo "Removing the existing distribution"
   rm -rf $RUN_SITE_ID/distribution
