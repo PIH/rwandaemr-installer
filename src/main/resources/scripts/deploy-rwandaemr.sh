@@ -178,6 +178,9 @@ else
     echo "The data mysql directory already exists"
 fi
 
+echo "Updating DB to utf8 and utf8_general_ci encoding"
+docker run --rm -v $(pwd)/${RUN_SITE_ID}/rwandaemr-installer/src/main/resources/scripts:/scripts -v $(pwd)/${RUN_SITE_ID}/data/mysql:/var/lib/mysql mysql:5.6 sh -c "/scripts/change-db-to-utf8.sh openmrs password"
+
 if [ ! -d "$RUN_SITE_ID/rwandaemr-installer" ]; then
   echo "Downloading Installer code"
   pushd $RUN_SITE_ID
@@ -247,10 +250,6 @@ if [ ! -z "$PRE_MIGRATIONS" ]; then
   docker stop $MIGRATION_CONTAINER || true
   docker rm $MIGRATION_CONTAINER || true
   docker run --name $MIGRATION_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_VOLUME_DIR:/var/lib/mysql mysql:5.6 --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
-
-  echo "Updating DB to utf8 and utf8_general_ci encoding"
-  docker cp $RUN_SITE_ID/rwandaemr-installer/src/main/resources/scripts/change-db-to-utf8.sh $MIGRATION_CONTAINER:/change-db-to-utf8.sh
-  docker exec $MIGRATION_CONTAINER /change-db-to-utf8.sh openmrs password
 
   echo "Executing pre-upgrade migrations"
 
