@@ -209,8 +209,8 @@ docker rm $DB_UPDATE_CONTAINER || true
 docker run --name $DB_UPDATE_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_UPDATE_DATA_DIR:/var/lib/mysql -v $DB_UPDATE_SCRIPT_DIR:/scripts mysql:5.6 --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
 docker exec $DB_UPDATE_CONTAINER /scripts/change-db-to-utf8.sh openmrs password
 RETURN_CODE=$?
-docker stop $DB_UPDATE_CONTAINER || true
-docker rm $DB_UPDATE_CONTAINER || true
+#docker stop $DB_UPDATE_CONTAINER || true
+#docker rm $DB_UPDATE_CONTAINER || true
 if [[ $RETURN_CODE != 0 ]]; then
   echo "Failed to update database character set and collation"
   exit $RETURN_CODE
