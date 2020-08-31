@@ -172,7 +172,26 @@ else
     echo "The data mysql directory already exists"
 fi
 
+SYNC_DB_CONTAINER="${CHILD_RUN_SITE_ID}_sync_db"
+DB_VOLUME_DIR=$(pwd)/${CHILD_RUN_SITE_ID}/data/mysql
+echo "Starting DB container for sync cleanup: $SYNC_DB_CONTAINER" using volume $DB_VOLUME_DIR
 
+docker stop $SYNC_DB_CONTAINER || true
+docker rm $SYNC_DB_CONTAINER || true
+docker run --name $SYNC_DB_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_VOLUME_DIR:/var/lib/mysql mysql:5.6 --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
+# wait 10 seconds for the containers to start up
+ping -w 1000 -c 10 127.0.0.1
+echo "Deleting sync tables"
+DELETE_SYNC_TABLES_DB_SCRIPT=$(pwd)/rwandaemr-installer/src/main/resources/sql/deleteSyncTables.sql
+echo "DELETE_SYNC_TABLES_DB_SCRIPT = $DELETE_SYNC_TABLES_DB_SCRIPT"
+mysql -h 127.0.0.1 -P ${OMRS_DB_PORT} -u root --password=password openmrs < $DELETE_SYNC_TABLES_DB_SCRIPT
+RETURN_CODE=$?
+docker stop $SYNC_DB_CONTAINER || true
+docker rm $SYNC_DB_CONTAINER || true
+if [[ $RETURN_CODE != 0 ]]; then
+    echo "Failed to run delete sync tables"
+    exit $RETURN_CODE
+  fi
 
 if [ -d "$CHILD_RUN_SITE_ID/distribution" ]; then
   echo "Removing the existing child server distribution"
