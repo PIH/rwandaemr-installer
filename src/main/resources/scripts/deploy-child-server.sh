@@ -189,8 +189,7 @@ RETURN_CODE=$?
 docker stop $SYNC_DB_CONTAINER || true
 docker rm $SYNC_DB_CONTAINER || true
 if [[ $RETURN_CODE != 0 ]]; then
-    echo "Failed to run delete sync tables"
-    exit $RETURN_CODE
+    echo "RETURN_CODE when deleting the sync tables: $RETURN_CODE"
   fi
 
 if [ -d "$CHILD_RUN_SITE_ID/distribution" ]; then
