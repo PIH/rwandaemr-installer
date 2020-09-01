@@ -288,6 +288,8 @@ docker-compose up -d
 popd
 
 echo "OpenMRS is starting up"
+# wait 10 seconds for the containers to start up
+ping -w 1000 -c 10 127.0.0.1
 
 # If there are post-migration updates, perform these after core liquibase updates have finished
 if [ ! -z "$POST_MIGRATIONS" ]; then

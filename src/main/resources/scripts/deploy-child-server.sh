@@ -11,6 +11,9 @@ RUN_ID=""
 OMRS_DB_PORT=""
 OMRS_SERVER_PORT=""
 RECREATE="false"
+SYNC_PARENT_ADDRESS=""
+SYNC_PARENT_USER_NAME=""
+SYNC_PARENT__USER_PASSWORD=""
 
 # read environment variables DB_REPO_USER, DB_REPO_PASSWORD and DB_REPO_BASE_URL from env_vars file located in the same directory
 source .env
@@ -32,6 +35,9 @@ function usage() {
   echo " --omrsDbPort : Used to specify the mysql db port"
   echo " --omrsServerPort : Used specify the OpenMRS webapp port"
   echo " --recreate=true : If specified, this will recreate the instance from scratch"
+  echo " --syncParentAddress= http://rwinkwavu-ci.pih-emr.org:8081/openmrs/: The Parent OpenMRS URL"
+  echo " --syncParentUserName=userName : Parent login username"
+  echo " --syncParentUserPassword=userPassword : Parent login user password"
 }
 
 echo "Parsing input arguments"
@@ -63,6 +69,18 @@ case $i in
       RECREATE="${i#*=}"
       shift # past argument=value
     ;;
+    --syncParentAddress=*)
+      SYNC_PARENT_ADDRESS="${i#*=}"
+      shift # past argument=value
+    ;;
+    --syncParentUserName=*)
+      SYNC_PARENT_USER_NAME="${i#*=}"
+      shift # past argument=value
+    ;;
+    --syncParentUserPassword=*)
+      SYNC_PARENT__USER_PASSWORD="${i#*=}"
+      shift # past argument=value
+    ;;
     *)
       usage    # unknown option
       exit 1
@@ -87,6 +105,15 @@ fi
 if [ -z "$RECREATE" ]; then
   read -e -p 'Recreate: ' -i "false" RECREATE
 fi
+if [ -z "$SYNC_PARENT_ADDRESS" ]; then
+  read -e -p 'Sync Parent address: ' -i "http://rwinkwavu-ci.pih-emr.org:8081/openmrs/" SYNC_PARENT_ADDRESS
+fi
+if [ -z "$SYNC_PARENT_USER_NAME" ]; then
+  read -e -p 'Sync parent user name: ' -i "userName" SYNC_PARENT_USER_NAME
+fi
+if [ -z "$SYNC_PARENT__USER_PASSWORD" ]; then
+  read -e -p 'Site Name: ' -i "userPassword" SYNC_PARENT__USER_PASSWORD
+fi
 
 echo "Got input arguments:"
 echo "SITE NAME: ${SITE_NAME}"
@@ -95,6 +122,7 @@ echo "RUN ID: $RUN_ID"
 echo "OMRS_DB_PORT: $OMRS_DB_PORT"
 echo "OMRS_SERVER_PORT: $OMRS_SERVER_PORT"
 echo "RECREATE: ${RECREATE}"
+echo "SYNC_PARENT_ADDRESS: ${SYNC_PARENT_ADDRESS}"
 
 PARENT_RUN_SITE_ID="${SITE_NAME}${VERSION}${RUN_ID}"
 CHILD_RUN_SITE_ID="${SITE_NAME}${VERSION}${RUN_ID}-child"
@@ -239,3 +267,31 @@ if [[ $RESPONSE != 200 ]]; then
     fi
 fi
 echo "OpenMRS web app is app and running"
+
+# configure sync child server
+PARENT_SERVER_UUID=$(uuidgen)
+echo "PARENT_SERVER_UUID = $PARENT_SERVER_UUID"
+CHILD_SERVER_UUID=$(uuidgen)
+echo "CHILD_SERVER_UUID = $CHILD_SERVER_UUID"
+
+UPDATE_CHILD_SERVER_SETTINGS_SCRIPT=$(pwd)/rwandaemr-installer/src/main/resources/sql/updateChildServerSettings.sql
+echo "UPDATE_CHILD_SERVER_SETTINGS_SCRIPT = $UPDATE_CHILD_SERVER_SETTINGS_SCRIPT"
+mysql -h 127.0.0.1 -P ${OMRS_DB_PORT} -u root --password=password openmrs -A -e "set @sync_parent_address='$SYNC_PARENT_ADDRESS'; set @sync_parent_user_name='$SYNC_PARENT_USER_NAME'; set @sync_parent_user_password='$SYNC_PARENT__USER_PASSWORD'; set @sync_parent_name='$PARENT_RUN_SITE_ID'; set @sync_parent_uuid='$PARENT_SERVER_UUID'; set @child_server_uuid='$CHILD_SERVER_UUID'; set @child_name='$CHILD_RUN_SITE_ID'; source $UPDATE_CHILD_SERVER_SETTINGS_SCRIPT;"
+RETURN_CODE=$?
+if [[ $RETURN_CODE != 0 ]]; then
+    echo "RETURN_CODE when updating child sync server settings: $RETURN_CODE"
+fi
+echo "Child sync server has been configured"
+
+# read parent DB port from the parent directory .env file
+source $PARENT_RUN_SITE_ID/.env
+echo "Parent OMRS_DB_PORT: $OMRS_DB_PORT"
+UPDATE_PARENT_SERVER_SETTINGS_SCRIPT=$(pwd)/rwandaemr-installer/src/main/resources/sql/updateParentServerSettings.sql
+echo "UPDATE_PARENT_SERVER_SETTINGS_SCRIPT = $UPDATE_PARENT_SERVER_SETTINGS_SCRIPT"
+mysql -h 127.0.0.1 -P ${OMRS_DB_PORT} -u root --password=password openmrs -A -e "set @sync_parent_name='$PARENT_RUN_SITE_ID'; set @sync_parent_uuid='$PARENT_SERVER_UUID'; set @child_server_uuid='$CHILD_SERVER_UUID'; set @child_name='$CHILD_RUN_SITE_ID'; source $UPDATE_PARENT_SERVER_SETTINGS_SCRIPT;"
+RETURN_CODE=$?
+if [[ $RETURN_CODE != 0 ]]; then
+    echo "RETURN_CODE when updating parent sync server settings: $RETURN_CODE"
+fi
+
+echo "Parent sync server has been configured"
