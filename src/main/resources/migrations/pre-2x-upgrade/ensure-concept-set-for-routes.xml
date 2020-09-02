@@ -48,9 +48,15 @@
             delete from concept_set where concept_set = @routeSetId;
 
             insert into concept_set (concept_id, concept_set, sort_weight, creator, date_created, uuid)
-                select  distinct route, @routeSetId, 1, 1, now(), uuid()
-                from    orderextension_order_set_member
-                where   route is not null;
+                select  distinct r.route, @routeSetId, 1, 1, now(), uuid()
+                from
+                (
+                    select route from orderextension_order_set_member
+                    union
+                    select route from orderextension_order
+                )
+                r
+                where r.route is not null;
 
             call ensure_global_property(
                 'order.drugRoutesConceptUuid',
