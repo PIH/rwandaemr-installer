@@ -5,106 +5,149 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+    <!-- Uses existing concept -->
     <changeSet id="rwandaemr-imb-migrate-1-per-day" author="IMB">
         <sql>
             set @freqUuid = '707ad8b7-d902-11ea-80fb-0242ac110002';
-            set @conceptUuid = '160862AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 1);
-            call ensure_concept_name('109555BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Once daily', 'FULLY_SPECIFIED');
-            call ensure_concept_name('109553BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'OD (once daily)', 'SHORT');
-            call ensure_concept_name('109556BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'QD (once daily)', null);
-            call ensure_concept_name('125286BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Once per day', null);
-            call ensure_concept_name('126442BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Daily', null);
-            call ensure_concept_name('126444BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, '1 time per day', null);
-            call ensure_concept_name('109554BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Once a day', null);
-
+            set @conceptUuid = '37328251-6759-4270-8a2e-8cab2c0b315b';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 1, null, 'ONE PER DAY');
             call migrate_frequency(@freqUuid, '1/day x Take every day');
             call migrate_frequency(@freqUuid, '1/d 7d/w');
             call migrate_frequency(@freqUuid, '1/day x 7 days/week');
             call migrate_frequency(@freqUuid, '1/day');
             call migrate_frequency(@freqUuid, '1/day Take every day');
-
-            update drug_order set frequency_non_coded = null where frequency is not null;
+            call migrate_frequency(@freqUuid, 'Single dose x Take every day');
         </sql>
     </changeSet>
 
+    <!-- Uses existing concept -->
     <changeSet id="rwandaemr-imb-migrate-2-per-day" author="IMB">
         <sql>
             set @freqUuid = '87ea7c89-d8f9-11ea-80fb-0242ac110002';
-            set @conceptUuid = '160858AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 2);
-            call ensure_concept_name('109543BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Twice daily', 'FULLY_SPECIFIED');
-            call ensure_concept_name('109541BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'BD', 'SHORT');
-            call ensure_concept_name('126443BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, '2 times per day', null);
-            call ensure_concept_name('109542BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Twice a day', null);
-            call ensure_concept_name('125228BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'BID', null);
-            call ensure_concept_name('125282BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Twice per day', null);
-
+            set @conceptUuid = '586f1146-8737-4827-8cfa-3b72d71ebd8b';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 2, null, 'TWICE A DAY');
             call migrate_frequency(@freqUuid, '2/day x Take every day');
             call migrate_frequency(@freqUuid, '2/day x 7 days/week');
             call migrate_frequency(@freqUuid, '2/d 7d/w');
             call migrate_frequency(@freqUuid, '2/day Take every day');
             call migrate_frequency(@freqUuid, '2/day');
-
-            update drug_order set frequency_non_coded = null where frequency is not null;
+            call migrate_frequency(@freqUuid, '2/days');
         </sql>
     </changeSet>
 
+    <!-- Uses existing concept -->
     <changeSet id="rwandaemr-imb-migrate-3-per-day" author="IMB">
         <sql>
             set @freqUuid = 'd8290a00-d926-11ea-8b36-0242ac110002';
-            set @conceptUuid = '160866AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 3);
-            call ensure_concept_name('109568BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Thrice daily', 'FULLY_SPECIFIED');
-            call ensure_concept_name('109566BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'TD', 'SHORT');
-            call ensure_concept_name('109567BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Three times a day', null);
-            call ensure_concept_name('125229BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'TID', null);
-            call ensure_concept_name('125290BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Three times per day', null);
-            call ensure_concept_name('126445BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, '3 times per day', null);
-
+            set @conceptUuid = '46a4d3d6-86d0-491f-be00-d151246caec3';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 3, null, 'THREE PER DAY');
             call migrate_frequency(@freqUuid, '3/day x Take every day');
             call migrate_frequency(@freqUuid, '3/day');
             call migrate_frequency(@freqUuid, '3/day x 7 days/week');
             call migrate_frequency(@freqUuid, '3/d 7d/w');
-
-            update drug_order set frequency_non_coded = null where frequency is not null;
+            call migrate_frequency(@freqUuid, '3 x in 24 hours');
+            call migrate_frequency(@freqUuid, '3x in 24 hours');
         </sql>
     </changeSet>
 
+    <!-- Uses existing concept -->
     <changeSet id="rwandaemr-imb-migrate-4-per-day" author="IMB">
         <sql>
             set @freqUuid = '405a5af1-d927-11ea-8b36-0242ac110002';
-            set @conceptUuid = '160870AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 4);
-            call ensure_concept_name('109579BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Four times daily', 'FULLY_SPECIFIED');
-            call ensure_concept_name('109578BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'QID', 'SHORT');
-            call ensure_concept_name('109581BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'QDS (four times a day)', null);
-            call ensure_concept_name('125294BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Four times per day', null);
-            call ensure_concept_name('126446BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, '4 times per day', null);
-            call ensure_concept_name('109580BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Four times a day', null);
-
+            set @conceptUuid = 'bb025463-8631-4475-952d-1c5c83d8aa32';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 4, null, 'Four times a day');
             call migrate_frequency(@freqUuid, '4/day x 7 days/week');
             call migrate_frequency(@freqUuid, '4/day x Take every day');
             call migrate_frequency(@freqUuid, '4/day');
-
-            update drug_order set frequency_non_coded = null where frequency is not null;
         </sql>
     </changeSet>
 
+    <!-- Uses existing concept -->
+    <changeSet id="rwandaemr-imb-migrate-5-per-day" author="IMB">
+        <sql>
+            set @freqUuid = 'a2f03aa2-eedf-11ea-b492-0242ac110002';
+            set @conceptUuid = 'ee751fa5-1531-4722-ac64-f2e48898d989';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 5, null, 'FIVE TIMES A DAY');
+            call migrate_frequency(@freqUuid, '5/day x Take every day');
+            call migrate_frequency(@freqUuid, '5/d 7d/w');
+        </sql>
+    </changeSet>
+
+    <!-- Uses existing concept -->
+    <changeSet id="rwandaemr-imb-migrate-6-per-day" author="IMB">
+        <sql>
+            set @freqUuid = 'f11513cb-eee1-11ea-b492-0242ac110002';
+            set @conceptUuid = 'b928c4d8-7b3f-40db-9a62-c98a3ba1c9aa';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 6, null, 'SIX TIMES A DAY');
+            call migrate_frequency(@freqUuid, '6/day');
+            call migrate_frequency(@freqUuid, '6/day x Take every day');
+        </sql>
+    </changeSet>
+
+    <!-- New concept -->
+    <changeSet id="rwandaemr-imb-migrate-7-per-day" author="IMB">
+        <sql>
+            set @freqUuid = '9212ab7b-eee4-11ea-b492-0242ac110002';
+            set @conceptUuid = '9658ed1d-eee4-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 7, null, 'SEVEN TIMES A DAY');
+            call migrate_frequency(@freqUuid, '7/d 7d/w');
+            call migrate_frequency(@freqUuid, '7/day x Take every day');
+        </sql>
+    </changeSet>
+
+    <!-- New concept -->
+    <changeSet id="rwandaemr-imb-migrate-8-per-day" author="IMB">
+        <sql>
+            set @freqUuid = 'b9325405-eee4-11ea-b492-0242ac110002';
+            set @conceptUuid = 'bcd0ae0d-eee4-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 8, null, 'EIGHT TIMES A DAY');
+            call migrate_frequency(@freqUuid, '8/day x 7 days/week');
+        </sql>
+    </changeSet>
+
+    <!-- New concept -->
+    <changeSet id="rwandaemr-imb-migrate-10-per-day" author="IMB">
+        <sql>
+            set @freqUuid = 'bfed09ad-eee4-11ea-b492-0242ac110002';
+            set @conceptUuid = 'c2fdbda1-eee4-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 10, null, 'TEN TIMES A DAY');
+            call migrate_frequency(@freqUuid, '10/d 7d/w');
+            call migrate_frequency(@freqUuid, '10/day x Take every day');
+        </sql>
+    </changeSet>
+
+    <!-- New concept -->
+    <changeSet id="rwandaemr-imb-migrate-half-per-day" author="IMB">
+        <sql>
+            set @freqUuid = 'e953796c-eee4-11ea-b492-0242ac110002';
+            set @conceptUuid = 'eca59e5a-eee4-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 0.5, null, 'ONE HALF PER DAY');
+            call migrate_frequency(@freqUuid, '1/2/day x 7 days/week');
+        </sql>
+    </changeSet>
+
+    <!--
+        TODO: WE are migrating a frequency of '2' into ONCE.  There are no orders with this, and it appears in a single order set with instructions; Over 2 hours. Start 2 hours before chemo.
+    -->
     <changeSet id="rwandaemr-imb-migrate-single-dose" author="IMB">
         <sql>
             set @freqUuid = 'b7ce2f36-d927-11ea-8b36-0242ac110002';
-            set @conceptUuid = '162135AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 1);
-            call ensure_concept_name('124906BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'One time', 'FULLY_SPECIFIED');
-            call ensure_concept_name('124907BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Single event', null);
-            call ensure_concept_name('125298BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Once', null);
-            call ensure_concept_name('', @conceptUuid, '', null);
-            call ensure_concept_name('', @conceptUuid, '', null);
-
+            set @conceptUuid = 'b8f079b5-10a5-4716-bc0d-40bdcffdc6b4';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 1, null, 'Once');
             call migrate_frequency(@freqUuid, 'Single dose');
+            call migrate_frequency(@freqUuid, '2');
+        </sql>
+    </changeSet>
 
-            update drug_order set frequency_non_coded = null where frequency is not null;
+    <!-- Uses existing concept -->
+    <changeSet id="rwandaemr-imb-migrate-once-per-week" author="IMB">
+        <sql>
+            set @freqUuid = '41d3b6ea-eee1-11ea-b492-0242ac110002';
+            set @conceptUuid = '3ce1065e-26fe-102b-80cb-0017a47871b2 ';
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 1, null, 'QWK');
+            call migrate_frequency(@freqUuid, 'Single dose x 1 days/week');
+            call migrate_frequency(@freqUuid, '1/d 1d/w');
+            call migrate_frequency(@freqUuid, '1/day x 1 days/week');
         </sql>
     </changeSet>
 
@@ -112,40 +155,222 @@
         <sql>
             set @freqUuid = '06a2322b-d928-11ea-8b36-0242ac110002';
             set @conceptUuid = '162249AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 4);
-            call ensure_concept_name('125244BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Every six hours', 'FULLY_SPECIFIED');
+            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, 4, '125244BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', 'Every six hours');
             call ensure_concept_name('125243BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'q6h', 'SHORT');
             call ensure_concept_name('125271BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', @conceptUuid, 'Every 6 hours', null);
-
             call migrate_frequency(@freqUuid, 'Every 6 hours');
-
-            update drug_order set frequency_non_coded = null where frequency is not null;
         </sql>
     </changeSet>
 
-    <!-- TODO: use template below for other migrations
+    <!--
+        TODO: Frequency 'Every 24 hours x 5 days' is found on Burkitt's Lymphoma Consolidation
+        Reviewing the order set and the data (3 patients have data on this), this appear to represent days 2-6 of the cycle
+        For consistency, consider using "Day 2-6" frequency for this.  Needs review
 
-    <changeSet id="rwandaemr-imb-migrate-x-per-day" author="IMB">
-        <sql>
-            set @freqUuid = '';
-            set @conceptUuid = '';
-            call ensure_concept_and_frequency(@freqUuid, @conceptUuid, );
-            call ensure_concept_name('', @conceptUuid, '', 'FULLY_SPECIFIED');
-            call ensure_concept_name('', @conceptUuid, '', 'SHORT');
-            call ensure_concept_name('', @conceptUuid, '', null);
-            call ensure_concept_name('', @conceptUuid, '', null);
-            call ensure_concept_name('', @conceptUuid, '', null);
-            call ensure_concept_name('', @conceptUuid, '', null);
-
-            call migrate_frequency(@freqUuid, '');
-            call migrate_frequency(@freqUuid, '');
-            call migrate_frequency(@freqUuid, '');
-            call migrate_frequency(@freqUuid, '');
-            call migrate_frequency(@freqUuid, '');
-
-            update drug_order set frequency_non_coded = null where frequency is not null;
-        </sql>
-    </changeSet>
+        TODO: Migration OR to unspecified frequency, as OR is also captured in instructions, administration instructions
     -->
+    <changeSet id="rwandaemr-imb-migrate-remaining-frequencies" author="IMB" runAlways="true">
+        <sql>
+            set @day1 = '0d911959-eeb7-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day1, '246eb18b-eeb7-11ea-b492-0242ac110002', 1, null, 'Day 1');
+            call migrate_frequency(@day1, 'Day 1');
+
+            set @day2 = '814e0375-eebd-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day2, '84052535-eebd-11ea-b492-0242ac110002', 1, null, 'Day 2');
+            call migrate_frequency(@day2, 'Day 2');
+            call migrate_frequency(@day2, 'Day2');
+
+            set @day1And2 = 'cedfb7df-eeb9-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day1And2, 'ee8c2a27-eeb9-11ea-b492-0242ac110002', 1, null, 'Day 1-2');
+            call migrate_frequency(@day1And2, '"Day 1, 2"');
+            call migrate_frequency(@day1And2, '"Day 1,2"');
+            call migrate_frequency(@day1And2, 'Day 1,2');
+
+            set @day1To5 = '9f2a41f8-eebe-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day1To5, 'a1e7c47a-eebe-11ea-b492-0242ac110002', 1, null, 'Day 1-5');
+            call migrate_frequency(@day1To5, 'Day 1-5');
+            call migrate_frequency(@day1To5, 'Days 1-5');
+
+            set @day1To7 = 'e94f2fb7-eebe-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day1To7, 'eb62a9b4-eebe-11ea-b492-0242ac110002', 1, null, 'Day 1-7');
+            call migrate_frequency(@day1To7, 'Day 1-7');
+            call migrate_frequency(@day1To7, 'Days 1-7');
+
+            set @day1To28 = 'dddd3f36-eebf-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day1To28, 'e0cd8128-eebf-11ea-b492-0242ac110002', 1, null, 'Day 1-28');
+            call migrate_frequency(@day1To28, 'Day 1-28');
+            call migrate_frequency(@day1To28, 'Days 1-28');
+            call migrate_frequency(@day1To28, 'Days1-28');
+
+            set @day1To50 = 'faca911d-eec0-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day1To50, 'fd59b92a-eec0-11ea-b492-0242ac110002', 1, null, 'Day 1-50');
+            call migrate_frequency(@day1To50, 'Day 1-50');
+
+            set @day1To50R21 = '1f128764-eec1-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day1To50R21, '21b6d7ac-eec1-11ea-b492-0242ac110002', 1, null, 'Day 1-50 *R/21 days');
+            call migrate_frequency(@day1To50R21, 'Day 1-50 *R/21 days');
+            call migrate_frequency(@day1To50R21, 'Days 1-50 *R/ 21 days');
+
+            set @day1To84 = '32c9ec1d-eec0-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day1To84, '356ef194-eec0-11ea-b492-0242ac110002', 1, null, 'Day 1-84');
+            call migrate_frequency(@day1To84, 'Day 1-84');
+
+            set @day2And3 = 'e0787d84-eebd-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day2And3, 'e3b20f36-eebd-11ea-b492-0242ac110002', 1, null, 'Day 2-3');
+            call migrate_frequency(@day2And3, '"Day 2, 3"');
+            call migrate_frequency(@day2And3, '"Day 2,3"');
+            call migrate_frequency(@day2And3, 'Day 2, 3');
+            call migrate_frequency(@day2And3, 'Day 2,3');
+
+            set @day2To4 = '29deb79a-eebe-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day2To4, '2089f18e-eebe-11ea-b492-0242ac110002', 1, null, 'Day 2-4');
+            call migrate_frequency(@day2To4, '"Day 2,3, 4"');
+            call migrate_frequency(@day2To4, '"Day 2,3,4"');
+            call migrate_frequency(@day2To4, 'Day 2,3,4');
+
+            set @day2To6 = '4de4fcfa-eec1-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day2To6, '507912be-eec1-11ea-b492-0242ac110002', 1, null, 'Day 2-6');
+            call migrate_frequency(@day2To6, 'Days 2-6');
+            call migrate_frequency(@day2To6, 'Every 24 hours x 5 days');
+
+            set @day15To21 = '63b71a52-eec1-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day15To21, '6616ee31-eec1-11ea-b492-0242ac110002', 1, null, 'Day 15-21');
+            call migrate_frequency(@day15To21, 'Day 15-21');
+            call migrate_frequency(@day15To21, 'Days 15-21');
+
+            set @day29To32 = '97e5165d-eec1-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day29To32, '99ef3f44-eec1-11ea-b492-0242ac110002', 1, null, 'Day 29-32');
+            call migrate_frequency(@day29To32, 'Day 29-32');
+
+            set @day29To33 = 'ac76abb1-eec1-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day29To33, 'af534f6e-eec1-11ea-b492-0242ac110002', 1, null, 'Day 29-33');
+            call migrate_frequency(@day29To33, 'Day 29-33');
+
+            set @day29To43 = 'c0b180ad-eec1-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day29To43, 'c2f16712-eec1-11ea-b492-0242ac110002', 1, null, 'Day 29-43');
+            call migrate_frequency(@day29To43, 'Day 29-43');
+
+            set @day36To39 = 'c5ba3e91-eec1-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day36To39, 'c80d99bc-eec1-11ea-b492-0242ac110002', 1, null, 'Day 36-39');
+            call migrate_frequency(@day36To39, 'Day 36-39');
+
+            set @day57To61 = 'caa0186e-eec1-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@day57To61, 'cd42dbd5-eec1-11ea-b492-0242ac110002', 1, null, 'Day 57-61');
+            call migrate_frequency(@day57To61, 'Day 57-61');
+
+            set @every6HrsAfterMethotrexate = '4d2b1c81-eec2-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@every6HrsAfterMethotrexate, '5473b274-eec2-11ea-b492-0242ac110002', 4, null, 'Every 6 hours. Starting 24 hours after methotrexate x 3 days');
+            call migrate_frequency(@every6HrsAfterMethotrexate, 'Every 6 hours starting 24 hours after methotrexate x 3 days');
+            call migrate_frequency(@every6HrsAfterMethotrexate, 'Every 6 hours. Starting 24 hours after Methotrexate x 3 days');
+
+            set @hour1FirstOf2 = '5015a513-eec2-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@hour1FirstOf2, '57202272-eec2-11ea-b492-0242ac110002', 1, null, 'Hour 1. 1st of 2 daily doses');
+            call migrate_frequency(@hour1FirstOf2, 'Hour 1. 1st of 2 daily doses');
+            call migrate_frequency(@hour1FirstOf2, 'Hour 1. 1st of 2 daily doses.');
+
+            set @hour12SecondOf2 = '5251c49c-eec2-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@hour12SecondOf2, '59a52ba5-eec2-11ea-b492-0242ac110002', 1, null, 'Hour 12. 2nd of 2 daily doses');
+            call migrate_frequency(@hour12SecondOf2, 'Hour 12. 2nd of 2 daily doses');
+            call migrate_frequency(@hour12SecondOf2, 'Hour 12. 2nd of 2 daily doses.');
+
+            set @q12For4Doses = 'd6ce5843-eed4-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@q12For4Doses, 'db8b6ea3-eed4-11ea-b492-0242ac110002', 2, null, 'Q12 x 4');
+            call migrate_frequency(@q12For4Doses, 'Q12 x 4');
+
+            set @unspecifiedFrequency = 'a172f8da-eed5-11ea-b492-0242ac110002';
+            set @unspecifiedFrequencyConcept = 'f00ac3a0-cd51-4446-bf31-bc6d3e4b124d';
+            call ensure_concept_and_frequency(@unspecifiedFrequency, @unspecifiedFrequencyConcept, 1, '490e4dd8-bd24-4561-ae12-bd0e0f38e82b', 'unspecified frequency');
+            call migrate_frequency(@unspecifiedFrequency, '');
+            call migrate_frequency(@unspecifiedFrequency, null);
+            call migrate_frequency(@unspecifiedFrequency, 'OR');
+            call migrate_frequency(@unspecifiedFrequency, 'undefined x undefined');
+
+            set @1d2w = '591caef9-eee5-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@1d2w, '5ba13aa7-eee5-11ea-b492-0242ac110002', 1, null, '1/day x 2 days/week');
+            call migrate_frequency(@1d2w, '1/d 2d/w');
+            call migrate_frequency(@1d2w, '1/day x 2 days/week');
+
+            set @1d3w = '78e94efd-eee5-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@1d3w, '7b017f3a-eee5-11ea-b492-0242ac110002', 1, null, '1/day x 3 days/week');
+            call migrate_frequency(@1d3w, '1/d 3d/w');
+            call migrate_frequency(@1d3w, '1/day x 3 days/week');
+
+            set @1d4w = 'a19b82b8-eee5-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@1d4w, 'a441e3c6-eee5-11ea-b492-0242ac110002', 1, null, '1/day x 4 days/week');
+            call migrate_frequency(@1d4w, '1/d 4d/w');
+            call migrate_frequency(@1d4w, '1/day x 4 days/week');
+
+            set @1d5w = 'c1012523-eedd-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@1d5w, '8ca69946-09fd-4472-ae2c-f70599d513a9', 1, null, '1/day x 5 days/week');
+            call migrate_frequency(@1d5w, '1/d 5d/w');
+            call migrate_frequency(@1d5w, '1/day x 5 days/week');
+
+            set @1d6w = '99f67f2c-eedd-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@1d6w, '51f3a7e0-dafa-49d4-9139-90862a282546', 1, null, '1/day x 6 days/week');
+            call migrate_frequency(@1d6w, '1/day x 6 days/week');
+
+            set @2d1w = '07d0d2da-eee6-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@2d1w, '0a42568f-eee6-11ea-b492-0242ac110002', 2, null, '2/day x 1 days/week');
+            call migrate_frequency(@2d1w, '2/d 1d/w');
+            call migrate_frequency(@2d1w, '2/day x 1 days/week');
+
+            set @2d2w = 'ea9570c0-eedd-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@2d2w, '0e0722d4-d5cf-4339-a76a-33a30e6cc2f5', 2, null, '2/day x 2 days/week');
+            call migrate_frequency(@2d3w, '2/d 2d/w');
+            call migrate_frequency(@2d2w, '2/day x 2 days/week');
+
+            set @2d3w = '2faf7893-eee6-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@2d3w, '31aa9d4b-eee6-11ea-b492-0242ac110002', 2, null, '2/day x 3 days/week');
+            call migrate_frequency(@2d3w, '2/d 3d/w');
+            call migrate_frequency(@2d3w, '2/day x 3 days/week');
+
+            set @2d4w = '3dcde2f7-eee6-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@2d3w, '417b6a74-eee6-11ea-b492-0242ac110002', 2, null, '2/day x 4 days/week');
+            call migrate_frequency(@2d3w, '2/d 4d/w');
+            call migrate_frequency(@2d3w, '2/day x 4 days/week');
+
+            set @2d5w = '1f7a11ab-eede-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@2d5w, 'fe2651f2-b65a-4680-b7f8-3542bd23413d', 2, null, '2/day x 5 days/week');
+            call migrate_frequency(@2d3w, '2/d 5d/w');
+            call migrate_frequency(@2d5w, '2/day x 5 days/week');
+
+            set @2d6w = '3b98dd2a-eede-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@2d6w, 'b25d698c-b552-42b6-b520-a345f3b4b393', 2, null, '2/day x 6 days/week');
+            call migrate_frequency(@2d3w, '2/d 6d/w');
+            call migrate_frequency(@2d6w, '2/day x 6 days/week');
+
+            set @3d1w = '7db919ac-eee6-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@3d1w, '80d3a90e-eee6-11ea-b492-0242ac110002', 3, null, '3/day x 1 days/week');
+            call migrate_frequency(@3d1w, '3/d 1d/w');
+            call migrate_frequency(@3d1w, '3/day x 1 days/week');
+
+            set @3d2w = 'bd47402f-eee6-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@3d2w, 'bf36d006-eee6-11ea-b492-0242ac110002', 3, null, '3/day x 2 days/week');
+            call migrate_frequency(@3d2w, '3/d 2d/w');
+            call migrate_frequency(@3d2w, '3/day x 2 days/week');
+
+            set @3d3w = 'd8c02bda-eee6-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@3d3w, 'db305bab-eee6-11ea-b492-0242ac110002', 3, null, '3/day x 3 days/week');
+            call migrate_frequency(@3d3w, '3/d 3d/w');
+            call migrate_frequency(@3d3w, '3/day x 3 days/week');
+
+            set @3d4w = '0770312e-eee7-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@3d4w, '098311f1-eee7-11ea-b492-0242ac110002', 3, null, '3/day x 4 days/week');
+            call migrate_frequency(@3d4w, '3/d 4d/w');
+            call migrate_frequency(@3d4w, '3/day x 4 days/week');
+
+            set @3d5w = '7e8c69db-eedd-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@3d5w, '792d9564-81f2-49d0-95d8-8a54ca7384e3', 3, null, '3/day x 5 days/week');
+            call migrate_frequency(@3d5w, '3/day x 5 days/week');
+
+            set @3d6w = '4d9de495-eede-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@3d6w, 'e9f872a2-c25a-4c20-8c71-689a4a303333', 3, null, '3/day x 6 days/week');
+            call migrate_frequency(@3d6w, '3/day x 6 days/week');
+
+            set @4d5w = '76b219e0-eede-11ea-b492-0242ac110002';
+            call ensure_concept_and_frequency(@4d5w, '2801b7a6-d5e7-41ae-8cfc-6797f66b1353', 4, null, '4/day x 5 days/week');
+            call migrate_frequency(@4d5w, '4/day x 5 days/week');
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>

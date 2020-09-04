@@ -51,9 +51,18 @@ BEGIN
         END CASE;
 
     SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
-    SELECT concept_name_id INTO _concept_name_id FROM concept_name WHERE uuid = _concept_name_uuid;
+
+    IF (_concept_name_uuid is not null ) THEN
+        SELECT concept_name_id INTO _concept_name_id FROM concept_name WHERE uuid = _concept_name_uuid;
+    ELSE
+        SELECT concept_name_id, uuid INTO _concept_name_id, _concept_name_uuid FROM concept_name WHERE name = _name and locale = 'en' and locale_preferred = 1 and concept_name_type = 'FULLY_SPECIFIED';
+    END IF;
 
     IF ( _concept_name_id IS NULL ) THEN
+
+        IF (_concept_name_uuid is null) THEN
+            SET _concept_name_uuid = uuid();
+        END IF;
 
         INSERT INTO concept_name (concept_id, name, locale, locale_preferred, creator, date_created, concept_name_type, uuid)
         values (_concept_id, _name, 'en', _locale_preferred_val, 1, now(), _concept_name_type, _concept_name_uuid);
@@ -70,7 +79,9 @@ DROP PROCEDURE IF EXISTS ensure_concept_and_frequency;
 CREATE PROCEDURE ensure_concept_and_frequency (
     _frequency_uuid CHAR(38),
     _concept_uuid CHAR(38),
-    _frequency_per_day DOUBLE
+    _frequency_per_day DOUBLE,
+    _concept_name_uuid CHAR(38),
+    _concept_fsn VARCHAR(255)
 )
 BEGIN
     DECLARE _concept_id INT;
@@ -85,7 +96,10 @@ BEGIN
         IF ( _concept_id IS NULL ) THEN
             CALL ensure_concept(_concept_uuid, 'N/A', 'Frequency', 0);
             SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
+            call ensure_concept_name(_concept_name_uuid, _concept_uuid, _concept_fsn, 'FULLY_SPECIFIED');
         END IF;
+
+        UPDATE concept SET class_id = (select concept_class_id from concept_class where name = 'Frequency') where concept_id = _concept_id;
 
         INSERT INTO order_frequency (concept_id, frequency_per_day, creator, date_created, uuid)
         values (_concept_id, _frequency_per_day, 1, now(), _frequency_uuid);
@@ -107,7 +121,18 @@ BEGIN
     DECLARE _frequency_id INT;
     SELECT order_frequency_id INTO _frequency_id FROM order_frequency WHERE uuid = _frequency_uuid;
     IF ( _frequency_id IS NOT NULL ) THEN
-        UPDATE drug_order SET frequency = _frequency_id where frequency_non_coded = _frequency_non_coded;
+
+        IF (_frequency_non_coded is null) THEN
+            UPDATE drug_order SET frequency = _frequency_id where frequency_non_coded is null;
+        ELSE
+            UPDATE drug_order SET frequency = _frequency_id where frequency_non_coded = _frequency_non_coded;
+        END IF;
+
+        SET @replaceFrom = concat('"frequency": "', _frequency_non_coded);
+        SET @replaceTo = concat('"orderFrequency": "', _frequency_uuid);
+
+        UPDATE order_set_member SET order_template = replace(order_template, @replaceFrom, @replaceTo);
+
     END IF;
 END;
 
