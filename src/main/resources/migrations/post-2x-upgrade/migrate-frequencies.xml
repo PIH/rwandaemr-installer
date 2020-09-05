@@ -325,7 +325,7 @@
             call migrate_frequency(@2d3w, '2/day x 3 days/week');
 
             set @2d4w = '3dcde2f7-eee6-11ea-b492-0242ac110002';
-            call ensure_concept_and_frequency(@2d3w, '417b6a74-eee6-11ea-b492-0242ac110002', 2, null, '2/day x 4 days/week');
+            call ensure_concept_and_frequency(@2d4w, '417b6a74-eee6-11ea-b492-0242ac110002', 2, null, '2/day x 4 days/week');
             call migrate_frequency(@2d4w, '2/d 4d/w');
             call migrate_frequency(@2d4w, '2/day x 4 days/week');
 
