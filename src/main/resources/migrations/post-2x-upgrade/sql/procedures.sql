@@ -55,7 +55,7 @@ BEGIN
     IF (_concept_name_uuid is not null ) THEN
         SELECT concept_name_id INTO _concept_name_id FROM concept_name WHERE uuid = _concept_name_uuid;
     ELSE
-        SELECT concept_name_id, uuid INTO _concept_name_id, _concept_name_uuid FROM concept_name WHERE name = _name and locale = 'en' and locale_preferred = 1 and concept_name_type = 'FULLY_SPECIFIED';
+        SELECT concept_name_id, uuid INTO _concept_name_id, _concept_name_uuid FROM concept_name WHERE concept_id = _concept_id and name = _name and locale = 'en' and locale_preferred = 1 and concept_name_type = 'FULLY_SPECIFIED';
     END IF;
 
     IF ( _concept_name_id IS NULL ) THEN

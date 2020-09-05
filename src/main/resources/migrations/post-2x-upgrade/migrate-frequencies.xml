@@ -169,7 +169,7 @@
 
         TODO: Migration OR to unspecified frequency, as OR is also captured in instructions, administration instructions
     -->
-    <changeSet id="rwandaemr-imb-migrate-remaining-frequencies" author="IMB" runAlways="true">
+    <changeSet id="rwandaemr-imb-migrate-remaining-frequencies" author="IMB">
         <sql>
             set @day1 = '0d911959-eeb7-11ea-b492-0242ac110002';
             call ensure_concept_and_frequency(@day1, '246eb18b-eeb7-11ea-b492-0242ac110002', 1, null, 'Day 1');
@@ -264,12 +264,12 @@
             call migrate_frequency(@every6HrsAfterMethotrexate, 'Every 6 hours. Starting 24 hours after Methotrexate x 3 days');
 
             set @hour1FirstOf2 = '5015a513-eec2-11ea-b492-0242ac110002';
-            call ensure_concept_and_frequency(@hour1FirstOf2, '57202272-eec2-11ea-b492-0242ac110002', 1, null, 'Hour 1. 1st of 2 daily doses');
+            call ensure_concept_and_frequency(@hour1FirstOf2, 'bfcbd69d-fd89-4a2c-ba4b-46b0d3f9a4cb', 1, null, 'Hour 1. 1st of 2 daily doses');
             call migrate_frequency(@hour1FirstOf2, 'Hour 1. 1st of 2 daily doses');
             call migrate_frequency(@hour1FirstOf2, 'Hour 1. 1st of 2 daily doses.');
 
             set @hour12SecondOf2 = '5251c49c-eec2-11ea-b492-0242ac110002';
-            call ensure_concept_and_frequency(@hour12SecondOf2, '59a52ba5-eec2-11ea-b492-0242ac110002', 1, null, 'Hour 12. 2nd of 2 daily doses');
+            call ensure_concept_and_frequency(@hour12SecondOf2, '20c64b8d-9c98-4e52-838d-95543be06a49', 1, null, 'Hour 12. 2nd of 2 daily doses');
             call migrate_frequency(@hour12SecondOf2, 'Hour 12. 2nd of 2 daily doses');
             call migrate_frequency(@hour12SecondOf2, 'Hour 12. 2nd of 2 daily doses.');
 
