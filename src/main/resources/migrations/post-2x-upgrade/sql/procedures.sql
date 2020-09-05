@@ -126,12 +126,11 @@ BEGIN
             UPDATE drug_order SET frequency = _frequency_id where frequency_non_coded is null;
         ELSE
             UPDATE drug_order SET frequency = _frequency_id where frequency_non_coded = _frequency_non_coded;
+
+            SET @replaceFrom = concat('"frequency": "', _frequency_non_coded);
+            SET @replaceTo = concat('"orderFrequency": "', _frequency_uuid);
+            UPDATE order_set_member SET order_template = replace(order_template, @replaceFrom, @replaceTo);
         END IF;
-
-        SET @replaceFrom = concat('"frequency": "', _frequency_non_coded);
-        SET @replaceTo = concat('"orderFrequency": "', _frequency_uuid);
-
-        UPDATE order_set_member SET order_template = replace(order_template, @replaceFrom, @replaceTo);
 
     END IF;
 END;
