@@ -316,7 +316,7 @@
 
             set @2d2w = 'ea9570c0-eedd-11ea-b492-0242ac110002';
             call ensure_concept_and_frequency(@2d2w, '0e0722d4-d5cf-4339-a76a-33a30e6cc2f5', 2, null, '2/day x 2 days/week');
-            call migrate_frequency(@2d3w, '2/d 2d/w');
+            call migrate_frequency(@2d2w, '2/d 2d/w');
             call migrate_frequency(@2d2w, '2/day x 2 days/week');
 
             set @2d3w = '2faf7893-eee6-11ea-b492-0242ac110002';
@@ -326,17 +326,17 @@
 
             set @2d4w = '3dcde2f7-eee6-11ea-b492-0242ac110002';
             call ensure_concept_and_frequency(@2d3w, '417b6a74-eee6-11ea-b492-0242ac110002', 2, null, '2/day x 4 days/week');
-            call migrate_frequency(@2d3w, '2/d 4d/w');
-            call migrate_frequency(@2d3w, '2/day x 4 days/week');
+            call migrate_frequency(@2d4w, '2/d 4d/w');
+            call migrate_frequency(@2d4w, '2/day x 4 days/week');
 
             set @2d5w = '1f7a11ab-eede-11ea-b492-0242ac110002';
             call ensure_concept_and_frequency(@2d5w, 'fe2651f2-b65a-4680-b7f8-3542bd23413d', 2, null, '2/day x 5 days/week');
-            call migrate_frequency(@2d3w, '2/d 5d/w');
+            call migrate_frequency(@2d5w, '2/d 5d/w');
             call migrate_frequency(@2d5w, '2/day x 5 days/week');
 
             set @2d6w = '3b98dd2a-eede-11ea-b492-0242ac110002';
             call ensure_concept_and_frequency(@2d6w, 'b25d698c-b552-42b6-b520-a345f3b4b393', 2, null, '2/day x 6 days/week');
-            call migrate_frequency(@2d3w, '2/d 6d/w');
+            call migrate_frequency(@2d6w, '2/d 6d/w');
             call migrate_frequency(@2d6w, '2/day x 6 days/week');
 
             set @3d1w = '7db919ac-eee6-11ea-b492-0242ac110002';
