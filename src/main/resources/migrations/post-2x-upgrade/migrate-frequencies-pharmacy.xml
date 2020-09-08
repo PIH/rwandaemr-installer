@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Ensure duration units are configured.  By default, configure these with answers to an existing duration unit question -->
+    <changeSet id="rwandaemr-imb-create-duration-units-set" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept where uuid = '1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            set @durationUnitsConceptUuid = '1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+            call ensure_concept(@durationUnitsConceptUuid, 'N/A', 'ConvSet', 1);
+            call ensure_concept_name('0219aca5-f22b-11ea-a303-0242ac110002', @durationUnitsConceptUuid, 'Order Duration units', 'FULLY_SPECIFIED');
+            update global_property set property_value = @durationUnitsConceptUuid where property = 'order.durationUnitsConceptUuid';
+
+            select concept_id into @durationSetId from concept where uuid = '1732AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+
+            insert into concept_set (concept_id, concept_set, sort_weight, creator, date_created, uuid)
+                select  distinct ca.answer_concept, @durationSetId, 1, 1, now(), uuid()
+                from    concept_answer ca
+                inner join concept c on ca.concept_id = c.concept_id
+                where   c.uuid = 'f1904502-319d-4681-9030-e642111e7ce2';
+        </sql>
+    </changeSet>
+
+    <!-- Migrate all frequencies from the pharmacy module that represent dose, frequency, and duration as aXbXc -->
+    <changeSet id="rwandaemr-imb-migrate-pharmacy-module-frequencies" author="IMB">
+        <sql>
+            update  drug_order d,
+                    (   select frequency_non_coded,
+                                substring_index(frequency_non_coded, 'X', 1) as dose,
+                                substring_index(substring_index(frequency_non_coded, 'X', -2), 'X', 1) as doses_per_day,
+                                substring_index(frequency_non_coded, 'X', -1) as duration_days
+                        from drug_order
+                        where frequency_non_coded like '%X%X%'
+                        and frequency_non_coded not like '%/%'
+                        group by frequency_non_coded
+                        order by frequency_non_coded
+                    ) f
+            set
+                d.dose = cast(if(f.dose = '', null, f.dose) as unsigned),
+                d.dose_units = concept_id_from_uuid('6735094c-8416-43e3-8a3c-091332a08cb7'),    #unspecified
+                d.frequency_non_coded = case
+                    when f.doses_per_day = 1 then frequency_id_from_uuid('707ad8b7-d902-11ea-80fb-0242ac110002')
+                    when f.doses_per_day = 2 then frequency_id_from_uuid('87ea7c89-d8f9-11ea-80fb-0242ac110002')
+                    when f.doses_per_day = 3 then frequency_id_from_uuid('d8290a00-d926-11ea-8b36-0242ac110002')
+                    when f.doses_per_day = 4 then frequency_id_from_uuid('405a5af1-d927-11ea-8b36-0242ac110002')
+                    when f.doses_per_day = 5 then frequency_id_from_uuid('a2f03aa2-eedf-11ea-b492-0242ac110002')
+                    when f.doses_per_day = 6 then frequency_id_from_uuid('f11513cb-eee1-11ea-b492-0242ac110002')
+                    when f.doses_per_day = 7 then frequency_id_from_uuid('9212ab7b-eee4-11ea-b492-0242ac110002')
+                    when f.doses_per_day = 8 then frequency_id_from_uuid('b9325405-eee4-11ea-b492-0242ac110002')
+                end,
+                d.duration = cast(if(f.duration_days = '', null, f.duration_days) as unsigned),
+                d.duration_units = concept_id_from_uuid('3cd706b8-26fe-102b-80cb-0017a47871b2')  #days
+            where
+                d.frequency_non_coded = f.frequency_non_coded
+            ;
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

@@ -167,3 +167,37 @@ BEGIN
 END;
 
 #
+
+DROP FUNCTION IF EXISTS concept_id_from_uuid;
+
+#
+
+CREATE FUNCTION concept_id_from_uuid(
+    _uuid char(38)
+)
+    RETURNS INT
+    DETERMINISTIC
+BEGIN
+    DECLARE ret INT;
+    SELECT concept_id INTO ret FROM concept WHERE uuid = _uuid;
+    RETURN ret;
+END;
+
+#
+
+DROP FUNCTION IF EXISTS frequency_id_from_uuid;
+
+#
+
+CREATE FUNCTION frequency_id_from_uuid(
+    _uuid char(38)
+)
+    RETURNS INT
+    DETERMINISTIC
+BEGIN
+    DECLARE ret INT;
+    SELECT order_frequency_id INTO ret FROM order_frequency WHERE uuid = _uuid;
+    RETURN ret;
+END;
+
+#
