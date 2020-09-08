@@ -19,123 +19,45 @@
         </sql>
     </changeSet>
 
-    <!--
-        Remaining from butaro db that need mapping (rwink db still tbd):
-        count(*),units_non_coded
-        61716,
-        1526,OR
-        818,ml/m2
-        196,mcg
-        104,mg/5ml
-        60,ml/kg
-        52,""
-        22,mg/1.25ml
-        7,L
-        6,mg/ml
-        5,SUSPENDED
-        4,mg/k
-        4,units/kg
-        2,UI
-        1,200 mg
-        1,ORAL
-        1,INTRAVENOUS
-
-        The following units exist in refapp:
-
-        Ampule(s) (162335)
-        Application (162376)
-        Bar (162351)
-        Biscuit wafer (162383)
-        Can (162354)
-        Capsule (1608)
-        Container (162355)
-        Drop (162356)
-        Enema (162357)
-        Fluid ounce (162358)
-        Gallon (162359)
-        Gram (161554)
-        Gum (162360)
-        Inch (162361)
-        International units (162264)
-        Kilogram (162362)
-        Liter (162262)
-        Lozenge (162363)
-        Milliequivalent (162364)
-        Metric drop (162365)
-        Microgram (162366)
-        Milligram (161553)
-        Milligram per meter squared (165171)
-        Milliliter (162263)
-        Million units (162367)
-        Nebulizer (162368)
-        Pad (162369)
-        Patch (162370)
-        Pint (162371)
-        Puff (162372)
-        Ring pessary (162373)
-        Scoopful (162374)
-        Spray (162375)
-        Suppository (1518)
-        Syringe (162377)
-        Tablet (1513)
-        Tablespoon (162378)
-        Teaspoon (162379)
-        Tube (162380)
-        Unit (162381)
-        Vial (162382)
-    -->
     <changeSet id="rwandaemr-imb--migrate-dose-units" author="IMB">
         <sql>
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'mg/m2' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded = 'mg/m2';
-
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'mg' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded = 'mg';
-
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'mL' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded = 'ml';
-
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'TABLET' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded in ('TABLET', 'tab(s)');
-
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'units/m2' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded = 'units/m2';
-
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'mg/kg' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded = 'mg/kg';
-
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'AUC' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded = 'AUC';
-
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'CAPSULE' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded = 'CAPSULE';
-
-            update drug_order set dose_units =
-                (select concept_id from concept_name where name = 'Units' and concept_name_type = 'FULLY_SPECIFIED' and locale = 'en')
-            where
-                units_non_coded = 'units';
-
-            update drug_order set units_non_coded = null where dose_units is not null;
+            call migrate_dose_units('2590eec3-d9d3-4e30-813b-8b77da65184f', 'AUC'); # This is area under curve
+            call migrate_dose_units('75312e5f-b9b8-48cd-a4a7-73a2ba14b000', 'CAPSULE');
+            call migrate_dose_units('75312e5f-b9b8-48cd-a4a7-73a2ba14b000', 'capsule');
+            call migrate_dose_units('161554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'g');
+            call migrate_dose_units('215a019e-6f1e-4c4d-b6ab-b0d080f89dc4', 'INTRAVENOUS'); # Uses mL
+            call migrate_dose_units('162264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'IU IM'); # Uses international units
+            call migrate_dose_units('162262AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'L');
+            call migrate_dose_units('162366AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'mcg');
+            call migrate_dose_units('8abb49a6-20ae-4593-9334-fc5db6947621', 'mg');
+            call migrate_dose_units('41f9cc75-d154-4cb2-bcd3-1ffcebda33c0', 'mg/k');
+            call migrate_dose_units('41f9cc75-d154-4cb2-bcd3-1ffcebda33c0', 'mg/kg');
+            call migrate_dose_units('05d778f0-6282-4eed-9c58-6b5d0703c5a7', 'mg/ml');
+            call migrate_dose_units('0c07db8a-5be7-4b63-be70-191a7e3466b1', 'mg/m2');
+            call migrate_dose_units('529ab651-e77e-4708-b411-ee5a39c35d4e', 'mg/1.25ml');
+            call migrate_dose_units('d43054ef-39d9-4af5-96c2-cf088a1af7be', 'mg/5ml');
+            call migrate_dose_units('215a019e-6f1e-4c4d-b6ab-b0d080f89dc4', 'ml');
+            call migrate_dose_units('937a8e79-0d95-4b3a-9567-6a76ebeba9a5', 'ml/kg');
+            call migrate_dose_units('7f281469-73f4-4e0f-a197-45e9ddbb4b7e', 'ml/m2');
+            call migrate_dose_units('7f281469-73f4-4e0f-a197-45e9ddbb4b7e', 'mL/m2');
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'OR'); # Uses Dosing unspecified
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'ORAL'); # Uses Dosing unspecified
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'SUSPENDED'); # Uses Dosing unspecified
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'TABLET');
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'tablet');
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'tab(s)');
+            call migrate_dose_units('162264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'UI'); # Uses international units
+            call migrate_dose_units('07b05a2a-87ff-44ce-bb5c-5d6855bf8b11', 'unit');
+            call migrate_dose_units('07b05a2a-87ff-44ce-bb5c-5d6855bf8b11', 'units');
+            call migrate_dose_units('3a11abee-25b1-45af-8dc8-0eea2bd5b77c', 'units/kg');
+            call migrate_dose_units('b0da4127-ac49-4ab4-8e9c-99c748be53b4', 'units/m2');
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', '200 mg'); # Uses tablet
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', null);
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', '');
 
             select concept_id into @unitSetId from concept where uuid = '162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 
-            delete from concept_set where concept_set = @unitSetId;
+            delete from concept_set where concept_set = @unitSetId and @unitSetId is not null;
 
             insert into concept_set (concept_id, concept_set, sort_weight, creator, date_created, uuid)
                 select  distinct dose_units, @unitSetId, 1, 1, now(), uuid()

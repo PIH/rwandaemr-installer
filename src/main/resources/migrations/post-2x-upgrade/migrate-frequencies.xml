@@ -166,8 +166,6 @@
         TODO: Frequency 'Every 24 hours x 5 days' is found on Burkitt's Lymphoma Consolidation
         Reviewing the order set and the data (3 patients have data on this), this appear to represent days 2-6 of the cycle
         For consistency, consider using "Day 2-6" frequency for this.  Needs review
-
-        TODO: Migration OR to unspecified frequency, as OR is also captured in instructions, administration instructions
     -->
     <changeSet id="rwandaemr-imb-migrate-remaining-frequencies" author="IMB">
         <sql>
@@ -282,8 +280,12 @@
             call ensure_concept_and_frequency(@unspecifiedFrequency, @unspecifiedFrequencyConcept, 1, '490e4dd8-bd24-4561-ae12-bd0e0f38e82b', 'unspecified frequency');
             call migrate_frequency(@unspecifiedFrequency, '');
             call migrate_frequency(@unspecifiedFrequency, null);
-            call migrate_frequency(@unspecifiedFrequency, 'OR');
             call migrate_frequency(@unspecifiedFrequency, 'undefined x undefined');
+
+            set @notApplicableFrequency = '676806ed-f1fb-11ea-9043-0242ac110002';
+            set @notApplicableFrequencyConcept = '3f625ca6-4d13-4f4f-b9b7-c95cea6a774d'; # Exists on Butaro
+            call ensure_concept_and_frequency(@notApplicableFrequency, @notApplicableFrequencyConcept, 1, null, 'Frequency Not applicable');
+            call migrate_frequency(@notApplicableFrequency, 'OR');
 
             set @1d2w = '591caef9-eee5-11ea-b492-0242ac110002';
             call ensure_concept_and_frequency(@1d2w, '5ba13aa7-eee5-11ea-b492-0242ac110002', 1, null, '1/day x 2 days/week');

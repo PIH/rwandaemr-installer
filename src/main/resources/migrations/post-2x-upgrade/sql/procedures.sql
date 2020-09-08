@@ -136,3 +136,34 @@ BEGIN
 END;
 
 #
+
+DROP PROCEDURE IF EXISTS migrate_dose_units;
+
+#
+
+CREATE PROCEDURE migrate_dose_units (
+    _concept_uuid CHAR(38),
+    _units_non_coded VARCHAR(255)
+)
+BEGIN
+    DECLARE _concept_id INT;
+    SELECT concept_id INTO _concept_id FROM concept where uuid = _concept_uuid;
+
+    IF ( _concept_id IS NOT NULL ) THEN
+
+        UPDATE concept SET class_id = (select concept_class_id from concept_class where name = 'Units of Measure') where concept_id = _concept_id;
+
+        IF (_units_non_coded is null) THEN
+            UPDATE drug_order SET dose_units = _concept_id where units_non_coded is null;
+        ELSE
+            UPDATE drug_order SET dose_units = _concept_id where units_non_coded = _units_non_coded;
+
+            SET @replaceFrom = concat('"units": "', _units_non_coded);
+            SET @replaceTo = concat('"doseUnits": "', _concept_uuid);
+            UPDATE order_set_member SET order_template = replace(order_template, @replaceFrom, @replaceTo);
+        END IF;
+
+    END IF;
+END;
+
+#
