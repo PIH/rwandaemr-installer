@@ -51,9 +51,18 @@ BEGIN
         END CASE;
 
     SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
+
+    IF (_concept_name_uuid is not null ) THEN
     SELECT concept_name_id INTO _concept_name_id FROM concept_name WHERE uuid = _concept_name_uuid;
+    ELSE
+        SELECT concept_name_id, uuid INTO _concept_name_id, _concept_name_uuid FROM concept_name WHERE concept_id = _concept_id and name = _name and locale = 'en' and locale_preferred = 1 and concept_name_type = 'FULLY_SPECIFIED';
+    END IF;
 
     IF ( _concept_name_id IS NULL ) THEN
+
+        IF (_concept_name_uuid is null) THEN
+            SET _concept_name_uuid = uuid();
+        END IF;
 
         INSERT INTO concept_name (concept_id, name, locale, locale_preferred, creator, date_created, concept_name_type, uuid)
         values (_concept_id, _name, 'en', _locale_preferred_val, 1, now(), _concept_name_type, _concept_name_uuid);

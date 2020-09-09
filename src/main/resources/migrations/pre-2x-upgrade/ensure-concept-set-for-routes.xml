@@ -18,6 +18,27 @@
         </sql>
     </changeSet>
 
+    <changeSet id="rwandaemr-imb-ensure-unspecified-concept" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from concept where uuid = '80b5da4c-59ae-4a48-a822-f29712ed4bd5'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            set @unspecifiedUuid = '80b5da4c-59ae-4a48-a822-f29712ed4bd5';
+            call ensure_concept(@unspecifiedUuid, 'N/A', 'Misc', 0);
+            call ensure_concept_name('7d68b23f-cf07-402c-8f06-77ca7987b0b0', @unspecifiedUuid, 'Unspecified', 'FULLY_SPECIFIED');
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-imb-migrate-null-routes-to-unspecified" author="IMB">
+        <sql>
+            select concept_id into @unspecifiedConceptId from concept where uuid = '80b5da4c-59ae-4a48-a822-f29712ed4bd5';
+            update orderextension_order set route = @unspecifiedConceptId where route is null;
+            update orderextension_order_set_member set route = @unspecifiedConceptId where route is null;
+        </sql>
+    </changeSet>
+
     <changeSet id="rwandaemr-imb-populate-route-concept-set" author="IMB">
         <sql>
             set @routeConceptUuid = '162394AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
