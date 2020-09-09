@@ -37,7 +37,7 @@
                                 substring_index(substring_index(frequency_non_coded, 'X', -2), 'X', 1) as doses_per_day,
                                 substring_index(frequency_non_coded, 'X', -1) as duration_days
                         from drug_order
-                        where frequency_non_coded REGEXP '[0-9X]$'
+                        where frequency_non_coded REGEXP '\d*X\d*X\d*'
                         group by frequency_non_coded
                         order by frequency_non_coded
                     ) f
