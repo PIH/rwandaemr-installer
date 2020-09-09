@@ -99,7 +99,13 @@ BEGIN
             call ensure_concept_name(_concept_name_uuid, _concept_uuid, _concept_fsn, 'FULLY_SPECIFIED');
         END IF;
 
-        UPDATE concept SET class_id = (select concept_class_id from concept_class where name = 'Frequency') where concept_id = _concept_id;
+        select concept_class_id into @frequencyClass from concept_class where name = 'Frequency';
+        IF (@frequencyClass is null) THEN
+            insert into concept_class ( uuid, name, description, creator, date_created )
+            values ( '8e071bfe-520c-44c0-a89b-538e9129b42a', 'Frequency', 'A concept used for capturing frequency information such as for medication ordering.', 1, now() );
+        END IF;
+        select concept_class_id into @frequencyClass from concept_class where name = 'Frequency';
+        UPDATE concept SET class_id = @frequencyClass where concept_id = _concept_id;
 
         INSERT INTO order_frequency (concept_id, frequency_per_day, creator, date_created, uuid)
         values (_concept_id, _frequency_per_day, 1, now(), _frequency_uuid);
@@ -151,7 +157,13 @@ BEGIN
 
     IF ( _concept_id IS NOT NULL ) THEN
 
-        UPDATE concept SET class_id = (select concept_class_id from concept_class where name = 'Units of Measure') where concept_id = _concept_id;
+        select concept_class_id into @unitsOfMeasureClass from concept_class where name = 'Units of Measure';
+        IF (@unitsOfMeasureClass is null) THEN
+            insert into concept_class ( uuid, name, description, creator, date_created )
+            values ( 'e30d8601-07f8-413a-9d11-cdfbb28196ec', 'Units of Measure', 'For prescribing and dispensing', 1, now() );
+        END IF;
+        select concept_class_id into @unitsOfMeasureClass from concept_class where name = 'Units of Measure';
+        UPDATE concept SET class_id = @unitsOfMeasureClass where concept_id = _concept_id;
 
         IF (_units_non_coded is null) THEN
             UPDATE drug_order SET dose_units = _concept_id where units_non_coded is null;
