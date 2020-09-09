@@ -5,6 +5,16 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+    <changeSet id="rwandaemr-imb-ensure-units-of-measure-class" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_class where name = 'Units of Measure'</sqlCheck>
+        </preConditions>
+        <sql>
+            insert into concept_class ( uuid, name, description, creator, date_created )
+            values ('e30d8601-07f8-413a-9d11-cdfbb28196ec', 'Units of Measure', 'For prescribing and dispensing', 1, now());
+        </sql>
+    </changeSet>
+
     <changeSet id="rwandaemr-imb-create-dose-units-set" author="IMB">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
@@ -21,39 +31,40 @@
 
     <changeSet id="rwandaemr-imb--migrate-dose-units" author="IMB">
         <sql>
-            call migrate_dose_units('2590eec3-d9d3-4e30-813b-8b77da65184f', 'AUC'); # This is area under curve
-            call migrate_dose_units('75312e5f-b9b8-48cd-a4a7-73a2ba14b000', 'CAPSULE');
-            call migrate_dose_units('75312e5f-b9b8-48cd-a4a7-73a2ba14b000', 'capsule');
-            call migrate_dose_units('161554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'g');
-            call migrate_dose_units('215a019e-6f1e-4c4d-b6ab-b0d080f89dc4', 'INTRAVENOUS'); # Uses mL
-            call migrate_dose_units('162264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'IU IM'); # Uses international units
-            call migrate_dose_units('162262AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'L');
-            call migrate_dose_units('162366AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'mcg');
-            call migrate_dose_units('8abb49a6-20ae-4593-9334-fc5db6947621', 'mg');
-            call migrate_dose_units('41f9cc75-d154-4cb2-bcd3-1ffcebda33c0', 'mg/k');
-            call migrate_dose_units('41f9cc75-d154-4cb2-bcd3-1ffcebda33c0', 'mg/kg');
-            call migrate_dose_units('05d778f0-6282-4eed-9c58-6b5d0703c5a7', 'mg/ml');
-            call migrate_dose_units('0c07db8a-5be7-4b63-be70-191a7e3466b1', 'mg/m2');
-            call migrate_dose_units('529ab651-e77e-4708-b411-ee5a39c35d4e', 'mg/1.25ml');
-            call migrate_dose_units('d43054ef-39d9-4af5-96c2-cf088a1af7be', 'mg/5ml');
-            call migrate_dose_units('215a019e-6f1e-4c4d-b6ab-b0d080f89dc4', 'ml');
-            call migrate_dose_units('937a8e79-0d95-4b3a-9567-6a76ebeba9a5', 'ml/kg');
-            call migrate_dose_units('7f281469-73f4-4e0f-a197-45e9ddbb4b7e', 'ml/m2');
-            call migrate_dose_units('7f281469-73f4-4e0f-a197-45e9ddbb4b7e', 'mL/m2');
-            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'OR'); # Uses Dosing unspecified
-            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'ORAL'); # Uses Dosing unspecified
-            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'SUSPENDED'); # Uses Dosing unspecified
-            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'TABLET');
-            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'tablet');
-            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'tab(s)');
-            call migrate_dose_units('162264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'UI'); # Uses international units
-            call migrate_dose_units('07b05a2a-87ff-44ce-bb5c-5d6855bf8b11', 'unit');
-            call migrate_dose_units('07b05a2a-87ff-44ce-bb5c-5d6855bf8b11', 'units');
-            call migrate_dose_units('3a11abee-25b1-45af-8dc8-0eea2bd5b77c', 'units/kg');
-            call migrate_dose_units('b0da4127-ac49-4ab4-8e9c-99c748be53b4', 'units/m2');
-            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', '200 mg'); # Uses tablet
-            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', null);
-            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', '');
+            call migrate_dose_units('2590eec3-d9d3-4e30-813b-8b77da65184f', 'AUC', '09272ec1-4a19-4d97-ad30-2f0841d2f7ba', 'AUC'); # This is area under curve
+            call migrate_dose_units('75312e5f-b9b8-48cd-a4a7-73a2ba14b000', 'CAPSULE', '3a41e7b0-d0dc-4714-81e0-c199d0877ac9', 'CAPSULE');
+            call migrate_dose_units('75312e5f-b9b8-48cd-a4a7-73a2ba14b000', 'capsule', '3a41e7b0-d0dc-4714-81e0-c199d0877ac9', 'CAPSULE');
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'Ce', '0d8a0cf0-b2b8-41d1-9c6b-69e8c1a0237a', 'TABLET');
+            call migrate_dose_units('161554AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'g', '111178BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', 'Gram');
+            call migrate_dose_units('215a019e-6f1e-4c4d-b6ab-b0d080f89dc4', 'INTRAVENOUS', 'd57e5676-5404-4403-9a77-f07fd8884df2', 'mL');
+            call migrate_dose_units('162264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'IU IM', '125319BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', 'International units');
+            call migrate_dose_units('162262AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'L', '125315BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', 'Liter');
+            call migrate_dose_units('162366AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'mcg', '125595BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', 'Microgram');
+            call migrate_dose_units('8abb49a6-20ae-4593-9334-fc5db6947621', 'mg', 'fcb1b2ed-5238-4269-9e00-865af5d68fb4', 'mg');
+            call migrate_dose_units('41f9cc75-d154-4cb2-bcd3-1ffcebda33c0', 'mg/k', '7246684b-7411-45cf-9afa-d356407dfa6d', 'mg/kg');
+            call migrate_dose_units('41f9cc75-d154-4cb2-bcd3-1ffcebda33c0', 'mg/kg', '7246684b-7411-45cf-9afa-d356407dfa6d', 'mg/kg');
+            call migrate_dose_units('05d778f0-6282-4eed-9c58-6b5d0703c5a7', 'mg/ml', '11269e11-21a7-4112-ac76-0215044fe861', 'milligram/milliliter');
+            call migrate_dose_units('0c07db8a-5be7-4b63-be70-191a7e3466b1', 'mg/m2', 'eb1259ce-82f3-4f1c-9a66-1e8b376d789e', 'mg/m2');
+            call migrate_dose_units('529ab651-e77e-4708-b411-ee5a39c35d4e', 'mg/1.25ml', 'c972b9e9-5c24-48e2-8b0f-64327f9e5714', 'mg/1.25ml');
+            call migrate_dose_units('d43054ef-39d9-4af5-96c2-cf088a1af7be', 'mg/5ml', '48b26e56-e137-4559-a1ba-ee7ec24d9b1d', 'mg/5ml');
+            call migrate_dose_units('215a019e-6f1e-4c4d-b6ab-b0d080f89dc4', 'ml', 'd57e5676-5404-4403-9a77-f07fd8884df2', 'mL');
+            call migrate_dose_units('937a8e79-0d95-4b3a-9567-6a76ebeba9a5', 'ml/kg', '02c4aed8-5bd0-4bec-af87-70e08bbdd5cf', 'milliliter/kilogram');
+            call migrate_dose_units('7f281469-73f4-4e0f-a197-45e9ddbb4b7e', 'ml/m2', 'aaebd04e-1043-45e5-a70e-5187d2d72bdc', 'milliliter/meter squared');
+            call migrate_dose_units('7f281469-73f4-4e0f-a197-45e9ddbb4b7e', 'mL/m2', 'aaebd04e-1043-45e5-a70e-5187d2d72bdc', 'milliliter/meter squared');
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'OR', 'd317c2a3-3381-4420-babc-dc38df946603', 'Dosing Unspecified');
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'ORAL', 'd317c2a3-3381-4420-babc-dc38df946603', 'Dosing Unspecified');
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', 'SUSPENDED', 'd317c2a3-3381-4420-babc-dc38df946603', 'Dosing Unspecified');
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'TABLET', '0d8a0cf0-b2b8-41d1-9c6b-69e8c1a0237a', 'TABLET');
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'tablet', '0d8a0cf0-b2b8-41d1-9c6b-69e8c1a0237a', 'TABLET');
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', 'tab(s)', '0d8a0cf0-b2b8-41d1-9c6b-69e8c1a0237a', 'TABLET');
+            call migrate_dose_units('162264AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', 'UI', '125319BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB', 'International units');
+            call migrate_dose_units('07b05a2a-87ff-44ce-bb5c-5d6855bf8b11', 'unit', 'a3a72eba-bc58-44c3-8ab0-4d7d71e26d87', 'Units');
+            call migrate_dose_units('07b05a2a-87ff-44ce-bb5c-5d6855bf8b11', 'units', 'a3a72eba-bc58-44c3-8ab0-4d7d71e26d87', 'Units');
+            call migrate_dose_units('3a11abee-25b1-45af-8dc8-0eea2bd5b77c', 'units/kg', '3ed59dfa-dd15-4489-88f0-8f6ba1f9d0bb', 'Units/Kg');
+            call migrate_dose_units('b0da4127-ac49-4ab4-8e9c-99c748be53b4', 'units/m2', '47896d92-118f-40c2-a2ad-4015da22df58', 'units/m2');
+            call migrate_dose_units('3f2b8c24-aef1-41ef-a409-d089b3d1a839', '200 mg', '0d8a0cf0-b2b8-41d1-9c6b-69e8c1a0237a', 'TABLET');
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', null, 'd317c2a3-3381-4420-babc-dc38df946603', 'Dosing Unspecified');
+            call migrate_dose_units('6735094c-8416-43e3-8a3c-091332a08cb7', '', 'd317c2a3-3381-4420-babc-dc38df946603', 'Dosing Unspecified');
 
             select concept_id into @unitSetId from concept where uuid = '162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
 

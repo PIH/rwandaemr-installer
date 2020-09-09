@@ -5,6 +5,17 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
+    <changeSet id="rwandaemr-imb-ensure-frequency-class" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">select count(*) from concept_class where name = 'Frequency'</sqlCheck>
+        </preConditions>
+        <sql>
+            insert into concept_class ( uuid, name, description, creator, date_created )
+            values ('8e071bfe-520c-44c0-a89b-538e9129b42a', 'Frequency',
+                      'A concept used for capturing frequency information such as for medication ordering.', 1, now());
+        </sql>
+    </changeSet>
+
     <!-- Uses existing concept -->
     <changeSet id="rwandaemr-imb-migrate-1-per-day" author="IMB">
         <sql>

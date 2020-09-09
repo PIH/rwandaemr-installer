@@ -100,11 +100,6 @@ BEGIN
         END IF;
 
         select concept_class_id into @frequencyClass from concept_class where name = 'Frequency';
-        IF (@frequencyClass is null) THEN
-            insert into concept_class ( uuid, name, description, creator, date_created )
-            values ( '8e071bfe-520c-44c0-a89b-538e9129b42a', 'Frequency', 'A concept used for capturing frequency information such as for medication ordering.', 1, now() );
-        END IF;
-        select concept_class_id into @frequencyClass from concept_class where name = 'Frequency';
         UPDATE concept SET class_id = @frequencyClass where concept_id = _concept_id;
 
         INSERT INTO order_frequency (concept_id, frequency_per_day, creator, date_created, uuid)
@@ -149,33 +144,33 @@ DROP PROCEDURE IF EXISTS migrate_dose_units;
 
 CREATE PROCEDURE migrate_dose_units (
     _concept_uuid CHAR(38),
-    _units_non_coded VARCHAR(255)
+    _units_non_coded VARCHAR(255),
+    _concept_name_uuid CHAR(38),
+    _concept_fsn VARCHAR(255)
 )
 BEGIN
     DECLARE _concept_id INT;
     SELECT concept_id INTO _concept_id FROM concept where uuid = _concept_uuid;
 
-    IF ( _concept_id IS NOT NULL ) THEN
-
-        select concept_class_id into @unitsOfMeasureClass from concept_class where name = 'Units of Measure';
-        IF (@unitsOfMeasureClass is null) THEN
-            insert into concept_class ( uuid, name, description, creator, date_created )
-            values ( 'e30d8601-07f8-413a-9d11-cdfbb28196ec', 'Units of Measure', 'For prescribing and dispensing', 1, now() );
-        END IF;
-        select concept_class_id into @unitsOfMeasureClass from concept_class where name = 'Units of Measure';
-        UPDATE concept SET class_id = @unitsOfMeasureClass where concept_id = _concept_id;
-
-        IF (_units_non_coded is null) THEN
-            UPDATE drug_order SET dose_units = _concept_id where units_non_coded is null;
-        ELSE
-            UPDATE drug_order SET dose_units = _concept_id where units_non_coded = _units_non_coded;
-
-            SET @replaceFrom = concat('"units": "', _units_non_coded);
-            SET @replaceTo = concat('"doseUnits": "', _concept_uuid);
-            UPDATE order_set_member SET order_template = replace(order_template, @replaceFrom, @replaceTo);
-        END IF;
-
+    IF ( _concept_id IS NULL ) THEN
+        CALL ensure_concept(_concept_uuid, 'N/A', 'Units of Measure', 0);
+        SELECT concept_id INTO _concept_id FROM concept WHERE uuid = _concept_uuid;
+        call ensure_concept_name(_concept_name_uuid, _concept_uuid, _concept_fsn, 'FULLY_SPECIFIED');
     END IF;
+
+    select concept_class_id into @unitsOfMeasureClass from concept_class where name = 'Units of Measure';
+    UPDATE concept SET class_id = @unitsOfMeasureClass where concept_id = _concept_id;
+
+    IF (_units_non_coded is null) THEN
+        UPDATE drug_order SET dose_units = _concept_id where units_non_coded is null;
+    ELSE
+        UPDATE drug_order SET dose_units = _concept_id where units_non_coded = _units_non_coded;
+
+        SET @replaceFrom = concat('"units": "', _units_non_coded);
+        SET @replaceTo = concat('"doseUnits": "', _concept_uuid);
+        UPDATE order_set_member SET order_template = replace(order_template, @replaceFrom, @replaceTo);
+    END IF;
+
 END;
 
 #
