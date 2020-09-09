@@ -45,14 +45,15 @@
                 d.dose = cast(if(f.dose = '', null, f.dose) as unsigned),
                 d.dose_units = concept_id_from_uuid('6735094c-8416-43e3-8a3c-091332a08cb7'),    #unspecified
                 d.frequency = case
-                    when f.doses_per_day = 1 then frequency_id_from_uuid('707ad8b7-d902-11ea-80fb-0242ac110002')
-                    when f.doses_per_day = 2 then frequency_id_from_uuid('87ea7c89-d8f9-11ea-80fb-0242ac110002')
-                    when f.doses_per_day = 3 then frequency_id_from_uuid('d8290a00-d926-11ea-8b36-0242ac110002')
-                    when f.doses_per_day = 4 then frequency_id_from_uuid('405a5af1-d927-11ea-8b36-0242ac110002')
-                    when f.doses_per_day = 5 then frequency_id_from_uuid('a2f03aa2-eedf-11ea-b492-0242ac110002')
-                    when f.doses_per_day = 6 then frequency_id_from_uuid('f11513cb-eee1-11ea-b492-0242ac110002')
-                    when f.doses_per_day = 7 then frequency_id_from_uuid('9212ab7b-eee4-11ea-b492-0242ac110002')
-                    when f.doses_per_day = 8 then frequency_id_from_uuid('b9325405-eee4-11ea-b492-0242ac110002')
+                    when f.doses_per_day = '' then frequency_id_from_uuid('a172f8da-eed5-11ea-b492-0242ac110002')
+                    when f.doses_per_day = '1' then frequency_id_from_uuid('707ad8b7-d902-11ea-80fb-0242ac110002')
+                    when f.doses_per_day = '2' then frequency_id_from_uuid('87ea7c89-d8f9-11ea-80fb-0242ac110002')
+                    when f.doses_per_day = '3' then frequency_id_from_uuid('d8290a00-d926-11ea-8b36-0242ac110002')
+                    when f.doses_per_day = '4' then frequency_id_from_uuid('405a5af1-d927-11ea-8b36-0242ac110002')
+                    when f.doses_per_day = '5' then frequency_id_from_uuid('a2f03aa2-eedf-11ea-b492-0242ac110002')
+                    when f.doses_per_day = '6' then frequency_id_from_uuid('f11513cb-eee1-11ea-b492-0242ac110002')
+                    when f.doses_per_day = '7' then frequency_id_from_uuid('9212ab7b-eee4-11ea-b492-0242ac110002')
+                    when f.doses_per_day = '8' then frequency_id_from_uuid('b9325405-eee4-11ea-b492-0242ac110002')
                 end,
                 d.duration = cast(if(f.duration_days = '', null, f.duration_days) as unsigned),
                 d.duration_units = concept_id_from_uuid('3cd706b8-26fe-102b-80cb-0017a47871b2')  #days
