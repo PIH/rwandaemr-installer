@@ -37,15 +37,14 @@
                                 substring_index(substring_index(frequency_non_coded, 'X', -2), 'X', 1) as doses_per_day,
                                 substring_index(frequency_non_coded, 'X', -1) as duration_days
                         from drug_order
-                        where frequency_non_coded like '%X%X%'
-                        and frequency_non_coded not like '%/%'
+                        where frequency_non_coded REGEXP '[0-9X]$'
                         group by frequency_non_coded
                         order by frequency_non_coded
                     ) f
             set
                 d.dose = cast(if(f.dose = '', null, f.dose) as unsigned),
                 d.dose_units = concept_id_from_uuid('6735094c-8416-43e3-8a3c-091332a08cb7'),    #unspecified
-                d.frequency_non_coded = case
+                d.frequency = case
                     when f.doses_per_day = 1 then frequency_id_from_uuid('707ad8b7-d902-11ea-80fb-0242ac110002')
                     when f.doses_per_day = 2 then frequency_id_from_uuid('87ea7c89-d8f9-11ea-80fb-0242ac110002')
                     when f.doses_per_day = 3 then frequency_id_from_uuid('d8290a00-d926-11ea-8b36-0242ac110002')
