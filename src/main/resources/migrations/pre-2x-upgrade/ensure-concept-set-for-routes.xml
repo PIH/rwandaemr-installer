@@ -32,6 +32,12 @@
     </changeSet>
 
     <changeSet id="rwandaemr-imb-migrate-null-routes-to-unspecified" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <tableExists tableName="orderextension_order"/>
+                <tableExists tableName="orderextension_order_set_member"/>
+            </and>
+        </preConditions>
         <sql>
             select concept_id into @unspecifiedConceptId from concept where uuid = '80b5da4c-59ae-4a48-a822-f29712ed4bd5';
             update orderextension_order set route = @unspecifiedConceptId where route is null;
