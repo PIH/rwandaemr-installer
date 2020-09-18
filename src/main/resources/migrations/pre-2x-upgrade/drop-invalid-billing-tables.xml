@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        On Butaro, there are tables in the schema for the mohbilling module, but these are out of date and incompatible with
+         the latest version of the module.  Since there is no data in any of these tables in Butaro, we just drop them here
+         and let the module recreate them when it starts up as appropriate.
+    -->
+
+    <changeSet id="rwandaemr-migration-drop-moh_billing-tables" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="moh_bill_insurance_rate"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_insurance_rate</sqlCheck>
+            <tableExists tableName="moh_bill_recovery"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_recovery</sqlCheck>
+            <tableExists tableName="moh_bill_patient_service_bill"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_patient_service_bill</sqlCheck>
+            <tableExists tableName="moh_bill_billable_service"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_billable_service</sqlCheck>
+            <tableExists tableName="moh_bill_facility_service_price"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_facility_service_price</sqlCheck>
+            <tableExists tableName="moh_bill_payment"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_payment</sqlCheck>
+            <tableExists tableName="moh_bill_service_category"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_service_category</sqlCheck>
+            <tableExists tableName="moh_bill_patient_bill"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_patient_bill</sqlCheck>
+            <tableExists tableName="moh_bill_beneficiary"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_beneficiary</sqlCheck>
+            <tableExists tableName="moh_bill_insurance_policy"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_insurance_policy</sqlCheck>
+            <tableExists tableName="moh_bill_third_party"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_third_party</sqlCheck>
+            <tableExists tableName="moh_bill_insurance"/>
+            <sqlCheck expectedResult="0">select count(*) from moh_bill_insurance</sqlCheck>
+        </preConditions>
+        <dropTable tableName="moh_bill_insurance_rate"/>
+        <dropTable tableName="moh_bill_recovery"/>
+        <dropTable tableName="moh_bill_patient_service_bill"/>
+        <dropTable tableName="moh_bill_billable_service"/>
+        <dropTable tableName="moh_bill_facility_service_price"/>
+        <dropTable tableName="moh_bill_payment"/>
+        <dropTable tableName="moh_bill_service_category"/>
+        <dropTable tableName="moh_bill_patient_bill"/>
+        <dropTable tableName="moh_bill_beneficiary"/>
+        <dropTable tableName="moh_bill_insurance_policy"/>
+        <dropTable tableName="moh_bill_third_party"/>
+        <dropTable tableName="moh_bill_insurance"/>
+    </changeSet>
+
+</databaseChangeLog>
