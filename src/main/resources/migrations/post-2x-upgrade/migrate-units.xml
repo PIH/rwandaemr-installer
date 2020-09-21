@@ -48,6 +48,7 @@
             call migrate_dose_units('529ab651-e77e-4708-b411-ee5a39c35d4e', 'mg/1.25ml', 'c972b9e9-5c24-48e2-8b0f-64327f9e5714', 'mg/1.25ml');
             call migrate_dose_units('d43054ef-39d9-4af5-96c2-cf088a1af7be', 'mg/5ml', '48b26e56-e137-4559-a1ba-ee7ec24d9b1d', 'mg/5ml');
             call migrate_dose_units('215a019e-6f1e-4c4d-b6ab-b0d080f89dc4', 'ml', 'd57e5676-5404-4403-9a77-f07fd8884df2', 'mL');
+            call migrate_dose_units('215a019e-6f1e-4c4d-b6ab-b0d080f89dc4', 'mL', 'd57e5676-5404-4403-9a77-f07fd8884df2', 'mL');
             call migrate_dose_units('937a8e79-0d95-4b3a-9567-6a76ebeba9a5', 'ml/kg', '02c4aed8-5bd0-4bec-af87-70e08bbdd5cf', 'milliliter/kilogram');
             call migrate_dose_units('7f281469-73f4-4e0f-a197-45e9ddbb4b7e', 'ml/m2', 'aaebd04e-1043-45e5-a70e-5187d2d72bdc', 'milliliter/meter squared');
             call migrate_dose_units('7f281469-73f4-4e0f-a197-45e9ddbb4b7e', 'mL/m2', 'aaebd04e-1043-45e5-a70e-5187d2d72bdc', 'milliliter/meter squared');
