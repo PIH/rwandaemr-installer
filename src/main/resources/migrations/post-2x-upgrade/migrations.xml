@@ -18,5 +18,6 @@
     <include file="migrate-frequencies-pharmacy.xml" relativeToChangelogFile="true" />
     <include file="migrate-care-settings.xml" relativeToChangelogFile="true" />
     <include file="add-privileges-to-anonymous-role.xml" relativeToChangelogFile="true" />
-  
+    <include file="ensure-concept-sources-configured.xml" relativeToChangelogFile="true" />
+
 </databaseChangeLog>

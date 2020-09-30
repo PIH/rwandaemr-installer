@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- This is needed for order entry to validate duration units successful, and use them to calculate auto-expire date -->
+    <changeSet id="rwandaemr-ensure-snomed-ct-source-configured" author="IMB">
+        <preConditions>
+            <sqlCheck expectedResult="1">
+                select count(*) from concept_reference_source where name = 'SNOMED CT'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            update concept_reference_source set hl7_code = 'SCT' where name = 'SNOMED CT'
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>
