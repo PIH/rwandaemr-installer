@@ -25,7 +25,12 @@
             set @doseUnitsConceptUuid = '162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
             call ensure_concept(@doseUnitsConceptUuid, 'N/A', 'ConvSet', 1);
             call ensure_concept_name('47664f7e-d5cb-11ea-b2b0-0242ac110002', @doseUnitsConceptUuid, 'Dosing unit', 'FULLY_SPECIFIED');
-            update global_property set property_value = @doseUnitsConceptUuid where property = 'order.drugDosingUnitsConceptUuid';
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-imb-update-dose-units-global-property" author="IMB">
+        <sql>
+            update global_property set property_value = '162384AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA' where property = 'order.drugDosingUnitsConceptUuid';
         </sql>
     </changeSet>
 

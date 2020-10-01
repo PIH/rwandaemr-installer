@@ -19,5 +19,6 @@
     <include file="migrate-care-settings.xml" relativeToChangelogFile="true" />
     <include file="add-privileges-to-anonymous-role.xml" relativeToChangelogFile="true" />
     <include file="ensure-concept-sources-configured.xml" relativeToChangelogFile="true" />
+    <include file="update-search-index.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>
