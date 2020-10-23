@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="rwandaemr-imb-update-layout-address-format" author="IMB" runAlways="true">
+        <sql>
+            update global_property set property_value = '<org.openmrs.layout.address.AddressTemplate>
+                <nameMappings>
+                    <entry>
+                        <string>country</string>
+                        <string>Country</string>
+                    </entry>
+                    <entry>
+                        <string>address3</string>
+                        <string>Cell</string>
+                    </entry>
+                    <entry>
+                        <string>countyDistrict</string>
+                        <string>Disctrict</string>
+                    </entry>
+                    <entry>
+                        <string>address1</string>
+                        <string>Umudugudu</string>
+                    </entry>
+                    <entry>
+                        <string>stateProvince</string>
+                        <string>Province</string>
+                    </entry>
+                    <entry>
+                        <string>cityVillage</string>
+                        <string>Sector</string>
+                    </entry>
+                </nameMappings>
+                <sizeMappings>
+                    <entry>
+                        <string>country</string>
+                        <string>40</string>
+                    </entry>
+                    <entry>
+                        <string>address3</string>
+                        <string>40</string>
+                    </entry>
+                    <entry>
+                        <string>countyDistrict</string>
+                        <string>40</string>
+                    </entry>
+                    <entry>
+                        <string>address1</string>
+                        <string>40</string>
+                    </entry>
+                    <entry>
+                        <string>stateProvince</string>
+                        <string>40</string>
+                    </entry>
+                    <entry>
+                        <string>cityVillage</string>
+                        <string>40</string>
+                    </entry>
+                </sizeMappings>
+                <elementDefaults/>
+                <lineByLineFormat>
+                    <string>country</string>
+                    <string>stateProvince</string>
+                    <string>countyDistrict</string>
+                    <string>cityVillage</string>
+                    <string>address3</string>
+                    <string>address1</string>
+                </lineByLineFormat>
+                <maxTokens>0</maxTokens>
+            </org.openmrs.layout.address.AddressTemplate>' where property = 'layout.address.format';
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

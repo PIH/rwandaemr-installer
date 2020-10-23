@@ -30,5 +30,6 @@
     <include file="update-configurations-prior-to-2x-upgrade.xml" relativeToChangelogFile="true" />
     <include file="ensure-concept-set-for-routes.xml" relativeToChangelogFile="true" />
     <include file="drop-invalid-billing-tables.xml" relativeToChangelogFile="true" />
-  
+    <include file="drop-rwandaaddresshierarchy_table.xml" relativeToChangelogFile="true" />
+    <!--<include file="update-layout-address-format.xml" relativeToChangelogFile="true" />-->
 </databaseChangeLog>
