@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="rwandaemr-remove-units-non-coded-values" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <columnExists tableName="drug_order" columnName="units_non_coded"/>
+                <not><sqlCheck expectedResult="0">select count(*) from drug_order where units_non_coded is not null</sqlCheck></not>
+            </and>
+        </preConditions>
+        <sql>
+            update drug_order set units_non_coded = null where dose_units is not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-units-non-coded-column" author="IMB">
+        <preConditions onFail="HALT">
+            <and>
+                <columnExists tableName="drug_order" columnName="units_non_coded"/>
+                <sqlCheck expectedResult="0">select count(*) from drug_order where units_non_coded is not null</sqlCheck>
+            </and>
+        </preConditions>
+        <dropColumn tableName="drug_order" columnName="units_non_coded"/>
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-frequency-non-coded-values" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <and>
+                <columnExists tableName="drug_order" columnName="frequency_non_coded"/>
+                <not><sqlCheck expectedResult="0">select count(*) from drug_order where frequency_non_coded is not null</sqlCheck></not>
+            </and>
+        </preConditions>
+        <sql>
+            update drug_order set frequency_non_coded = null where frequency is not null;
+        </sql>
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-frequency-non-coded-column" author="IMB">
+        <preConditions onFail="HALT">
+            <and>
+                <columnExists tableName="drug_order" columnName="frequency_non_coded"/>
+                <sqlCheck expectedResult="0">select count(*) from drug_order where frequency_non_coded is not null</sqlCheck>
+            </and>
+        </preConditions>
+        <dropColumn tableName="drug_order" columnName="frequency_non_coded"/>
+    </changeSet>
+
+</databaseChangeLog>
