@@ -413,6 +413,10 @@
             call ensure_concept_and_frequency(@4d5w, '2801b7a6-d5e7-41ae-8cfc-6797f66b1353', 4, null, '4/day x 5 days/week');
             call migrate_frequency(@4d5w, '4/day x 5 days/week');
 
+            set @7d4w = 'e1364e2d-2a6a-11eb-97f5-0242ac110002';
+            call ensure_concept_and_frequency(@7d4w, 'e5996013-2a6a-11eb-97f5-0242ac110002', 7, null, '7/day x 4 days/week');
+            call migrate_frequency(@7d4w, '7/d 4d/w');
+
             set @7d5w = '921a4b34-f21d-11ea-ba0d-0242ac110002';
             call ensure_concept_and_frequency(@7d5w, '24a7bf39-350e-45ec-b0fd-28c0645f9a1e', 7, null, '7/day x 5 days/week');
             call migrate_frequency(@7d5w, '7/day x 5 days/week');
