@@ -144,6 +144,12 @@ docker stop $DB_CONTAINER || true
 docker rm $DB_CONTAINER || true
 docker ps --all
 
+if [[ "$RECREATE" == "true" ]]; then
+  OPENMRS_DATA_VOLUME="${RUN_SITE_ID}_openmrs-data"
+  echo "Removing data volume at ${OPENMRS_DATA_VOLUME}"
+  docker volume rm $OPENMRS_DATA_VOLUME
+fi
+
 DB_ZIP_NAME="$SITE_NAME-anonymized"
 echo "DB_ZIP_NAME: $DB_ZIP_NAME"
 
