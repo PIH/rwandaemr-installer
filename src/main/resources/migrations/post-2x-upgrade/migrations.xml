@@ -23,6 +23,6 @@
 	<include file="add-privileges-to-clinician-role.xml" relativeToChangelogFile="true" />
     <include file="remove-non-coded-units-and-frequencies.xml" relativeToChangelogFile="true" />
     <include file="update-id-generation-max-and-min-length.xml" relativeToChangelogFile="true" />
-
+    <include file="update-global-properties.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>
