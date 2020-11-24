@@ -24,5 +24,6 @@
     <include file="remove-non-coded-units-and-frequencies.xml" relativeToChangelogFile="true" />
     <include file="update-id-generation-max-and-min-length.xml" relativeToChangelogFile="true" />
     <include file="update-global-properties.xml" relativeToChangelogFile="true" />
+    <include file="cleanup-invalid-schema-elements.xml" relativeToChangelogFile="true" />
 
 </databaseChangeLog>

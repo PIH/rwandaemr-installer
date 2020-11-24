@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Legacy module tables that are present on some servers without any data or usage -->
+
+    <changeSet id="rwandaemr-remove-register-module-schema" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="registers" />
+        </preConditions>
+        <dropTable tableName="registers" />
+        <dropTable tableName="register_type" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-versionedfileupload-module-schema" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="versionedfileupload_versioned_file" />
+        </preConditions>
+        <dropTable tableName="versionedfileupload_versioned_file" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-patientflags-module-schema" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="patientflags_flag" />
+        </preConditions>
+        <dropTable tableName="patientflags_tag_role" />
+        <dropTable tableName="patientflags_tag_displaypoint" />
+        <dropTable tableName="patientflags_displaypoint" />
+        <dropTable tableName="patientflags_priority" />
+        <dropTable tableName="patientflags_flag_tag" />
+        <dropTable tableName="patientflags_tag" />
+        <dropTable tableName="patientflags_flag" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-providermanagement-module-schema" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="providermanagement_provider_role" />
+        </preConditions>
+        <dropTable tableName="providermanagement_provider_role_provider_attribute_type" />
+        <dropTable tableName="providermanagement_provider_role_relationship_type" />
+        <dropTable tableName="providermanagement_provider_role_supervisee_provider_role" />
+        <dropTable tableName="providermanagement_provider_suggestion" />
+        <dropTable tableName="providermanagement_supervision_suggestion" />
+        <dropTable tableName="providermanagement_provider_role" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-default-date-values" author="IMB">
+        <dropDefaultValue tableName="concept" columnName="date_created" />
+        <dropDefaultValue tableName="concept_answer" columnName="date_created" />
+        <dropDefaultValue tableName="concept_class" columnName="date_created" />
+        <dropDefaultValue tableName="concept_datatype" columnName="date_created" />
+        <dropDefaultValue tableName="concept_description" columnName="date_created" />
+        <dropDefaultValue tableName="concept_name" columnName="date_created" />
+        <dropDefaultValue tableName="concept_name_tag" columnName="date_created" />
+        <dropDefaultValue tableName="concept_proposal" columnName="date_created" />
+        <dropDefaultValue tableName="concept_reference_source" columnName="date_created" />
+        <dropDefaultValue tableName="concept_reference_map" columnName="date_created" />
+        <dropDefaultValue tableName="concept_set" columnName="date_created" />
+        <dropDefaultValue tableName="drug" columnName="date_created" />
+        <dropDefaultValue tableName="encounter" columnName="encounter_datetime" />
+        <dropDefaultValue tableName="encounter" columnName="date_created" />
+        <dropDefaultValue tableName="encounter_type" columnName="date_created" />
+        <dropDefaultValue tableName="field" columnName="date_created" />
+        <dropDefaultValue tableName="field_answer" columnName="date_created" />
+        <dropDefaultValue tableName="field_type" columnName="date_created" />
+        <dropDefaultValue tableName="form" columnName="date_created" />
+        <dropDefaultValue tableName="form_field" columnName="date_created" />
+        <dropDefaultValue tableName="formentry_archive" columnName="date_created" />
+        <dropDefaultValue tableName="formentry_error" columnName="date_created" />
+        <dropDefaultValue tableName="formentry_queue" columnName="date_created" />
+        <dropDefaultValue tableName="formentry_xsn" columnName="date_created" />
+        <dropDefaultValue tableName="groovy_scripts" columnName="date_created" />
+        <dropDefaultValue tableName="hl7_in_archive" columnName="date_created" />
+        <dropDefaultValue tableName="hl7_in_error" columnName="date_created" />
+        <dropDefaultValue tableName="hl7_source" columnName="date_created" />
+        <dropDefaultValue tableName="htmlformentry_html_form" columnName="date_created" />
+        <dropDefaultValue tableName="idgen_identifier_source" columnName="date_created" />
+        <dropDefaultValue tableName="idgen_log_entry" columnName="date_generated" />
+        <dropDefaultValue tableName="location" columnName="date_created" />
+        <dropDefaultValue tableName="logic_rule_definition" columnName="date_created" />
+        <dropDefaultValue tableName="note" columnName="date_created" />
+        <dropDefaultValue tableName="notification_alert" columnName="date_created" />
+        <dropDefaultValue tableName="obs" columnName="obs_datetime" />
+        <dropDefaultValue tableName="obs" columnName="date_created" />
+        <dropDefaultValue tableName="orders" columnName="date_created" />
+        <dropDefaultValue tableName="order_type" columnName="date_created" />
+        <dropDefaultValue tableName="patient" columnName="date_created" />
+        <dropDefaultValue tableName="patient_identifier_type" columnName="date_created" />
+        <dropDefaultValue tableName="patient_identifier" columnName="date_created" />
+        <dropDefaultValue tableName="patient_program" columnName="date_created" />
+        <dropDefaultValue tableName="patient_state" columnName="date_created" />
+        <dropDefaultValue tableName="person" columnName="date_created" />
+        <dropDefaultValue tableName="person_address" columnName="date_created" />
+        <dropDefaultValue tableName="person_attribute_type" columnName="date_created" />
+        <dropDefaultValue tableName="person_attribute" columnName="date_created" />
+        <dropDefaultValue tableName="person_name" columnName="date_created" />
+        <dropDefaultValue tableName="program" columnName="date_created" />
+        <dropDefaultValue tableName="program_workflow" columnName="date_created" />
+        <dropDefaultValue tableName="program_workflow_state" columnName="date_created" />
+        <dropDefaultValue tableName="relationship_type" columnName="date_created" />
+        <dropDefaultValue tableName="relationship" columnName="date_created" />
+        <dropDefaultValue tableName="reporting_report_design" columnName="date_created" />
+        <dropDefaultValue tableName="reporting_report_design_resource" columnName="date_created" />
+        <dropDefaultValue tableName="reporting_report_processor" columnName="date_created" />
+        <dropDefaultValue tableName="reporting_report_request" columnName="request_datetime" />
+        <dropDefaultValue tableName="scheduler_task_config" columnName="date_created" />
+        <dropDefaultValue tableName="users" columnName="date_created" />
+    </changeSet>
+
+</databaseChangeLog>
