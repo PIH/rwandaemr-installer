@@ -152,7 +152,7 @@
         <dropTable tableName="providermanagement_provider_role" />
     </changeSet>
 
-    <changeSet id="rwandaemr-remove-patientflags-gps" author="IMB">
+    <changeSet id="rwandaemr-remove-providermanagement-gps" author="IMB">
         <sql>delete from global_property where property like 'providermanagement.%'</sql>
     </changeSet>
 
