@@ -192,6 +192,8 @@
         <dropDefaultValue tableName="idgen_log_entry" columnName="date_generated" />
         <dropDefaultValue tableName="location" columnName="date_created" />
         <dropDefaultValue tableName="logic_rule_definition" columnName="date_created" />
+        <dropDefaultValue tableName="logic_rule_token" columnName="date_created" />
+        <dropDefaultValue tableName="logic_token_registration" columnName="date_created" />
         <dropDefaultValue tableName="note" columnName="date_created" />
         <dropDefaultValue tableName="notification_alert" columnName="date_created" />
         <dropDefaultValue tableName="obs" columnName="obs_datetime" />
