@@ -5,9 +5,9 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
 
-    <!-- Legacy module tables that are present on some servers without any data or usage -->
+    <!-- Registers module has been removed -->
 
-    <changeSet id="rwandaemr-remove-register-module-schema" author="IMB">
+    <changeSet id="rwandaemr-remove-registers-table" author="IMB">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="registers" />
         </preConditions>
@@ -15,38 +15,148 @@
         <dropTable tableName="register_type" />
     </changeSet>
 
-    <changeSet id="rwandaemr-remove-versionedfileupload-module-schema" author="IMB">
+    <changeSet id="rwandaemr-remove-register-type-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="register_type" />
+        </preConditions>
+        <dropTable tableName="register_type" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-register-gps" author="IMB">
+        <sql>delete from global_property where property like 'register.%'</sql>
+    </changeSet>
+
+    <!-- Versioned File Upload module has been removed -->
+
+    <changeSet id="rwandaemr-remove-versionedfileupload-versioned_file-table" author="IMB">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="versionedfileupload_versioned_file" />
         </preConditions>
         <dropTable tableName="versionedfileupload_versioned_file" />
     </changeSet>
 
-    <changeSet id="rwandaemr-remove-patientflags-module-schema" author="IMB">
+    <changeSet id="rwandaemr-remove-versionedfileupload-gps" author="IMB">
+        <sql>delete from global_property where property like 'versionedfileupload.%'</sql>
+    </changeSet>
+
+    <!-- Patient Flags module has been removed -->
+
+    <changeSet id="rwandaemr-remove-patientflags_tag_role-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="patientflags_tag_role" />
+        </preConditions>
+        <dropTable tableName="patientflags_tag_role" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-patientflags_tag_displaypoint-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="patientflags_tag_displaypoint" />
+        </preConditions>
+        <dropTable tableName="patientflags_tag_displaypoint" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-patientflags_displaypoint-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="patientflags_displaypoint" />
+        </preConditions>
+        <dropTable tableName="patientflags_displaypoint" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-patientflags_priority-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="patientflags_priority" />
+        </preConditions>
+        <dropTable tableName="patientflags_priority" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-patientflags_flag_tag-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="patientflags_flag_tag" />
+        </preConditions>
+        <dropTable tableName="patientflags_flag_tag" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-patientflags_tag-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="patientflags_tag" />
+        </preConditions>
+        <dropTable tableName="patientflags_tag" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-patientflags_flag-table" author="IMB">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="patientflags_flag" />
         </preConditions>
-        <dropTable tableName="patientflags_tag_role" />
-        <dropTable tableName="patientflags_tag_displaypoint" />
-        <dropTable tableName="patientflags_displaypoint" />
-        <dropTable tableName="patientflags_priority" />
-        <dropTable tableName="patientflags_flag_tag" />
-        <dropTable tableName="patientflags_tag" />
         <dropTable tableName="patientflags_flag" />
     </changeSet>
 
-    <changeSet id="rwandaemr-remove-providermanagement-module-schema" author="IMB">
+    <changeSet id="rwandaemr-remove-patientflags-gps" author="IMB">
+        <sql>delete from global_property where property like 'patientflags.%'</sql>
+    </changeSet>
+
+    <!-- Provider Management module has been removed -->
+
+    <changeSet id="rwandaemr-remove-provider_ibfk_1-foreign-key" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyTableName="provider" foreignKeyName="provider_ibfk_1" />
+        </preConditions>
+        <dropForeignKeyConstraint baseTableName="provider" constraintName="provider_ibfk_1" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-provider_role_id-column" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <columnExists tableName="provider" columnName="provider_role_id" />
+        </preConditions>
+        <dropColumn tableName="provider" columnName="provider_role_id" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-providermanagement_provider_role_provider_attribute_type-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="providermanagement_provider_role_provider_attribute_type" />
+        </preConditions>
+        <dropTable tableName="providermanagement_provider_role_provider_attribute_type" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-providermanagement_provider_role_relationship_type-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="providermanagement_provider_role_relationship_type" />
+        </preConditions>
+        <dropTable tableName="providermanagement_provider_role_relationship_type" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-providermanagement_provider_role_supervisee_provider_role-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="providermanagement_provider_role_supervisee_provider_role" />
+        </preConditions>
+        <dropTable tableName="providermanagement_provider_role_supervisee_provider_role" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-providermanagement_provider_suggestion-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="providermanagement_provider_suggestion" />
+        </preConditions>
+        <dropTable tableName="providermanagement_provider_suggestion" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-providermanagement_supervision_suggestion-table" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="providermanagement_supervision_suggestion" />
+        </preConditions>
+        <dropTable tableName="providermanagement_supervision_suggestion" />
+    </changeSet>
+
+    <changeSet id="rwandaemr-remove-providermanagement_provider_role-table" author="IMB">
         <preConditions onFail="MARK_RAN">
             <tableExists tableName="providermanagement_provider_role" />
         </preConditions>
-        <dropColumn tableName="provider" columnName="provider_role_id" />
-        <dropTable tableName="providermanagement_provider_role_provider_attribute_type" />
-        <dropTable tableName="providermanagement_provider_role_relationship_type" />
-        <dropTable tableName="providermanagement_provider_role_supervisee_provider_role" />
-        <dropTable tableName="providermanagement_provider_suggestion" />
-        <dropTable tableName="providermanagement_supervision_suggestion" />
         <dropTable tableName="providermanagement_provider_role" />
     </changeSet>
+
+    <changeSet id="rwandaemr-remove-patientflags-gps" author="IMB">
+        <sql>delete from global_property where property like 'providermanagement.%'</sql>
+    </changeSet>
+
+    <!-- Historical SQL Diffs set a default date value of 0000-00-00 00:00:00 which is invalid in MySQL 8, remove this -->
 
     <changeSet id="rwandaemr-remove-default-date-values" author="IMB">
         <dropDefaultValue tableName="concept" columnName="date_created" />
