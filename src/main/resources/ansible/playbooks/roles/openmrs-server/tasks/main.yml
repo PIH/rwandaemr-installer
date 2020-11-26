@@ -1,0 +1,131 @@
+
+# Install User and Group
+
+- name: Users | Create {{ openmrs_group }} group
+  group: name={{ openmrs_group }} state=present
+
+- name: Users | Create {{ openmrs_user }} user
+  user: name={{ openmrs_user }} group={{ openmrs_group }} state=present shell=/bin/false createhome=yes home=/home/{{ openmrs_user }}
+
+# Install Java
+
+- name: openmrs-server | Install Java
+  apt: name={{ openmrs_java_package }} state=latest update_cache=yes
+
+# Install Tomcat
+
+- name: openmrs-server | Unzip tomcat package
+  unarchive: src={{ openmrs_tomcat_url }} remote_src=yes dest=/tmp
+
+- name: openmrs-server | Install tomcat package
+  shell: rm -fR {{ openmrs_tomcat_home }} && mv /tmp/{{ openmrs_tomcat_package }} {{ openmrs_tomcat_home }}
+
+- name: openmrs-server | Ensure the tomcat bin files are executable
+  shell: chmod 0755 {{ openmrs_tomcat_home }}/bin/*.sh
+
+- name: openmrs-server | Ensure no default webapps are installed
+  shell: rm -fR {{ openmrs_tomcat_home }}/webapps/*
+
+- name: openmrs-server | Ensure work directory is empty
+  shell: rm -fR {{ openmrs_tomcat_home }}/work/*
+
+- name: openmrs-server | Ensure temp directory is empty
+  shell: rm -fR {{ openmrs_tomcat_home }}/temp/*
+
+# Ensure OpenMRS configuration directories are setup
+
+- name: openmrs-server | Ensure distribution directory exists
+  file: path={{ openmrs_distro_dir }} state=directory owner={{ openmrs_user }} group={{ openmrs_group }}
+
+- name: openmrs-server | Ensure distribution directory is empty
+  shell: rm -fR {{ openmrs_distro_dir }}/*
+
+- name: openmrs-server | Ensure data directory exists
+  file: path={{ openmrs_data_dir }} state=directory owner={{ openmrs_user }} group={{ openmrs_group }}
+
+- name: openmrs-server | Ensure modules directory exists
+  file: path={{ openmrs_data_dir }}/modules state=directory owner={{ openmrs_user }} group={{ openmrs_group }}
+
+- name: openmrs-server | Ensure modules directory is empty
+  shell: rm -fR {{ openmrs_data_dir }}/modules/*
+
+- name: openmrs-server | Ensure configuration directory exists
+  file: path={{ openmrs_data_dir }}/configuration state=directory owner={{ openmrs_user }} group={{ openmrs_group }}
+
+- name: openmrs-server | Ensure configuration directory is empty
+  shell: rm -fR {{ openmrs_data_dir }}/configuration/*
+
+# Install Distribution Components
+
+- name: openmrs-server | Ensure maven is installed and configured
+  apt: name=maven state=latest update_cache=yes
+
+- name: openmrs-server | Ensure settings.xml file is installed
+  template: src=settings.xml.j2 dest=/tmp/settings.xml owner={{ openmrs_user }} group={{ openmrs_group }}
+
+- name: openmrs-server | Download the distribution artifact from Maven into local repo
+  shell: mvn dependency:get -U -Dartifact={{ openmrs_distro_maven_artifact }} -s /tmp/settings.xml
+
+- name: openmrs-server | Copy the distribution from the local repo into this server
+  shell: mvn dependency:copy -Dartifact={{ openmrs_distro_maven_artifact }} -DoutputDirectory={{ openmrs_distro_dir }} -Dmdep.useBaseVersion=true
+
+- name: openmrs-server | Extract distribution artifacts out of the zip
+  unarchive: src={{ openmrs_distro_dir }}/{{ openmrs_distro_artifact_file }} dest={{ openmrs_distro_dir }} remote_src=true
+
+- name: openmrs-server | Copy war
+  shell: cp {{ openmrs_distro_artifact_dir }}/openmrs_webapps/* {{ openmrs_tomcat_home }}/webapps
+
+- name: openmrs-server | Copy modules
+  shell: cp {{ openmrs_distro_artifact_dir }}/openmrs_modules/* {{ openmrs_data_dir }}/modules
+
+- name: openmrs-server | Copy configuration
+  shell: cp -r {{ openmrs_distro_artifact_dir }}/openmrs_config/* {{ openmrs_data_dir }}/configuration
+
+# Configure Tomcat
+
+- name: openmrs-server | Configure "setenv.sh"
+  template:
+    src: setenv.j2
+    dest: "{{ openmrs_tomcat_home }}/bin/setenv.sh"
+    owner: "{{ openmrs_user }}"
+    group: "{{ openmrs_group }}"
+    mode: 0755
+
+- name: openmrs-server | Configure "server.xml"
+  template:
+    src: server.xml.j2
+    dest: "{{ openmrs_tomcat_home }}/conf/server.xml"
+    owner: "{{ openmrs_user }}"
+    group: "{{ openmrs_group }}"
+    mode: 0644
+
+- name: openmrs-server | Configure "openmrs-runtime.properties"
+  template:
+    src: openmrs-runtime.properties.j2
+    dest: "{{ openmrs_data_dir }}/openmrs-runtime.properties"
+    owner: "{{ openmrs_user }}"
+    group: "{{ openmrs_group }}"
+    mode: 0640
+
+- name: openmrs-server | Configure service
+  template:
+    src: service.j2
+    dest: "/etc/systemd/system/{{ openmrs_user }}.service"
+    owner: "root"
+    group: "root"
+    mode: 0755
+
+# Ensure Log Rotate is setup
+
+- name: openmrs-server | Install logrotate package
+  apt: name=logrotate state=latest update_cache=yes
+
+- name: openmrs-server | Configure logrotate for tomcat logs
+  template:
+    src: logrotate.j2
+    dest: "/etc/logrotate.d/openmrs"
+
+# Ensure ownership is set up correctly
+
+- name: openmrs-server | Ensure that tomcat has the correct file ownerships
+  file: path={{ openmrs_tomcat_home }} state=directory recurse=yes owner={{ openmrs_user }} group={{ openmrs_group }}

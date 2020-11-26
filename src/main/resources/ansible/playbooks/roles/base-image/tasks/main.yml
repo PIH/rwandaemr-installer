@@ -1,0 +1,37 @@
+# Install base packages
+
+- name: base-image | Install base packages
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - p7zip-full
+    - zip
+    - ntp
+    - ntpdate
+
+# Ensure timezone is configured correctly
+
+- name: NTP | Delete localtime file
+  shell: rm -rf /etc/localtime
+
+- name: NTP | Set the correct timezone.
+  file:
+    src: "/usr/share/zoneinfo/{{ ntp_timezone }}"
+    dest: /etc/localtime
+    mode: 0644
+    state: link
+    force: yes
+
+- name: NTP | Set timezone in /etc/timezone file.
+  template:
+    src: timezone.j2
+    dest: /etc/timezone
+    force: yes
+
+- name: NTP | Ensure NTP is running and enabled as configured.
+  service:
+    name: "{{ ntp_daemon }}"
+    state: started
+    enabled: yes
+
+- name: NTP | restart ntp
+  shell: service ntp restart

@@ -1,0 +1,9 @@
+{{ openmrs_tomcat_home }}/logs/catalina.out {
+    weekly
+    rotate 7
+    copytruncate
+    delaycompress
+    compress
+    notifempty
+    missingok
+}

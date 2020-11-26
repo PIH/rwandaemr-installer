@@ -1,0 +1,13 @@
+
+# Configure and install mysql
+
+- name: Set MySQL root password
+  debconf: name=mysql-server question=mysql-server/root_password value={{ openmrs_db_root_password }} vtype=password
+  no_log: true
+
+- name: Confirm MySQL root password
+  debconf: name=mysql-server question=mysql-server/root_password_again value={{ openmrs_db_root_password }} vtype=password
+  no_log: true
+
+- name: Install MySQL
+  apt: name={{ openmrs_db_mysql_version }} state=latest

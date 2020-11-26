@@ -1,0 +1,12 @@
+---
+ntp_enabled: true
+ntp_timezone: Africa/Kigali
+
+ntp_daemon: ntp
+
+ntp_manage_config: false
+ntp_servers:
+ - 0.pool.ntp.org iburst
+ - 1.pool.ntp.org iburst
+ - 2.pool.ntp.org iburst
+ - 3.pool.ntp.org iburst

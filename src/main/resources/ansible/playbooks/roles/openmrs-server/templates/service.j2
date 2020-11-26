@@ -1,0 +1,21 @@
+[Unit]
+Description=OpenMRS Tomcat Service
+After=network.target
+
+[Service]
+Type=forking
+
+User={{ openmrs_user }}
+Group={{ openmrs_group }}
+
+Environment="JAVA_HOME={{ openmrs_java_home }}"
+
+Environment="CATALINA_BASE={{ openmrs_tomcat_home }}"
+Environment="CATALINA_HOME={{ openmrs_tomcat_home }}"
+Environment="CATALINA_PID={{ openmrs_tomcat_home }}/temp/tomcat.pid"
+
+ExecStart={{ openmrs_tomcat_home }}/bin/startup.sh
+ExecStop={{ openmrs_tomcat_home }}/bin/shutdown.sh
+
+[Install]
+WantedBy=multi-user.target

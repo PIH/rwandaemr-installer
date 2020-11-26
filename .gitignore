@@ -6,6 +6,9 @@
 *.iws
 .idea/
 
+### Vagrant ###
+.vagrant/
+
 ### Maven ###
 target/
 #############

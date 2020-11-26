@@ -1,0 +1,7 @@
+- hosts: all
+  become: yes
+  gather_facts: false
+  roles:
+    - base-image
+    - openmrs-db
+    - openmrs-server

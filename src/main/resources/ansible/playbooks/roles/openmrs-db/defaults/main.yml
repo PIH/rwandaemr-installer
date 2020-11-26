@@ -1,0 +1,2 @@
+openmrs_db_mysql_version: "mysql-server-8.0"
+openmrs_db_root_password: "root"
