@@ -232,5 +232,4 @@ function execute_full_migration() {
   dump_db "migrated-80-data.sql"
 }
 
-#execute_full_migration
-dump_db "migrated-80-data.sql"
+execute_full_migration
