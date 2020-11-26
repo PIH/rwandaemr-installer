@@ -10,12 +10,6 @@
         It is expected that some or all of these migration statements will be removed during the course of development
     -->
 
-    <changeSet id="rwandaemr-clean-sync-tables-prior-to-2x-upgrade" author="IMB">
-        <delete tableName="sync_server_record" />
-        <delete tableName="sync_record" />
-        <delete tableName="sync_import" />
-    </changeSet>
-
     <changeSet id="rwandaemr-update-configurations-prior-to-2x-upgrade" author="IMB">
         <sql>
             update global_property set property_value='false' where property='sync.mandatory';
