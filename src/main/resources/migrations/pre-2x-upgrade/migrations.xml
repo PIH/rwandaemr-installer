@@ -32,4 +32,7 @@
     <include file="drop-invalid-billing-tables.xml" relativeToChangelogFile="true" />
     <include file="drop-rwandaaddresshierarchy_table.xml" relativeToChangelogFile="true" />
     <include file="cleanup-old-schema-elements.xml" relativeToChangelogFile="true" />
+
+    <!-- TODO: Additional to consider cleaning out: sync_records, formentry_*, hl7_*, emrmonitor report data -->
+
 </databaseChangeLog>
