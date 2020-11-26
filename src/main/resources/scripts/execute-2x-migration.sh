@@ -10,6 +10,8 @@
 #  4. Execute a series of core MySQL upgrades in order to convert the DB to MySQL 8.0 compatibility
 #  OUT = A directory with a upgraded data artifacts supports MySQL 8.0 and OpenMRS 2.3.3
 
+# Required libraries:  docker, pv, maven, java
+
 set -uo pipefail
 IFS=$'\n\t'
 
@@ -70,8 +72,9 @@ function create_docker_network() {
     echo "$(date): Docker Network Created"
 }
 
-function create_initial_mysql_container() {
-  echo "$(date): Creating a MySQL 5.6 container"
+function start_mysql_container() {
+  MYSQL_VERSION=${1:-5.6}
+  echo "$(date): Creating a MySQL $MYSQL_VERSION container"
   docker run --name $MYSQL_CONTAINER --network $DOCKER_NETWORK -d -p 3306:3306 \
     -v $MYSQL_DATA_DIR:/var/lib/mysql \
     -v $HOST_EXECUTION_DIR:/scripts \
@@ -79,22 +82,32 @@ function create_initial_mysql_container() {
     -e MYSQL_USER=openmrs \
     -e MYSQL_PASSWORD=openmrs \
     -e MYSQL_DATABASE=openmrs \
-    mysql:5.6 --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
+    mysql:$MYSQL_VERSION --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
   echo "$(date): Container created. Waiting 15 seconds..."
   sleep 15
 }
 
+function remove_mysql_container() {
+  echo "$(date): Stopping and removing MySQL container"
+  docker stop $MYSQL_CONTAINER || true
+  docker rm $MYSQL_CONTAINER || true
+  echo "$(date): MySQL container removed"
+}
+
+# Import the starting sql file into the mysql container.  This uses pv to monitor progress, as this can take over an hour
 function import_initial_db() {
   echo "$(date): Importing the provided database backup"
-  docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u openmrs -popenmrs openmrs' < $INPUT_SQL_FILE
+  pv $INPUT_SQL_FILE | docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u openmrs -popenmrs openmrs'
   echo "$(date): Import complete"
 }
 
-function archive_data_dir() { # This function expects a single argument which is the filename
+# Zip up the MySQL data directory
+# This expects a single argument which is the filename for the target zip.  It uses pv to monitor progress, as this can take around 10 minutes.
+function archive_data_dir() {
   # Back-up the data directory
   ARCHIVE_FILE_NAME=$1
   echo "$(date): Archiving data dir to $ARCHIVE_FILE_NAME"
-  sudo zip -r $MIGRATION_DIR/$ARCHIVE_FILE_NAME $MYSQL_DATA_DIR/
+  sudo zip -r $MIGRATION_DIR/$ARCHIVE_FILE_NAME $MYSQL_DATA_DIR/ 2>&1 | pv -lbp -s $(ls -Rl1 $MYSQL_DATA_DIR/ | egrep -c '^[-/]') > /dev/null
   echo "$(date): Data dir successfully archived to: $ARCHIVE_FILE_NAME"
 }
 
@@ -105,7 +118,7 @@ function ensure_db_is_utf8() {
 }
 
 function run_migrations() {
-  CHANGELOG_DIR=$1
+  CHANGELOG_DIR=${1:pre-2x-upgrade}
   echo "$(date): Running migrations: $CHANGELOG_DIR"
   mvn -f ../../../../pom.xml liquibase:update -Ddb_port=3306 -Ddb_user=openmrs -Ddb_password=openmrs -Dchangelog_dir=$CHANGELOG_DIR
   echo "$(date): Migrations completed in: $CHANGELOG_DIR"
@@ -153,6 +166,10 @@ function perform_openmrs_core_updates() {
   docker rm $OPENMRS_CONTAINER
 }
 
+function run_mysql_upgrade() {
+  docker exec -it $MYSQL_CONTAINER mysql_upgrade -uroot -ppassword
+}
+
 DOCKER_NETWORK="rwandaemr-upgrade-network"
 MYSQL_CONTAINER="rwandaemr-upgrade-mysql"
 OPENMRS_CONTAINER="rwandaemr-upgrade-openmrs"
@@ -164,8 +181,8 @@ MYSQL_DATA_DIR=$MIGRATION_DIR/data
 # Create a docker network to use to communicate between DB and Server containers as needed
 #create_docker_network
 
-# Create a docker mysql container to use for the database
-#create_initial_mysql_container
+# Create a docker mysql 5.6 container to use for the initial upgrade
+#start_mysql_container "5.6"
 
 # Import the supplied database into the MySQL container and ensure all tables are configured as utf8
 #import_initial_db
@@ -178,13 +195,25 @@ MYSQL_DATA_DIR=$MIGRATION_DIR/data
 
 # Perform OpenMRS platform upgrade
 #download_distribution
-ensure_liquibase_is_not_locked
-perform_openmrs_core_updates
-archive_data_dir "core-updates-completed-data.zip"
+#ensure_liquibase_is_not_locked
+#perform_openmrs_core_updates
+#archive_data_dir "core-updates-completed-data.zip"
 
 # Perform post-migrations
-run_migrations "post-2x-upgrade"
-archive_data_dir "post-2x-upgrade-completed-data.zip"
+#run_migrations "post-2x-upgrade"
+#archive_data_dir "post-2x-upgrade-completed-data.zip"
+
+# Upgrade to MySQL 5.7
+#remove_mysql_container
+#start_mysql_container "5.7"
+#run_mysql_upgrade
+
+# Upgrade to MySQL 5.8
+#remove_mysql_container
+#start_mysql_container "8.0"
+#run_mysql_upgrade
+
+#archive_data_dir "migrated-into-mysql-8.zip"
 
 # TODO: considerations
 # clean out db early of more stuff:  sync_records, hl7_archives, etc.
