@@ -55,10 +55,10 @@ if [ ! -f $INPUT_SQL_FILE ]; then
   exit 1
 fi
 
-if [ -d $MIGRATION_DIR ]; then
-  echo "Migration directory already exists."
-  #usage  TODO: Uncomment if we want to enforce the use of a new directory.
-  #exit 1
+if [ ! -d $MIGRATION_DIR ]; then
+  echo "You must specify a valid migration dir"
+  usage
+  exit 1
 fi
 
 echo "$(date): Migrating to 2.x from $INPUT_SQL_FILE"
