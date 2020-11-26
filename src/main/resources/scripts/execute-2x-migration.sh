@@ -26,6 +26,11 @@ INPUT_SQL_FILE=""
 MIGRATION_DIR=""
 HOST_EXECUTION_DIR=$(pwd)
 
+DOCKER_NETWORK="rwandaemr-upgrade-network"
+MYSQL_CONTAINER="rwandaemr-upgrade-mysql"
+OPENMRS_CONTAINER="rwandaemr-upgrade-openmrs"
+MYSQL_DATA_DIR=$MIGRATION_DIR/data
+
 for i in "$@"
 do
 case $i in
@@ -106,9 +111,16 @@ function import_initial_db() {
 function archive_data_dir() {
   # Back-up the data directory
   ARCHIVE_FILE_NAME=$1
-  echo "$(date): Archiving data dir to $ARCHIVE_FILE_NAME"
+  echo "$(date): Archiving data dir to $MIGRATION_DIR/$ARCHIVE_FILE_NAME"
   sudo zip -r $MIGRATION_DIR/$ARCHIVE_FILE_NAME $MYSQL_DATA_DIR/ 2>&1 | pv -lbp -s $(ls -Rl1 $MYSQL_DATA_DIR/ | egrep -c '^[-/]') > /dev/null
-  echo "$(date): Data dir successfully archived to: $ARCHIVE_FILE_NAME"
+  echo "$(date): Data dir successfully archived to: $MIGRATION_DIR/$ARCHIVE_FILE_NAME"
+}
+
+function dump_db() {
+  DUMP_FILE=$1
+  echo "$(date): Dumping database to $MIGRATION_DIR/$DUMP_FILE"
+  docker exec $MYSQL_CONTAINER mysqldump -u root --password=password openmrs > $MIGRATION_DIR/$DUMP_FILE
+  echo "$(date): Database dump completed"
 }
 
 function ensure_db_is_utf8() {
@@ -170,50 +182,55 @@ function run_mysql_upgrade() {
   docker exec -it $MYSQL_CONTAINER mysql_upgrade -uroot -ppassword
 }
 
-DOCKER_NETWORK="rwandaemr-upgrade-network"
-MYSQL_CONTAINER="rwandaemr-upgrade-mysql"
-OPENMRS_CONTAINER="rwandaemr-upgrade-openmrs"
-MYSQL_DATA_DIR=$MIGRATION_DIR/data
+function execute_full_migration() {
 
-# Remove all existing docker artifacts
-#remove_all_docker_artifacts
+  # Remove all existing docker artifacts
+  remove_all_docker_artifacts
 
-# Create a docker network to use to communicate between DB and Server containers as needed
-#create_docker_network
+  # Create a docker network to use to communicate between DB and Server containers as needed
+  create_docker_network
 
-# Create a docker mysql 5.6 container to use for the initial upgrade
-#start_mysql_container "5.6"
+  # Create a docker mysql 5.6 container to use for the initial upgrade
+  start_mysql_container "5.6"
 
-# Import the supplied database into the MySQL container and ensure all tables are configured as utf8
-#import_initial_db
-#archive_data_dir "initial-import-data.zip"
+  # Import the supplied database into the MySQL container and ensure all tables are configured as utf8
+  import_initial_db
+  archive_data_dir "initial-import-data.zip"
 
-# Perform pre-migrations
-#ensure_db_is_utf8
-#run_migrations "pre-2x-upgrade"
-#archive_data_dir "pre-2x-upgrade-completed-data.zip" # NOTE, these are around 4-5 GB each, and take 10+ minutes to zip, so only run if needed
+  # Perform pre-migrations
+  ensure_db_is_utf8
+  run_migrations "pre-2x-upgrade"
 
-# Perform OpenMRS platform upgrade
-#download_distribution
-#ensure_liquibase_is_not_locked
-#perform_openmrs_core_updates
-#archive_data_dir "core-updates-completed-data.zip"
+  # Perform OpenMRS platform upgrade
+  download_distribution
+  ensure_liquibase_is_not_locked
+  perform_openmrs_core_updates
 
-# Perform post-migrations
-#run_migrations "post-2x-upgrade"
-#archive_data_dir "post-2x-upgrade-completed-data.zip"
+  # Perform post-migrations
+  run_migrations "post-2x-upgrade"
 
-# Upgrade to MySQL 5.7
-#remove_mysql_container
-#start_mysql_container "5.7"
-#run_mysql_upgrade
+  # Archive MySQL 5.6 versions
+  archive_data_dir "migrated-56-data.zip"
+  dump_db "migrated-56-data.sql"
 
-# Upgrade to MySQL 5.8
-#remove_mysql_container
-#start_mysql_container "8.0"
-#run_mysql_upgrade
+  # Upgrade to MySQL 5.7
+  remove_mysql_container
+  start_mysql_container "5.7"
+  run_mysql_upgrade
 
-#archive_data_dir "migrated-into-mysql-8.zip"
+  # Archive MySQL 5.7 versions
+  archive_data_dir "migrated-57-data.zip"
+  dump_db "migrated-57-data.sql"
 
-# TODO: considerations
-# clean out db early of more stuff:  sync_records, hl7_archives, etc.
+  # Upgrade to MySQL 5.8
+  remove_mysql_container
+  start_mysql_container "8.0"
+  run_mysql_upgrade
+
+  # Archive MySQL 8.0 versions
+  archive_data_dir "migrated-80-data.zip"
+  dump_db "migrated-80-data.sql"
+}
+
+#execute_full_migration
+dump_db "migrated-80-data.sql"
