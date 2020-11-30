@@ -11,4 +11,10 @@
         </sql>
     </changeSet>
 
+    <changeSet id="rwandaemr-imb-migration-update-gp-gzip-enabled" author="IMB" runAlways="true">
+        <sql>
+            update global_property set property_value = 'false' where property = 'gzip.enabled';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
