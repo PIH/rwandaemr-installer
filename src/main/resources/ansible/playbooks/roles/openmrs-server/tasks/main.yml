@@ -93,7 +93,7 @@
 
 - name: openmrs-server | Configure "server.xml"
   template:
-    src: server.xml.j2
+    src: "server.xml-{{ openmrs_tomcat_package }}.j2"
     dest: "{{ openmrs_tomcat_home }}/conf/server.xml"
     owner: "{{ openmrs_user }}"
     group: "{{ openmrs_group }}"
