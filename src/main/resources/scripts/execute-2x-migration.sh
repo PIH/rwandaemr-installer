@@ -26,11 +26,6 @@ INPUT_SQL_FILE=""
 MIGRATION_DIR=""
 HOST_EXECUTION_DIR=$(pwd)
 
-DOCKER_NETWORK="rwandaemr-upgrade-network"
-MYSQL_CONTAINER="rwandaemr-upgrade-mysql"
-OPENMRS_CONTAINER="rwandaemr-upgrade-openmrs"
-MYSQL_DATA_DIR=$MIGRATION_DIR/data
-
 for i in "$@"
 do
 case $i in
@@ -61,6 +56,11 @@ if [ ! -d $MIGRATION_DIR ]; then
   exit 1
 fi
 
+DOCKER_NETWORK="rwandaemr-upgrade-network"
+MYSQL_CONTAINER="rwandaemr-upgrade-mysql"
+OPENMRS_CONTAINER="rwandaemr-upgrade-openmrs"
+MYSQL_DATA_DIR=$MIGRATION_DIR/data
+
 echo "$(date): Migrating to 2.x from $INPUT_SQL_FILE"
 echo "$(date): Writing output to $MIGRATION_DIR"
 mkdir -p $MIGRATION_DIR
@@ -87,7 +87,12 @@ function start_mysql_container() {
     -e MYSQL_USER=openmrs \
     -e MYSQL_PASSWORD=openmrs \
     -e MYSQL_DATABASE=openmrs \
-    mysql:$MYSQL_VERSION --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
+    mysql:$MYSQL_VERSION \
+      --character-set-server=utf8 \
+      --collation-server=utf8_general_ci \
+      --max_allowed_packet=1G \
+      --innodb-buffer-pool-size=1G
+
   echo "$(date): Container created. Waiting 15 seconds..."
   sleep 15
 }
@@ -130,7 +135,7 @@ function ensure_db_is_utf8() {
 }
 
 function run_migrations() {
-  CHANGELOG_DIR=${1:pre-2x-upgrade}
+  CHANGELOG_DIR=${1:-"pre-2x-upgrade"}
   echo "$(date): Running migrations: $CHANGELOG_DIR"
   mvn -f ../../../../pom.xml liquibase:update -Ddb_port=3306 -Ddb_user=openmrs -Ddb_password=openmrs -Dchangelog_dir=$CHANGELOG_DIR
   echo "$(date): Migrations completed in: $CHANGELOG_DIR"
@@ -195,7 +200,6 @@ function execute_full_migration() {
 
   # Import the supplied database into the MySQL container and ensure all tables are configured as utf8
   import_initial_db
-  archive_data_dir "initial-import-data.zip"
 
   # Perform pre-migrations
   ensure_db_is_utf8

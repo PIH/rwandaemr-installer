@@ -14,22 +14,22 @@
 
 # Install Tomcat
 
-- name: openmrs-server | Unzip tomcat package
-  unarchive: src={{ openmrs_tomcat_url }} remote_src=yes dest=/tmp
+- name: Tomcat | Download and unzip
+  unarchive: src={{ openmrs_tomcat_url }} dest=/tmp remote_src=yes
 
-- name: openmrs-server | Install tomcat package
+- name: Tomcat | Install tomcat package
   shell: rm -fR {{ openmrs_tomcat_home }} && mv /tmp/{{ openmrs_tomcat_package }} {{ openmrs_tomcat_home }}
 
-- name: openmrs-server | Ensure the tomcat bin files are executable
+- name: Tomcat | Ensure the tomcat bin files are executable
   shell: chmod 0755 {{ openmrs_tomcat_home }}/bin/*.sh
 
-- name: openmrs-server | Ensure no default webapps are installed
+- name: Tomcat | Ensure no default webapps are installed
   shell: rm -fR {{ openmrs_tomcat_home }}/webapps/*
 
-- name: openmrs-server | Ensure work directory is empty
+- name: Tomcat | Ensure work directory is empty
   shell: rm -fR {{ openmrs_tomcat_home }}/work/*
 
-- name: openmrs-server | Ensure temp directory is empty
+- name: Tomcat | Ensure temp directory is empty
   shell: rm -fR {{ openmrs_tomcat_home }}/temp/*
 
 # Ensure OpenMRS configuration directories are setup
