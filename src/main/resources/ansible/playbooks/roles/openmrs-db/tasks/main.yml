@@ -11,3 +11,14 @@
 
 - name: Install MySQL
   apt: name={{ openmrs_db_mysql_version }} state=latest
+
+- name: Configure MySQL
+  template:
+    src: mysql.cnf.j2
+    dest: "/etc/mysql/conf.d/mysql.cnf"
+    owner: "root"
+    group: "root"
+    mode: 0644
+
+- name: Restart MySQL
+  service: name=mysql state=restarted

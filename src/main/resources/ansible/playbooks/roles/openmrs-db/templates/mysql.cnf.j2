@@ -1,0 +1,9 @@
+[mysql]
+
+[mysqld]
+
+# The default values shipped with MySQL 8.0 is commented first for values that we will be setting below
+# sql_mode  =  ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
+
+# Remove ONLY_FULL_GROUP_BY as there are some existing module and queries that fail without this currently
+sql_mode    =  STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION
