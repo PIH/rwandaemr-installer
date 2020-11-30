@@ -21,6 +21,10 @@ openmrs_tomcat_url: "https://mirrors.sonic.net/apache/tomcat/tomcat-7/v7.0.107/b
 openmrs_tomcat_catalina_opts: "-Xms1024M -Xmx2048M -server -XX:+UseParallelGC -XX:NewSize=128m -DOPENMRS_APPLICATION_DATA_DIRECTORY={{ openmrs_data_dir }}/"
 openmrs_tomcat_java_opts: "-Dfile.encoding=UTF-8 -Djava.security.egd=file:///dev/urandom -Djava.awt.headless=true -Djava.awt.headlesslib=true"
 
+# Enables debugging to be enabled
+openmrs_tomcat_debug_opts: ""
+#openmrs_tomcat_debug_opts: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5000"
+
 openmrs_distro_group_id: "org.openmrs.distro"
 openmrs_distro_artifact_id: "rwandaemr-imb"
 openmrs_distro_version: "2.0.0-SNAPSHOT"
