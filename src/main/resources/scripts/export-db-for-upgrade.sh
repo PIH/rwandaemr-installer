@@ -4,10 +4,17 @@ MYSQL_USER="${1:-root}"
 MYSQL_PASSWORD="${2:-root}"
 DB_NAME="${3:-openmrs}"
 OUTPUT_FILE="${4:-/tmp/openmrs_export.sql}"
+CONTAINER="${5}"
+
+MYSQL_DUMP_CMD="mysqldump"
+if [ ! -z "$CONTAINER" ]; then
+  MYSQL_DUMP_CMD="docker exec -i $CONTAINER $MYSQL_DUMP_CMD"
+fi
 
 function execute_dump() {
   DUMP_ARGS="$@"
-  mysqldump -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${DUMP_ARGS} $DB_NAME >> ${OUTPUT_FILE}
+  COMMAND="$MYSQL_DUMP_CMD -u${MYSQL_USER} -p${MYSQL_PASSWORD} ${DUMP_ARGS} $DB_NAME >> ${OUTPUT_FILE}"
+  eval ${COMMAND}
 }
 
 function write_log() {
