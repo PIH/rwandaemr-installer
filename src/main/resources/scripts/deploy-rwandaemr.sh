@@ -144,12 +144,6 @@ docker stop $DB_CONTAINER || true
 docker rm $DB_CONTAINER || true
 docker ps --all
 
-if [[ "$RECREATE" == "true" ]]; then
-  OPENMRS_DATA_VOLUME="${RUN_SITE_ID}_openmrs-data"
-  echo "Removing data volume at ${OPENMRS_DATA_VOLUME}"
-  docker volume rm $OPENMRS_DATA_VOLUME
-fi
-
 DB_ZIP_NAME="$SITE_NAME-anonymized"
 echo "DB_ZIP_NAME: $DB_ZIP_NAME"
 
@@ -290,6 +284,9 @@ echo "Starting up $DISTRIBUTION_NAME"
 
 pushd $RUN_SITE_ID
 cp ./rwandaemr-installer/src/main/resources/docker/$DOCKER_COMPOSE_FILE ./docker-compose.yml
+if [[ "$RECREATE" == "true" ]]; then
+  docker-compose down -v || true
+fi
 docker-compose up -d
 popd
 
