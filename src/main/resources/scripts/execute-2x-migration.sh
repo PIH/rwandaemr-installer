@@ -67,7 +67,7 @@ mkdir -p $MIGRATION_DIR
 
 function remove_all_docker_artifacts() {
   docker stop $MYSQL_CONTAINER || true
-  docker rm $MYSQL_CONTAINER || true
+  docker rm -v $MYSQL_CONTAINER || true
   docker network rm $DOCKER_NETWORK || true
 }
 
@@ -151,7 +151,8 @@ function download_distribution() {
     --type=zip \
     --targetDir=$MIGRATION_DIR
   unzip $MIGRATION_DIR/rwandaemr-imb-2.0.0-SNAPSHOT-distribution.zip -d $MIGRATION_DIR
-  echo "$(date): Distribution downloaded and extracted"
+  rm -fR $MIGRATION_DIR/rwandaemr-imb-2.0.0-SNAPSHOT/openmrs_modules/*
+  echo "$(date): Distribution downloaded and extracted and modules removed"
 }
 
 function ensure_liquibase_is_not_locked() {
@@ -173,11 +174,13 @@ function perform_openmrs_core_updates() {
     partnersinhealth/openmrs-server:latest
   echo "$(date): OpenMRS server docker container started to perform core updates.  Check docker logs for status..."
   sleep 15
-  docker logs -f --tail 1000 $OPENMRS_CONTAINER 2>&1 | grep -q "liquibase: Successfully released change log lock"
-  RETURN_CODE=$?
-  if [[ $RETURN_CODE != 0 ]]; then
-    echo "$(date): Core updates have finished."
-  fi
+  until $(curl -sL http://localhost:8080/openmrs/ | grep -lq 'OpenMRS Platform is running successfully')
+  do
+    echo -n '.'
+    sleep 15
+  done
+  echo "$(date): Core updates have finished."
+
   docker logs $OPENMRS_CONTAINER
   docker stop $OPENMRS_CONTAINER
   docker rm $OPENMRS_CONTAINER
@@ -214,17 +217,12 @@ function execute_full_migration() {
   run_migrations "post-2x-upgrade"
 
   # Archive MySQL 5.6 versions
-  archive_data_dir "migrated-56-data.zip"
   dump_db "migrated-56-data.sql"
 
   # Upgrade to MySQL 5.7
   remove_mysql_container
   start_mysql_container "5.7"
   run_mysql_upgrade
-
-  # Archive MySQL 5.7 versions
-  archive_data_dir "migrated-57-data.zip"
-  dump_db "migrated-57-data.sql"
 
   # Upgrade to MySQL 5.8
   remove_mysql_container
@@ -234,6 +232,9 @@ function execute_full_migration() {
   # Archive MySQL 8.0 versions
   archive_data_dir "migrated-80-data.zip"
   dump_db "migrated-80-data.sql"
+
+  # Clean up by removing any Docker artifacts
+  remove_all_docker_artifacts
 }
 
 execute_full_migration
