@@ -9,8 +9,11 @@
   debconf: name=mysql-server question=mysql-server/root_password_again value={{ openmrs_db_root_password }} vtype=password
   no_log: true
 
-- name: Install MySQL
-  apt: name={{ openmrs_db_mysql_version }} state=latest
+- name: Install MySQL and Tools for accessing it
+  apt: name={{ item }} state=latest update_cache=yes
+  with_items:
+    - "{{ openmrs_db_mysql_version }}"
+    - "python3-pymysql"
 
 - name: Configure MySQL
   template:
@@ -19,6 +22,22 @@
     owner: "root"
     group: "root"
     mode: 0644
+
+- name: Create OpenMRS database
+  mysql_db:
+    name: "{{ openmrs_db_name }}"
+    encoding: "utf8"
+    collation: "utf8_general_ci"
+    login_user: "root"
+    login_password: "{{ openmrs_db_root_password }}"
+
+- name: Create database user with full access to the OpenMRS db
+  mysql_user:
+    name: "{{ openmrs_db_user }}"
+    password: "{{ openmrs_db_password }}"
+    priv: "{{ openmrs_db_name }}.*:ALL"
+    login_user: "root"
+    login_password: "{{ openmrs_db_root_password }}"
 
 - name: Restart MySQL
   service: name=mysql state=restarted
