@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Ensure order_type table has java_class_name column.  Credit k-joseph -->
+    <changeSet id="rwandaemr-ensure-order-type-has-java_class_name" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="order_type" columnName="java_class_name"/></not>
+        </preConditions>
+        <comment>
+            Add java_class_name column to order_type table
+        </comment>
+        <addColumn tableName="order_type">
+            <column name="java_class_name" type="varchar(255)" />
+        </addColumn>
+    </changeSet>
+
+    <!-- Ensure order_type table has parent column.  Credit k-joseph -->
+    <changeSet id="rwandaemr-ensure-order-type-has-parent" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not><columnExists tableName="order_type" columnName="parent"/></not>
+        </preConditions>
+        <comment>
+            Add parent column to order_type table
+        </comment>
+        <addColumn tableName="order_type">
+            <column name="parent" type="int(11)" />
+        </addColumn>
+    </changeSet>
+
+    <!--
+        # Our end state is 3 order types
+        # 1 = Pharmacy Drug Order
+        # 2 = Drug Order
+        # 3 = Lab Order
+
+        See: https://imbjira.pih-emr.org:9090/browse/UP-379
+    -->
+
+    <!-- First, migrate all of the existing orders so that they have the correct types -->
+
+    <changeSet id="rwandaemr-migrate-butaro-drug-order-types" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from order_type where name = 'Penicillin vk'</sqlCheck>
+        </preConditions>
+        <comment>
+            Migrate all drug orders in Butaro to order type 2
+        </comment>
+        <update tableName="orders">
+            <column name="order_type_id" value="2"/>
+            <where>order_type_id = 1</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="rwandaemr-migrate-butaro-lab-order-types" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from order_type where name = 'Penicillin vk'</sqlCheck>
+        </preConditions>
+        <comment>
+            Migrate all lab orders in Butaro to order type 3
+        </comment>
+        <update tableName="orders">
+            <column name="order_type_id" value="3"/>
+            <where>order_type_id = 5</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="rwandaemr-migrate-rwinkwavu-pharmacy-drug-order-types" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from order_type where name = 'Zidolam-N'</sqlCheck>
+        </preConditions>
+        <comment>
+            Migrate all pharmacy drug orders in Rwinkwavu to order type 1
+        </comment>
+        <update tableName="orders">
+            <column name="order_type_id" value="1"/>
+            <where>order_type_id = 3</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="rwandaemr-migrate-rwinkwavu-lab-order-types" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="1">select count(*) from order_type where name = 'Zidolam-N'</sqlCheck>
+        </preConditions>
+        <comment>
+            Migrate all lab orders in Rwinkwavu to order type 3
+        </comment>
+        <update tableName="orders">
+            <column name="order_type_id" value="3"/>
+            <where>order_type_id = 4</where>
+        </update>
+    </changeSet>
+
+    <!-- Now that the orders have been migrated to correct types, rename the types -->
+
+    <changeSet id="rwandaemr-update-pharmacy-order-type" author="IMB">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="1">select count(*) from order_type where order_type_id = 1</sqlCheck>
+        </preConditions>
+        <comment>
+            Set order type 1 to represent Pharmacy Drug Orders
+        </comment>
+        <update tableName="order_type">
+            <column name="name" value="Pharmacy Drug Order"/>
+            <column name="description" value="Pharmacy Drug Order"/>
+            <column name="java_class_name" value="org.openmrs.DrugOrder"/>
+            <where>order_type_id = 1</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="rwandaemr-update-drug-order-type" author="IMB">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="1">select count(*) from order_type where order_type_id = 2</sqlCheck>
+        </preConditions>
+        <comment>
+            Set order type 2 to represent Drug Orders
+        </comment>
+        <update tableName="order_type">
+            <column name="uuid" value="131168f4-15f5-102d-96e4-000c29c2a5d7"/>
+            <column name="name" value="Drug Order"/>
+            <column name="description" value="Drug Order"/>
+            <column name="java_class_name" value="org.openmrs.DrugOrder"/>
+            <where>order_type_id = 2</where>
+        </update>
+    </changeSet>
+
+    <changeSet id="rwandaemr-update-lab-order-type" author="IMB">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="1">select count(*) from order_type where order_type_id = 3</sqlCheck>
+        </preConditions>
+        <comment>
+            Set order type 3 to represent Lab Orders
+        </comment>
+        <update tableName="order_type">
+            <column name="uuid" value="52a447d3-a64a-11e3-9aeb-50e549534c5e"/>
+            <column name="name" value="Lab Order"/>
+            <column name="description" value="Lab Order"/>
+            <column name="java_class_name" value="org.openmrs.TestOrder"/>
+            <where>order_type_id = 3</where>
+        </update>
+    </changeSet>
+
+    <!-- Finally, delete all of the remaining, unused order types -->
+
+    <changeSet id="rwandaemr-remove-unused-order-types" author="IMB">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="0">select count(*) from orders where order_type_id not in (1,2,3)</sqlCheck>
+        </preConditions>
+        <comment>
+            Delete unused order types
+        </comment>
+        <delete tableName="order_type">
+            <where>order_type_id not in (1, 2, 3)</where>
+        </delete>
+    </changeSet>
+
+</databaseChangeLog>

@@ -21,7 +21,7 @@
     <include file="ensure-orders-have-encounters.xml" relativeToChangelogFile="true" />
     <include file="ensure-unknown-provider-configured.xml" relativeToChangelogFile="true" />
     <include file="ensure-orders-have-discontinued-date.xml" relativeToChangelogFile="true" />
-    <include file="ensure-order-type-has-java-class-name-column.xml" relativeToChangelogFile="true" />
+    <include file="cleanup-order-types.xml" relativeToChangelogFile="true" />
     <include file="ensure-drug-units-are-populated.xml" relativeToChangelogFile="true" />
     <include file="move-non-coded-units-and-frequencies.xml" relativeToChangelogFile="true" />
     <include file="add-missing-datamanager-role.xml" relativeToChangelogFile="true" />
