@@ -200,7 +200,7 @@ if [[ $RETURN_CODE != 0 ]]; then
 fi
 popd
 
-echo "Updating DB to utf8 and utf8_general_ci encoding"
+echo "Updating DB to utf8 and utf8_general_ci encoding and ensure liquibase is not locked"
 DB_UPDATE_CONTAINER="${RUN_SITE_ID}_db_update_db"
 DB_UPDATE_DATA_DIR=$(pwd)/${RUN_SITE_ID}/data/mysql
 DB_UPDATE_SCRIPT_DIR=$(pwd)/${RUN_SITE_ID}/rwandaemr-installer/src/main/resources/scripts
@@ -209,6 +209,7 @@ docker rm $DB_UPDATE_CONTAINER || true
 docker run --name $DB_UPDATE_CONTAINER -d -p ${OMRS_DB_PORT}:3306 -v $DB_UPDATE_DATA_DIR:/var/lib/mysql -v $DB_UPDATE_SCRIPT_DIR:/scripts mysql:5.6 --character-set-server=utf8 --collation-server=utf8_general_ci --max_allowed_packet=1G
 sleep 5
 docker exec $DB_UPDATE_CONTAINER /scripts/change-db-to-utf8.sh openmrs password
+docker exec -i $DB_UPDATE_CONTAINER sh -c 'exec mysql -u root -ppassword openmrs -e "UPDATE liquibasechangeloglock set locked=0;"'
 RETURN_CODE=$?
 docker stop $DB_UPDATE_CONTAINER || true
 docker rm $DB_UPDATE_CONTAINER || true
