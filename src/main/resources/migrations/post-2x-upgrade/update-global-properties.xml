@@ -17,4 +17,15 @@
         </sql>
     </changeSet>
 
+    <!-- https://imbjira.pih-emr.org:9090/browse/UP-421 -->
+    <changeSet id="rwandaemr-imb-update-rwandareports-gps-1" author="IMB" runAlways="true">
+        <sql>
+            update global_property set property_value = 'e1bd83f4-e9fa-4564-b8aa-74a9b199aca8' where property = 'reports.breastcancer';
+            update global_property set property_value = '45b35ecd-1317-4d5e-8557-dabfc73234e5' where property = 'reports.burkittlymphoma';
+            update global_property set property_value = 'c09c623b-83d6-4ea0-b0ec-6e4b94e38254' where property = 'reports.hodkinlymphoma';
+            update global_property set property_value = '8b67b07f-e755-41a8-a6d9-105a5960f22b' where property = 'reports.karposisarkomastate';
+            update global_property set property_value = '1c1d3792-bd75-492d-9073-5261ea3295c5' where property = 'reports.othernonhodkinlymphoma';
+        </sql>
+    </changeSet>
+
 </databaseChangeLog>
