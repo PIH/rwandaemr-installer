@@ -25,8 +25,9 @@ openmrs_tomcat_java_opts: "-Dfile.encoding=UTF-8 -Djava.security.egd=file:///dev
 openmrs_tomcat_debug_opts: ""
 #openmrs_tomcat_debug_opts: "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5000"
 
+openmrs_distro_site: ""
 openmrs_distro_group_id: "org.openmrs.distro"
-openmrs_distro_artifact_id: "rwandaemr-imb"
+openmrs_distro_artifact_id: "rwandaemr-imb-{{ openmrs_distro_site }}"
 openmrs_distro_version: "2.0.0-SNAPSHOT"
 openmrs_distro_type: "zip"
 openmrs_distro_classifier: "distribution"

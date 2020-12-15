@@ -22,7 +22,7 @@ You can ssh into the box at any time by running ```vagrant ssh``` from this same
 
 We use [Ansible](../src/main/resources/ansible) here to both execute and document the steps involved in the process
 Get a terminal in the above directory, and execute:
-```./vagrant-install.sh```
+```./vagrant-install.sh --siteName=xyz```  (xyz = butaro or rwinkwavu)
 This will execute an installation for the Vagrant Box set up in Step 1, and perform the following steps:
 
 * Install base packages and configure timezone
@@ -30,7 +30,7 @@ This will execute an installation for the Vagrant Box set up in Step 1, and perf
 * Install an "openmrs" user and "/home/openmrs" directory to install the software
 * Install OpenJDK-8-JDK and Tomcat 7.0.107
 * Configure Tomcat for basic use (non-SSL, no Apache) and set-up a service and log rotation
-* Download the distribution and install all artifacts into appropriate directories
+* Download the rwandaemr-imb-xyz distribution and install all artifacts into appropriate directories
 
 These steps can be adjusted to meet your needs (add SSL, etc), but should also serve as a reference for how we might do things.
 

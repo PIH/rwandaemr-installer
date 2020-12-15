@@ -145,7 +145,7 @@ function download_distribution() {
   echo "$(date): Downloading distribution"
   ./download-maven-artifact.sh \
     --groupId=org.openmrs.distro \
-    --artifactId=rwandaemr-imb \
+    --artifactId=rwandaemr-imb-butaro \
     --version=2.0.0-SNAPSHOT \
     --classifier=distribution \
     --type=zip \
