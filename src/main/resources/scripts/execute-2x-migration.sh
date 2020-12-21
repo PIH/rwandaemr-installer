@@ -141,6 +141,7 @@ function run_migrations() {
   echo "$(date): Migrations completed in: $CHANGELOG_DIR"
 }
 
+# We use the butaro version here, though we could use either.  The purpose is just to get the openmrs war file.
 function download_distribution() {
   echo "$(date): Downloading distribution"
   ./download-maven-artifact.sh \
@@ -150,8 +151,8 @@ function download_distribution() {
     --classifier=distribution \
     --type=zip \
     --targetDir=$MIGRATION_DIR
-  unzip $MIGRATION_DIR/rwandaemr-imb-2.0.0-SNAPSHOT-distribution.zip -d $MIGRATION_DIR
-  rm -fR $MIGRATION_DIR/rwandaemr-imb-2.0.0-SNAPSHOT/openmrs_modules/*
+  unzip $MIGRATION_DIR/rwandaemr-imb-butaro-2.0.0-SNAPSHOT-distribution.zip -d $MIGRATION_DIR
+  rm -fR $MIGRATION_DIR/rwandaemr-imb-butaro-2.0.0-SNAPSHOT/openmrs_modules/*
   echo "$(date): Distribution downloaded and extracted and modules removed"
 }
 
@@ -164,7 +165,7 @@ function ensure_liquibase_is_not_locked() {
 function perform_openmrs_core_updates() {
   echo "$(date): Starting OpenMRS Server to execute core updates"
   docker run --name $OPENMRS_CONTAINER --network $DOCKER_NETWORK -d -p 8080:8080 \
-    -v $MIGRATION_DIR/rwandaemr-imb-2.0.0-SNAPSHOT:/openmrs/distribution \
+    -v $MIGRATION_DIR/rwandaemr-imb-butaro-2.0.0-SNAPSHOT:/openmrs/distribution \
     -v $HOST_EXECUTION_DIR:/scripts \
     -e OMRS_CONFIG_CONNECTION_SERVER="$MYSQL_CONTAINER" \
     -e OMRS_CONFIG_CONNECTION_USERNAME="openmrs" \
