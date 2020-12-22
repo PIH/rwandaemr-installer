@@ -33,6 +33,7 @@
     <include file="drop-rwandaaddresshierarchy_table.xml" relativeToChangelogFile="true" />
     <include file="cleanup-old-schema-elements.xml" relativeToChangelogFile="true" />
     <include file="harmonize-uuids.xml" relativeToChangelogFile="true" />
+    <include file="remove-invalid-forms.xml" relativeToChangelogFile="true" />
 
     <!-- TODO: Do we need to clean up liquibasechangelog entries if we remove tables / columns from the schema? -->
     <!-- TODO: Additional to consider cleaning out: sync_records, formentry_*, hl7_*, emrmonitor report data -->
