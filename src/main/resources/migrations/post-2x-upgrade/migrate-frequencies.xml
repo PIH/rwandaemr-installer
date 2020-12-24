@@ -335,6 +335,7 @@
             call ensure_concept_and_frequency(@1d4w, '62e28058-baa4-4b8b-8158-77acfa3a50f3', 1, null, '1/day x 4 days/week');
             call migrate_frequency(@1d4w, '1/d 4d/w');
             call migrate_frequency(@1d4w, '1/day x 4 days/week');
+            call migrate_frequency(@1d4w, 'Single dose x 4 days/week');
 
             set @1d5w = 'c1012523-eedd-11ea-b492-0242ac110002';
             call ensure_concept_and_frequency(@1d5w, '8ca69946-09fd-4472-ae2c-f70599d513a9', 1, null, '1/day x 5 days/week');
