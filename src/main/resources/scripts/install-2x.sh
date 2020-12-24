@@ -117,8 +117,10 @@ fi
 echo "Starting up $DISTRIBUTION_NAME"
 
 cp $SCRIPT_DIR/../docker/$DOCKER_COMPOSE_FILE $RUN_SITE_ID/docker-compose.yml
-docker-compose --env-file $RUN_SITE_ID/.env -f $RUN_SITE_ID/docker-compose.yml down -v || true
-docker-compose --env-file $RUN_SITE_ID/.env -f $RUN_SITE_ID/docker-compose.yml up -d
+pushd $RUN_SITE_ID
+docker-compose down -v || true
+docker-compose up -d
+popd
 
 echo "OpenMRS is starting up"
 # wait 10 seconds for the containers to start up
