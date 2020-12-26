@@ -6,11 +6,12 @@ IFS=$'\n\t'
 RETURN_CODE=0
 
 SITE_NAME=""
+VERSION=""
 SCRIPT_DIR=`dirname "$0"`
 
 function usage() {
   echo "USAGE:"
-  echo "update-2x --siteName=[rwinkwavu,butaro]"
+  echo "update-distribution --siteName=[rwinkwavu,butaro] --version=[1x,2x]"
 }
 
 echo "Parsing input arguments"
@@ -20,6 +21,10 @@ do
 case $i in
     --siteName=*)
       SITE_NAME="${i#*=}"
+      shift # past argument=value
+    ;;
+    --version=*)
+      VERSION="${i#*=}"
       shift # past argument=value
     ;;
     *)
@@ -34,12 +39,23 @@ if [ -z $SITE_NAME ]; then
   exit 1
 fi
 
-RUN_SITE_ID="${SITE_NAME}2x"
+if [ $VERSION == '1x' ]; then
+  DISTRIBUTION_VERSION="1.1.0-SNAPSHOT"
+  SERVER_CONTAINER_IMAGE="openmrs-server:1.x"
+  OMRS_SERVER_PORT="8080"
+elif [ $VERSION == '2x' ]; then
+  DISTRIBUTION_VERSION="2.0.0-SNAPSHOT"
+  SERVER_CONTAINER_IMAGE="openmrs-server:latest"
+  OMRS_SERVER_PORT="8081"
+else
+  echo "You must specify either 1x or 2x for version."
+  exit 1
+fi
+
+RUN_SITE_ID="${SITE_NAME}${VERSION}"
 DB_CONTAINER="${RUN_SITE_ID}_db_1"
 SERVER_CONTAINER="${RUN_SITE_ID}_server_1"
 DISTRIBUTION_ARTIFACT_ID="rwandaemr-imb-$SITE_NAME"
-DISTRIBUTION_VERSION="2.0.0-SNAPSHOT"
-
 DISTRIBUTION_NAME="$DISTRIBUTION_ARTIFACT_ID-$DISTRIBUTION_VERSION"
 
 echo "Stopping OpenMRS"
