@@ -97,8 +97,8 @@ function start_mysql_container() {
       --max_allowed_packet=1G \
       --innodb-buffer-pool-size=1G
 
-  echo "$(date): Container created. Waiting 15 seconds..."
-  sleep 15
+  echo "$(date): Container created. Waiting 60 seconds..."
+  sleep 60
 }
 
 function remove_mysql_container() {
