@@ -71,9 +71,9 @@ EOF1
 echo "Removing all existing docker containers"
 docker ps --all
 docker stop $SERVER_CONTAINER || true
-docker rm $SERVER_CONTAINER || true
+docker rm -v $SERVER_CONTAINER || true
 docker stop $DB_CONTAINER || true
-docker rm $DB_CONTAINER || true
+docker rm -v $DB_CONTAINER || true
 docker ps --all
 
 echo "Executing the database migration"
