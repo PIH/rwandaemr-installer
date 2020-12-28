@@ -111,7 +111,7 @@ function remove_mysql_container() {
 # Import the starting sql file into the mysql container.  This uses pv to monitor progress, as this can take over an hour
 function import_initial_db() {
   echo "$(date): Importing the provided database backup"
-  pv $INPUT_SQL_FILE | docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u openmrs -popenmrs openmrs'
+  pv $INPUT_SQL_FILE | docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u root -ppassword openmrs'
   echo "$(date): Import complete"
 }
 
@@ -141,7 +141,7 @@ function ensure_db_is_utf8() {
 function run_migrations() {
   CHANGELOG_DIR=${1:-"pre-2x-upgrade"}
   echo "$(date): Running migrations: $CHANGELOG_DIR"
-  mvn -f $SCRIPT_DIR/../../../../pom.xml liquibase:update -Ddb_port=$OMRS_DB_PORT -Ddb_user=openmrs -Ddb_password=openmrs -Dchangelog_dir=$CHANGELOG_DIR
+  mvn -f $SCRIPT_DIR/../../../../pom.xml liquibase:update -Ddb_port=$OMRS_DB_PORT -Ddb_user=root -Ddb_password=password -Dchangelog_dir=$CHANGELOG_DIR
   echo "$(date): Migrations completed in: $CHANGELOG_DIR"
 }
 
@@ -162,7 +162,7 @@ function download_distribution() {
 
 function ensure_liquibase_is_not_locked() {
   echo "$(date): Ensuring liquibase is not locked"
-  docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u openmrs -popenmrs openmrs -e "UPDATE liquibasechangeloglock set locked=0;"'
+  docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u root -ppassword openmrs -e "UPDATE liquibasechangeloglock set locked=0;"'
   echo "$(date): Liquibasechangeloglock updated"
 }
 
