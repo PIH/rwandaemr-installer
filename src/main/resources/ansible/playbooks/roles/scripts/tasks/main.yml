@@ -1,0 +1,15 @@
+- name: Creates directory .script
+  file: path=/root/.scripts state=directory
+
+- copy: src=files/{{ file1 }} dest=/root/.scripts owner=root group=root mode=0755
+
+- copy: src=files/{{ file2 }} dest=/root/.scripts owner=root group=root mode=0755
+
+- copy: src=files/{{ file3 }} dest=/etc/init.d/ owner=root group=root mode=0755
+
+- copy: src=files/{{ file4 }} dest=/root/.scripts owner=root group=root mode=0755
+
+- copy: src=files/{{ file5 }} dest=/root/.scripts owner=root group=root mode=0755
+
+- copy: src=files/{{ file6 }} dest=/etc/NetworkManager/dispatcher.d/ owner=root group=root mode=0755
+

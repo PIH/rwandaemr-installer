@@ -1,5 +1,3 @@
-#!/bin/bash
-
 ansible-playbook \
   -i inventories/test/hosts \
   -l vagrant \

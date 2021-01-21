@@ -1,0 +1,32 @@
+- name: Cron | Install cron-apt
+  apt: name=cron-apt state=present
+
+- name: Cron | Create daily cronjob
+  cron: minute="00" hour="02" weekday="0-6"
+        name="Backup openmrs DB"
+        user="root"
+        job={{ job1 }}
+
+- name: Cron | Create daily cronjob
+  cron: minute="00" hour="*/4" weekday="0-6"
+        name="Check modem"
+        user="root"
+        job={{ job2 }}
+
+- name: Cron | Create daily cronjob
+  cron: minute="20" hour="17" weekday="0-6"
+        name="Backup to USB"
+        user="root"
+        job={{ job3 }}
+
+- name: Cron | Create daily cronjob
+  cron: minute="20" hour="13" weekday="0-6"
+        name="CleanUp"
+        user="root"
+        job={{ job4 }}
+
+- name: Cron | Create daily cronjob
+  cron: minute="20" hour="12" weekday="0-6"
+        name="DeleteSyncLogs"
+        user="root"
+        job={{ job5 }}

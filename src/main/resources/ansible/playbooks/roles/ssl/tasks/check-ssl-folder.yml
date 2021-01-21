@@ -1,0 +1,6 @@
+ - name: Ensure ssl folder exist
+   file:
+     path: "{{ ssl_certs_folder }}"
+     state: directory
+     owner: "{{ ssl_certs_folder_owner }}"
+     group: "{{ ssl_certs_folder_group }}"

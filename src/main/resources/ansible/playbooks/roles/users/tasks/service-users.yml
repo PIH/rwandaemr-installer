@@ -1,0 +1,5 @@
+- name: Create {{ service_group }} group
+  group: name={{ service_group }}
+
+- name: Create {{ service_user }} user
+  user: name={{ service_user }} groups="{{ service_group }}, {{ sudo_group }}, root" password={{ password }} home=/home/{{ service_user }} state=present shell=/bin/bash
