@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- There is a duplicate html form linked to the cause of death certificate on Butaro.  Delete this. -->
+
+    <changeSet id="rwandaemr-migration-remove-form-1" author="IMB">
+        <preConditions onFail="HALT">
+            <sqlCheck expectedResult="0">
+                select      count(e.encounter_id)
+                from        htmlformentry_html_form f
+                left join   encounter e on f.form_id = e.form_id
+                where       f.uuid = 'df376ce4-1594-4c1e-86a2-47c54de38ebf'
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            delete from htmlformentry_html_form where uuid = 'df376ce4-1594-4c1e-86a2-47c54de38ebf'
+        </sql>
+    </changeSet>
+
+</databaseChangeLog>

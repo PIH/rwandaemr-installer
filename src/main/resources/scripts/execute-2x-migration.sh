@@ -24,7 +24,10 @@ RETURN_CODE=0
 
 INPUT_SQL_FILE=""
 MIGRATION_DIR=""
+OMRS_DB_PORT="3307"
+OMRS_SERVER_PORT="8081"
 HOST_EXECUTION_DIR=$(pwd)
+SCRIPT_DIR=`dirname "$0"`
 
 for i in "$@"
 do
@@ -59,11 +62,12 @@ fi
 DOCKER_NETWORK="rwandaemr-upgrade-network"
 MYSQL_CONTAINER="rwandaemr-upgrade-mysql"
 OPENMRS_CONTAINER="rwandaemr-upgrade-openmrs"
-MYSQL_DATA_DIR=$MIGRATION_DIR/data
+MYSQL_DATA_DIR=$MIGRATION_DIR/data/mysql
 
 echo "$(date): Migrating to 2.x from $INPUT_SQL_FILE"
 echo "$(date): Writing output to $MIGRATION_DIR"
 mkdir -p $MIGRATION_DIR
+mkdir -p $MYSQL_DATA_DIR
 
 function remove_all_docker_artifacts() {
   docker stop $MYSQL_CONTAINER || true
@@ -80,7 +84,7 @@ function create_docker_network() {
 function start_mysql_container() {
   MYSQL_VERSION=${1:-5.6}
   echo "$(date): Creating a MySQL $MYSQL_VERSION container"
-  docker run --name $MYSQL_CONTAINER --network $DOCKER_NETWORK -d -p 3306:3306 \
+  docker run --name $MYSQL_CONTAINER --network $DOCKER_NETWORK -d -p $OMRS_DB_PORT:3306 \
     -v $MYSQL_DATA_DIR:/var/lib/mysql \
     -v $HOST_EXECUTION_DIR:/scripts \
     -e MYSQL_ROOT_PASSWORD=password \
@@ -93,8 +97,8 @@ function start_mysql_container() {
       --max_allowed_packet=1G \
       --innodb-buffer-pool-size=1G
 
-  echo "$(date): Container created. Waiting 15 seconds..."
-  sleep 15
+  echo "$(date): Container created. Waiting 60 seconds..."
+  sleep 60
 }
 
 function remove_mysql_container() {
@@ -107,7 +111,7 @@ function remove_mysql_container() {
 # Import the starting sql file into the mysql container.  This uses pv to monitor progress, as this can take over an hour
 function import_initial_db() {
   echo "$(date): Importing the provided database backup"
-  pv $INPUT_SQL_FILE | docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u openmrs -popenmrs openmrs'
+  pv $INPUT_SQL_FILE | docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u root -ppassword openmrs'
   echo "$(date): Import complete"
 }
 
@@ -130,41 +134,42 @@ function dump_db() {
 
 function ensure_db_is_utf8() {
   echo "$(date): Updating all tables to utf8"
-  docker exec $MYSQL_CONTAINER /scripts/change-db-to-utf8.sh openmrs password
+  docker exec $MYSQL_CONTAINER $SCRIPT_DIR/change-db-to-utf8.sh openmrs password
   echo "$(date): Done updating to utf8"
 }
 
 function run_migrations() {
   CHANGELOG_DIR=${1:-"pre-2x-upgrade"}
   echo "$(date): Running migrations: $CHANGELOG_DIR"
-  mvn -f ../../../../pom.xml liquibase:update -Ddb_port=3306 -Ddb_user=openmrs -Ddb_password=openmrs -Dchangelog_dir=$CHANGELOG_DIR
+  mvn -f $SCRIPT_DIR/../../../../pom.xml liquibase:update -Ddb_port=$OMRS_DB_PORT -Ddb_user=root -Ddb_password=password -Dchangelog_dir=$CHANGELOG_DIR
   echo "$(date): Migrations completed in: $CHANGELOG_DIR"
 }
 
+# We use the butaro version here, though we could use either.  The purpose is just to get the openmrs war file.
 function download_distribution() {
   echo "$(date): Downloading distribution"
-  ./download-maven-artifact.sh \
+  $SCRIPT_DIR/download-maven-artifact.sh \
     --groupId=org.openmrs.distro \
-    --artifactId=rwandaemr-imb \
+    --artifactId=rwandaemr-imb-butaro \
     --version=2.0.0-SNAPSHOT \
     --classifier=distribution \
     --type=zip \
     --targetDir=$MIGRATION_DIR
-  unzip $MIGRATION_DIR/rwandaemr-imb-2.0.0-SNAPSHOT-distribution.zip -d $MIGRATION_DIR
-  rm -fR $MIGRATION_DIR/rwandaemr-imb-2.0.0-SNAPSHOT/openmrs_modules/*
+  unzip $MIGRATION_DIR/rwandaemr-imb-butaro-2.0.0-SNAPSHOT-distribution.zip -d $MIGRATION_DIR
+  rm -fR $MIGRATION_DIR/rwandaemr-imb-butaro-2.0.0-SNAPSHOT/openmrs_modules/*
   echo "$(date): Distribution downloaded and extracted and modules removed"
 }
 
 function ensure_liquibase_is_not_locked() {
   echo "$(date): Ensuring liquibase is not locked"
-  docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u openmrs -popenmrs openmrs -e "UPDATE liquibasechangeloglock set locked=0;"'
+  docker exec -i $MYSQL_CONTAINER sh -c 'exec mysql -u root -ppassword openmrs -e "UPDATE liquibasechangeloglock set locked=0;"'
   echo "$(date): Liquibasechangeloglock updated"
 }
 
 function perform_openmrs_core_updates() {
   echo "$(date): Starting OpenMRS Server to execute core updates"
-  docker run --name $OPENMRS_CONTAINER --network $DOCKER_NETWORK -d -p 8080:8080 \
-    -v $MIGRATION_DIR/rwandaemr-imb-2.0.0-SNAPSHOT:/openmrs/distribution \
+  docker run --name $OPENMRS_CONTAINER --network $DOCKER_NETWORK -d -p $OMRS_SERVER_PORT:8080 \
+    -v $MIGRATION_DIR/rwandaemr-imb-butaro-2.0.0-SNAPSHOT:/openmrs/distribution \
     -v $HOST_EXECUTION_DIR:/scripts \
     -e OMRS_CONFIG_CONNECTION_SERVER="$MYSQL_CONTAINER" \
     -e OMRS_CONFIG_CONNECTION_USERNAME="openmrs" \
@@ -174,7 +179,7 @@ function perform_openmrs_core_updates() {
     partnersinhealth/openmrs-server:latest
   echo "$(date): OpenMRS server docker container started to perform core updates.  Check docker logs for status..."
   sleep 15
-  until $(curl -sL http://localhost:8080/openmrs/ | grep -lq 'OpenMRS Platform is running successfully')
+  until $(curl -sL http://localhost:$OMRS_SERVER_PORT/openmrs/ | grep -lq 'OpenMRS Platform is running successfully')
   do
     echo -n '.'
     sleep 15

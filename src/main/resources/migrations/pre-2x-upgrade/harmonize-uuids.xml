@@ -1,0 +1,458 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Make the uuid for the PDC Visit encounter type match (taking Butaro Value) -->
+
+    <changeSet id="rwandaemr-migration-update-pdc-visit-uuid" author="IMB">
+        <update tableName="encounter_type">
+            <column name="uuid" value="71826dd4-330d-4548-9fd8-6703682fbd3a"/>
+            <where>name = 'PDC Visit' and uuid = '5a65dfa3-03bd-4849-9a31-4b01d9afc5a9'</where>
+        </update>
+    </changeSet>
+
+    <!-- Make the uuid for the HF HTN CKD encounter type match (taking Rwink Value) -->
+
+    <changeSet id="rwandaemr-migration-update-hf-htn-ckd-uuid" author="IMB">
+        <update tableName="encounter_type">
+            <column name="uuid" value="735a3bd0-0daa-4ee7-8bea-dc4c99f9ec1b"/>
+            <where>name = 'HF HTN CKD' and uuid = '4a9ae9dd-52c1-4841-828a-60cb03cc4afa'</where>
+        </update>
+    </changeSet>
+
+    <!-- Some forms are installed on Rwink and Butaro with different htmlform and form uuids.  Update. -->
+
+    <changeSet id="rwandaemr-migration-update-form-uuids" author="IMB">
+
+        <!-- adult-hiv-intake-form -->
+        <update tableName="form">
+            <column name="uuid" value="2796fb09-afd5-4104-a02b-5378279591bf"/>
+            <where>uuid = 'd82e68fe-37ba-40a6-9bb0-ada5fcba66d8'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="1a6bca5a-5c3d-4ab4-aca6-d25eed37b6e6"/>
+            <where>uuid = 'b95ecff1-392f-4ab0-ace9-e427a32cba45'</where>
+        </update>
+
+        <!-- exposed-infant-flowsheet-accouchement -->
+        <update tableName="form">
+            <column name="uuid" value="26620c8b-fdbc-45e7-8796-e21224b7412e"/>
+            <where>uuid = '986e016e-99ec-4b94-b870-042d4b17289e'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="75b2fa1d-7774-4ebc-8825-58c0c60ee220"/>
+            <where>uuid = '5fa71309-a463-46f8-b747-8ed27a910beb'</where>
+        </update>
+
+        <!-- exposed-infant-flowsheet-anamnese-systematique.xml -->
+        <update tableName="form">
+            <column name="uuid" value="b2d41fe2-1f51-4a39-adb0-673e6c3700cd"/>
+            <where>uuid = '34de21ca-346a-49cd-878e-e04d9285b1c9'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="beba1ebc-d7cd-4632-a431-566f91007a4b"/>
+            <where>uuid = 'e3d90f26-9810-42dd-818f-4a9decf784c5'</where>
+        </update>
+
+        <!-- exposed-infant-flowsheet-arv-tritherapie-si-pcr-positive-.xml -->
+        <update tableName="form">
+            <column name="uuid" value="2281032c-44f9-461c-b329-0fbb898bec85"/>
+            <where>uuid = '96733e8c-2df5-4859-b1eb-7077cf25b4b1'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="383e0aff-1b76-47ca-8c53-0b4290cf741c"/>
+            <where>uuid = 'b8b3712b-7d9e-4df3-8873-4531ce0ed684'</where>
+        </update>
+
+        <!-- exposed-infant-flowsheet-conclusion-de-suivi.xml -->
+        <update tableName="form">
+            <column name="uuid" value="8be3dcce-7b1c-4800-8382-0ac91e50d0a6"/>
+            <where>uuid = '3ef1df19-2b31-4bfc-998f-eee6c95309db'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="6dd9972b-4b5f-40e4-a983-dd20c373ac63"/>
+            <where>uuid = '09616267-7c0e-424a-afa5-38fca822283f'</where>
+        </update>
+
+        <!-- exposed-infant-flowsheet-demographics.xml -->
+        <update tableName="form">
+            <column name="uuid" value="b2cefdb8-90fe-4ff0-ad17-3d25e4cb488a"/>
+            <where>uuid = 'ca332529-6679-4bae-8c58-7d1e54cf0c53'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="5b89452e-6a42-4ca7-9c2c-3acbc34c8657"/>
+            <where>uuid = 'ed19c819-68d1-432e-b3cc-39261c8d8b8e'</where>
+        </update>
+
+        <!-- exposed-infant-flowsheet-examen-clinique -->
+        <update tableName="form">
+            <column name="uuid" value="e451cdcb-574b-411f-bc69-1b67abe2dde5"/>
+            <where>uuid = 'bc2ad24a-c4d2-4c69-b8c8-365038bca5e0'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="f8d4ea22-c281-44d6-86d8-4cc1272db178"/>
+            <where>uuid = 'cb66061a-068f-4bef-9983-3be4d62327a8'</where>
+        </update>
+
+        <!-- exposed-infant-flowsheet-serologie-vih-de-la-famille -->
+        <update tableName="form">
+            <column name="uuid" value="18a2e8d0-f4ad-43d8-b7ca-8ee0fb272b9d"/>
+            <where>uuid = 'e7b0a450-c964-477a-9933-b3e726a0e403'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="bf973422-b68a-4606-8663-95a807d62ad0"/>
+            <where>uuid = '87dfdd82-2a8b-47cd-9b61-ca398f745e3d'</where>
+        </update>
+
+        <!-- exposed-infant-flowsheet-suivi-biologique -->
+        <update tableName="form">
+            <column name="uuid" value="52668bfd-feb4-4154-8bf5-37c0df1efe53"/>
+            <where>uuid = 'c0501c91-809a-4a50-8f45-08b797d2120f'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="3180fd34-d5cb-43c4-a9dc-e90f386afd36"/>
+            <where>uuid = '92dcdb22-494d-48ee-9b18-0aa18bddd365'</where>
+        </update>
+
+        <!-- ncd-asthma-diagnosis-and-problem-list -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="be007cf6-1f52-47e0-8630-4c595f058fec"/>
+            <where>uuid = '1c60ee17-3f89-4a29-a45d-ad6372e814f7'</where>
+        </update>
+
+        <!-- ncd-asthma-enrollment-form -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="d3445599-3db4-4fa4-8e6a-9fc51189acd2"/>
+            <where>uuid = '990775fb-aeef-46d2-adde-8dba63b21400'</where>
+        </update>
+
+        <!-- ncd-asthma-exit-from-care-information -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="5340bf4a-165f-4377-af59-9acc292bc666"/>
+            <where>uuid = '68111029-6ec3-438b-9d4f-12ff54036a1e'</where>
+        </update>
+
+        <!-- ncd-asthma-flowsheet -->
+        <update tableName="form">
+            <column name="uuid" value="60086fcb-eddb-4f2a-8bd1-314567523897"/>
+            <where>uuid = '6fb973eb-5b3d-412d-9f02-b4389d3826b8'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="59f2be04-8872-4456-a046-d36007f77fc0"/>
+            <where>uuid = 'd21020ac-1988-42e5-a0ce-50b9dbd030a6'</where>
+        </update>
+
+        <!-- ncd-asthma-medication-list -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="188ecf2c-8fc0-4a1d-9a2b-5e93807eaa19"/>
+            <where>uuid = '06a4262b-8f2e-40f9-8b23-d93341b1ab13'</where>
+        </update>
+
+        <!-- ncd-asthma-other-investigations -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="8ae47596-9733-41bb-aa64-3d9f5a865ac0"/>
+            <where>uuid = 'f664b663-392e-4dd7-833e-9a1de78be5d8'</where>
+        </update>
+
+        <!-- ncd-asthma-rendezvous -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="73259bba-2702-434a-8ad8-280f6fbed363"/>
+            <where>uuid = 'e034041d-7b9c-485a-a1f6-f625a9da77fc'</where>
+        </update>
+
+        <!-- ncd-ckd-enrollment-form -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="9fcf975e-18b4-48d3-9d0e-475c813f6db3"/>
+            <where>uuid = 'daf0f511-dd99-4dd9-8737-ce861eeffec3'</where>
+        </update>
+
+        <!-- ncd-ckd-exit-from-care-information -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="45c5181e-8592-4dab-8a02-e0d6f403c333"/>
+            <where>uuid = '1a35541a-987f-4c3e-9104-e5eb76678607'</where>
+        </update>
+
+        <!-- ncd-diabetes-enrollment-form -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="19704e60-fb08-4e78-9d39-2fc20d14fa08"/>
+            <where>uuid = '5dd8faf8-91f2-40ea-ad38-019b8bdb886e'</where>
+        </update>
+
+        <!-- ncd-diabetes-diagnosis-and-problems -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="1b782647-e376-4077-be7a-623ffce9ce1d"/>
+            <where>uuid = '2a217408-2f91-4f28-9734-71886d66b59e'</where>
+        </update>
+
+        <!-- ncd-diabetes-exit-from-care-information -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="4e91516e-1f34-408f-bc7c-ec79a76df4ca"/>
+            <where>uuid = 'bcfabafd-8d87-43a2-b19b-f62526ceca7d'</where>
+        </update>
+
+        <!-- ncd-diabetes-insulin-list -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="2711862b-5eb5-4718-99fd-40765c0c9870"/>
+            <where>uuid = '2e423937-53c2-4927-aeb4-baeec63726cd'</where>
+        </update>
+
+        <!-- ncd-diabetes-medication-list -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="2134a6ec-c3c1-434b-aa8a-64f1d1693e01"/>
+            <where>uuid = '21981885-dd23-4d59-a65d-c1531a342e6b'</where>
+        </update>
+
+        <!-- ncd-diabetes-other-investigations -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="9683e15b-4101-4e7b-a954-6a5baa962893"/>
+            <where>uuid = 'df12224f-f09f-4b44-83a6-15000e1965c8'</where>
+        </update>
+
+        <!-- ncd-diabetes-flow-sheet -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="1c33df68-3f78-4427-a976-d38caeb7e994"/>
+            <where>uuid = '5c6cfda1-3534-4cc9-a5c5-4bc40cb9b9c5'</where>
+        </update>
+
+        <!-- ncd-diabetes-rendez-vous -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="0c92d7a3-49a3-43aa-a226-02ea59418c18"/>
+            <where>uuid = 'b020ca49-d8b1-4452-ab63-1bdbd9ace383'</where>
+        </update>
+
+        <!-- ncd-heart-failure-enrollment-form -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="fd0694e2-4804-4ce0-9901-6c92c1003cbe"/>
+            <where>uuid = 'a53ea882-f62d-4a2f-a8c8-b3be32c7a88d'</where>
+        </update>
+
+        <!-- ncd-heart-failure-exit-from-care-information -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="43b9d8f7-818b-4cc5-8da8-b54a841a150a"/>
+            <where>uuid = 'b042ad88-bd9e-41c3-8f1c-ac970ee88452'</where>
+        </update>
+
+        <!-- ncd-hf-htn-ckd-clinic-visits -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="bfc0f47a-7cb8-4851-95de-f0369c7dd745"/>
+            <where>uuid = 'f385757d-1964-45e0-8dcd-eaf657065315'</where>
+        </update>
+
+        <!-- ncd-hf-htn-ckd-diagnosis-and-problem-list -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="d2fce4cf-0b1e-44f6-a793-cf3c92408d3f"/>
+            <where>uuid = '001290c0-ec2a-41ba-aab9-e355ba979277'</where>
+        </update>
+
+        <!-- ncd-hf-htn-ckd-echocardiography -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="15a88e91-f945-4bfa-a7d6-d1f77211ad3f"/>
+            <where>uuid = '0343a6b1-34c3-42e4-b0ac-c0e5d5d403cc'</where>
+        </update>
+
+        <!-- ncd-hf-htn-ckd-flowsheet -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="7f341ad6-b3a6-4d6b-9402-c9bf2099d889"/>
+            <where>uuid = '9ac54822-771a-4605-8c05-95496138b128'</where>
+        </update>
+
+        <!-- ncd-hf-htn-ckd-medication-list -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="91a901d1-c328-4d07-81f8-f4186672c844"/>
+            <where>uuid = 'a533a271-5a96-44d0-aabf-3727e2cc7f4f'</where>
+        </update>
+
+        <!-- ncd-hf-htn-ckd-other-studies -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="3ce5b511-2801-4464-aec4-811b78f0f4b7"/>
+            <where>uuid = '713f1349-0e7d-454b-987c-6cb1f63d2623'</where>
+        </update>
+
+        <!-- ncd-hypertension-enrollment-form -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="1b6dcc2b-e556-4dfe-815f-83467e99ba4c"/>
+            <where>uuid = 'fa471048-57d1-46bb-95f8-f66fc41bc1ec'</where>
+        </update>
+
+        <!-- ncd-hypertension-exit-from-care-information -->
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="00344e24-4583-465e-bc4a-50b6167dac9c"/>
+            <where>uuid = '00fd5e9e-e421-4af8-af83-056c2f9914ed'</where>
+        </update>
+
+        <!-- oncology-admission -->
+        <update tableName="form">
+            <column name="uuid" value="53cebc0e-cbd7-4607-9d9a-19c3650378ce"/>
+            <where>uuid = 'd0c14bcc-f971-4354-8c58-beaedd523567'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="85191cb7-df27-4279-ac24-a484cc6f9bb7"/>
+            <where>uuid = '7c3f1305-199a-426b-9aaf-2d41fe966752'</where>
+        </update>
+
+        <!-- oncology-allergies -->
+        <update tableName="form">
+            <column name="uuid" value="abb5cba0-c1d9-4c0c-a9a3-441f80bf94a1"/>
+            <where>uuid = '734c0ef8-5523-46ce-a35e-7dde26b418d7'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="c8600e94-c4ab-431d-8fcd-000f362ec193"/>
+            <where>uuid = '4a147476-4531-42fa-ad8d-1455e1ae396e'</where>
+        </update>
+
+        <!-- oncology-body-surface-area -->
+        <update tableName="form">
+            <column name="uuid" value="7348b06a-a77d-4008-b2a0-389e0413789a"/>
+            <where>uuid = '4beac39e-823c-408d-9e20-c9757d53542a'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="c308ee28-fdf6-4d03-a4f5-38e744691ebf"/>
+            <where>uuid = '2b452a44-d517-499f-a818-67424c50effe'</where>
+        </update>
+
+        <!-- oncology-cervical-dst -->
+        <update tableName="form">
+            <column name="uuid" value="5c02580c-bbca-4e11-bfb2-6717619343df"/>
+            <where>uuid = '5cb4f0f4-e2bb-4835-9fa1-5107c1e5d812'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="352fb327-bc3f-4ed0-a777-00bdd8570f32"/>
+            <where>uuid = 'e9562295-db36-4ee3-9ab0-0a3c972a282a'</where>
+        </update>
+
+        <!-- oncology-change-in-demographics -->
+        <update tableName="form">
+            <column name="uuid" value="865e2835-2fbf-438b-b353-fab17b88e7de"/>
+            <where>uuid = '67bae82e-38a6-4bec-b55a-1a4204c9ade8'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="4243ace2-d34a-44f8-878a-097c02e87315"/>
+            <where>uuid = 'b9b426f5-a066-4eb0-96a7-5875dbbcbc03'</where>
+        </update>
+
+        <!-- oncology-chemotherapy-treatment-summary-short -->
+        <update tableName="form">
+            <column name="uuid" value="7f24c0e0-fc81-4bbf-b781-965f4dbd6ae7"/>
+            <where>uuid = '88b01020-228f-437e-bac6-66324701367a'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="b0af44d4-ad35-4366-8cb5-72444c741887"/>
+            <where>uuid = '0ef02102-3560-4113-a08a-cdac899b1e82'</where>
+        </update>
+
+        <!-- oncology-chemotherapy-treatment-summary -->
+        <update tableName="form">
+            <column name="uuid" value="dbd15612-cb86-49c1-ad7f-8573002ce0d1"/>
+            <where>uuid = 'bfbad5cf-c580-4c00-828d-186a813e0cba'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="a2262057-65a3-4da3-abfa-f71b05b5cbb9"/>
+            <where>uuid = '0995b5ea-2c31-4080-a57a-fd8dd4dcf76a'</where>
+        </update>
+
+        <!-- oncology-clinical-intake-inpatient -->
+        <update tableName="form">
+            <column name="uuid" value="ae626637-e19c-4c94-8189-32ef9d3ca739"/>
+            <where>uuid = '87c444e6-b950-442c-b81d-309ea7453fcc'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="a77820b0-b55f-4850-b938-fe40e825f3b4"/>
+            <where>uuid = 'a00844eb-4434-4c32-bb2f-dd14c2a9440d'</where>
+        </update>
+
+        <!-- oncology-diagnosis-staging-and-treatment-plan -->
+        <update tableName="form">
+            <column name="uuid" value="9e16d27c-923f-4aab-9fa6-06f6904e14aa"/>
+            <where>uuid = 'c23cfc7a-3726-4bc8-93f5-2f4bbfb25c42'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="d73389ca-b11c-4a9a-a059-b1589194ea9b"/>
+            <where>uuid = 'cc398996-f2c2-40de-8306-eda74b39eb02'</where>
+        </update>
+
+        <!-- oncology-discharge -->
+        <update tableName="form">
+            <column name="uuid" value="c9c10924-2e65-4470-b6a7-a0c776c8dfbc"/>
+            <where>uuid = '7503391a-5945-41a8-9538-082decb80ebf'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="7025bfde-76ce-47df-9487-50adf928ee84"/>
+            <where>uuid = 'bafc630b-39b0-4202-8d8c-b3ab7526326a'</where>
+        </update>
+
+        <!-- oncology-exit-form-old-2017-11-28 -->
+        <update tableName="form">
+            <column name="uuid" value="430f2476-8882-4cf6-aba6-0acb03df72fa"/>
+            <where>uuid = '839790e4-1caf-4c96-b9a6-c7d4435c3356'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="6af970b6-a254-4877-84b3-dcabb442292a"/>
+            <where>uuid = '5f81e8b9-db11-4eb7-a83d-490287064a8a'</where>
+        </update>
+
+        <!-- oncology-lifetime-chemotherapy-dose-to-date -->
+        <update tableName="form">
+            <column name="uuid" value="335470d3-b98f-4ba2-8828-711e3cb2c5d6"/>
+            <where>uuid = 'c98decce-55e2-42eb-983b-f2fecb071614'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="35c3b3c9-dc7f-405b-ad0f-9d00ecdc861a"/>
+            <where>uuid = 'b45fff37-fe2b-4538-9f5d-366e1f8a7e64'</where>
+        </update>
+
+        <!-- oncology-outpatient-flow-medication-allergies -->
+        <update tableName="form">
+            <column name="uuid" value="378539c1-012a-447a-8e89-add30937857a"/>
+            <where>uuid = '9099ff21-c1a5-475b-930a-04e78bc21d1f'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="65d78e5c-c5b6-428e-ab0c-5fc2f44fb182"/>
+            <where>uuid = '5306102c-e8ac-425f-9832-232b59f0bfd7'</where>
+        </update>
+
+        <!-- oncology-outpatient-flow -->
+        <update tableName="form">
+            <column name="uuid" value="4483689a-e946-4e04-bb6d-b05447979d02"/>
+            <where>uuid = 'b93b1ed6-b942-4eaa-96f7-c29580d0723f'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="32cb7c6a-a47e-4cc7-adff-bdedaf860527"/>
+            <where>uuid = 'cc8f8901-58a3-4926-9fee-92e5feb1f647'</where>
+        </update>
+
+        <!-- oncology-kaposis-sarcoma -->
+        <update tableName="form">
+            <column name="uuid" value="f99a175d-1ca4-4f34-8bea-d47f911ca6b6"/>
+            <where>uuid = 'c88bb1aa-e784-4ebb-b5d6-d1b50582ea20'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="3c052d7b-5e20-4a0e-8b3c-1032b2e7daec"/>
+            <where>uuid = '579bf39f-6b4e-4991-bbbc-56dcf64b42ad'</where>
+        </update>
+
+        <!-- pdc-visit-form -->
+        <update tableName="form">
+            <column name="uuid" value="98906e08-00ac-41de-8a2b-a318694c33dc"/>
+            <where>uuid = '47b339bb-0ae8-4a93-9064-740baa5d1a8f'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="8d628dd9-63fa-4391-8800-a11f61cd2ffc"/>
+            <where>uuid = '76c6ec7d-8ac5-4c96-b9bb-d2393c1399a8'</where>
+        </update>
+
+        <!-- pedi-hiv-intake-form -->
+        <update tableName="form">
+            <column name="uuid" value="ba2437b6-0807-4853-8866-0376287e042b"/>
+            <where>uuid = '15d9cb84-c53a-4f32-a1fb-9818588acc66'</where>
+        </update>
+        <update tableName="htmlformentry_html_form">
+            <column name="uuid" value="02d2584a-7ae6-4f00-9330-08fe315fa8a4"/>
+            <where>uuid = 'e53626df-b8af-4326-bacb-8f3c239636f1'</where>
+        </update>
+
+    </changeSet>
+
+</databaseChangeLog>

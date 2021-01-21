@@ -140,7 +140,7 @@ if [ $VERSION == '1x' ]; then
   PRE_MIGRATIONS=""
   POST_MIGRATIONS=""
 elif [ $VERSION == '2x' ]; then
-  DISTRIBUTION_ARTIFACT_ID="rwandaemr-imb"
+  DISTRIBUTION_ARTIFACT_ID="rwandaemr-imb-$SITE_NAME"
   DISTRIBUTION_VERSION="2.0.0-SNAPSHOT"
   SERVER_CONTAINER_IMAGE="openmrs-server:latest"
   DOCKER_COMPOSE_FILE="docker-compose-2x.yml"
