@@ -13,6 +13,7 @@
     <changeSet id="rwandaemr-imb-setup-post-migration-stored-procedures" author="IMB" runAlways="true" runOnChange="true">
         <sqlFile path="sql/procedures.sql" relativeToChangelogFile="true" endDelimiter="#"/>
     </changeSet>
+    <include file="migrate-order-sets.xml" relativeToChangelogFile="true" />
     <include file="migrate-units.xml" relativeToChangelogFile="true" />
     <include file="migrate-frequencies.xml" relativeToChangelogFile="true" />
     <include file="migrate-frequencies-pharmacy.xml" relativeToChangelogFile="true" />
