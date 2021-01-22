@@ -1,0 +1,150 @@
+# This playbook serves to setup the rwanda maintenance tools
+# When running on child server, set parent_server to false
+# When running on parent server, set parent_server to true
+
+- hosts: all
+  become: yes
+  gather_facts: true
+  become: yes
+  vars:
+    parent_server: false
+    service_user: openmrs_maintenance_rwanda
+    home_dir: /home/{{ service_user }}
+    password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+    parent_folder: parent
+    parent_folder_location: "{{ home_dir }}/maintenance"
+    parent_cron_job: "{{ home_dir }}/maintenance/parent/master_parent_script.sh"
+    parent_hour: "*/3"
+    parent_minute: 45
+    parent_month: "*"
+    parent_cron_name: "Run maintenance on Parent server"
+    child_folder: child
+    child_folder_location: "{{ home_dir }}/maintenance"
+    child_cron_job: "sleep 120 && service tomcat7 stop && . {{ home_dir }}/maintenance/child/install.sh"
+    child_hour: "@reboot && sleep 60"
+    child_month: "*"
+    child_cron_name: "Install maintenance cron (install.sh) on child server"
+    child_cron_name1: "Install maintenance cron (master_child_script.sh) on child server"
+    master_child_cron_job: "sleep 180 && . {{ home_dir }}/maintenance/child/master_child_script.sh"
+    parent_child_month: "*"
+    parent_child_hour: "04"
+    parent_child_minute: "00"
+    parent_child_minute1: "15"
+    state: present
+
+ 
+  tasks:
+  - name: Create service users using the user/create-service-user.yml role.
+    include_role:
+      name: users
+      tasks_from: service-users.yml
+
+  - name: create maintenance directory
+    file:  path={{ home_dir }}/maintenance state=directory owner={{ service_user }}
+
+  - name: create directories for maintenance
+    file: path={{ home_dir }}/maintenance/{{ item }} state=directory owner={{ service_user }}
+    with_items:
+        - openmrs_war
+        - openmrs_modules
+        - other_files
+        - trusted_sql
+
+  - name: create directory .ssh
+    file:
+      path: /home/{{ service_user }}/.ssh
+      state: directory 
+      mode: 0700
+      owner: "{{ service_user }}"
+   
+  - name: generate ssh for parent   
+    openssh_keypair: path="/home/{{ service_user }}/.ssh/id_rsa" size="2048"
+    when: parent_server
+
+  - name: ensure directories have correct permissions
+    shell: chown -R {{ service_user }}:{{ service_user }} /home/{{ service_user }}
+
+  - name: copy parent maintenance tool
+    copy:
+      src: roles/rwanda-maintenance/files/parent
+      dest: "{{ parent_folder_location }}"
+      owner: "{{ service_user }}"
+      group: "{{ service_user }}"
+      mode: 0700
+    when: parent_server
+
+  - name: copy child maintenance tool
+    copy:
+      src: roles/rwanda-maintenance/files/child
+      dest: "{{ child_folder_location }}"
+      owner: "{{ service_user }}"
+      group: "{{ service_user }}"
+      mode: 0700
+    
+  
+  - name: create authorized keys on child servers
+    include_role:
+      name: users
+      tasks_from: authorized-keys.yml
+    when: not parent_server
+
+  - name: configuring maintenance cron on parent server
+    cron:
+      hour: "{{ parent_hour | default(omit) }}"
+      minute: "{{ parent_minute | default(omit) }}"
+      month: "{{ parent_month | default(omit) }}"
+      name: "{{ parent_cron_name | default(item) }}"
+      user: "{{ service_user | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+      job: "{{ parent_cron_job | default(omit) }}"
+    when: parent_server
+
+  - name: configuring maintenance cron on child server
+    cron:
+      special_time: "reboot"
+      month: "{{ child_month | default(omit) }}"
+      name: "{{ child_cron_name | default(item) }}"
+      user: "{{ service_user | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+      job: "{{ child_cron_job | default(omit) }}"
+    when: not parent_server
+
+  - name: configuring maintenance master_child cron on child server
+    cron:
+     special_time: "reboot"
+     month: "{{ child_month | default(omit) }}"
+     name: "{{ child_cron_name1 | default(item) }}"
+     user: "{{ service_user | default(omit) }}"
+     state: "{{ state | default(omit) }}"
+     job: "{{ master_child_cron_job | default(omit) }}"
+    when: not parent_server
+
+  - name: configuring maintenance master_child cron on child server
+    cron:
+      hour: "{{ parent_child_hour | default(omit) }}"
+      minute: "{{ parent_child_minute | default(omit) }}"
+      month: "{{ parent_child_month | default(omit) }}"
+      name: "{{ child_cron_name | default(item) }}"
+      user: "{{ service_user | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+      job: "{{ child_cron_job | default(omit) }}"
+    when:  parent_server
+
+  - name: configuring maintenance master_child cron on child server
+    cron:
+      hour: "{{ parent_child_hour | default(omit) }}"
+      minute: "{{ parent_child_minute1 | default(omit) }}"
+      month: "{{ parent_child_month | default(omit) }}"
+      name: "{{ child_cron_name1 | default(item) }}"
+      user: "{{ service_user | default(omit) }}"
+      state: "{{ state | default(omit) }}"
+      job: "{{ master_child_cron_job | default(omit) }}"
+    when:  parent_server
+
+  - name: Allow service user to run command without password prompt
+    lineinfile:
+      path: /etc/sudoers
+      state: present
+      line: '{{ service_user }} ALL=(ALL) NOPASSWD: ALL'
+      insertafter: '%sudo'
+      validate: 'visudo -cf %s'

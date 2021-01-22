@@ -1,0 +1,5 @@
+job1: /root/.scripts/daily-backup.sh
+job2: /etc/init.d/mobile-broadband-connect.sh
+job3: /root/.scripts/backup-to-usb.sh
+job4: /root/.scripts/cleanup.sh
+job5: /root/.scripts/deleteSyncLogs.sh
