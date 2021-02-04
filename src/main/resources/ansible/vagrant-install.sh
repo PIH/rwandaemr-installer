@@ -18,6 +18,8 @@ if [[ "$SITE_NAME" != "rwinkwavu" && "$SITE_NAME" != "butaro" ]]; then
       exit 1
 fi
 
+export ANSIBLE_HOST_KEY_CHECKING=False
+
 ansible-playbook \
   -i inventories/test/hosts \
   -l vagrant \
