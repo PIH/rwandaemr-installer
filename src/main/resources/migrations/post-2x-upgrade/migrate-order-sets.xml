@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!--
+        This is an exact copy of the liquibase change set from the orderextension module
+        We are explicitly running it here to ensure it runs in the correct order in relation to our other post-upgrade migrations
+     -->
+
+	<changeSet id="orderextension-migrate-order-sets-to-core" author="mseaton">
+		<validCheckSum>3:7e9cc20be951b93e867c12f2dd1be2e2</validCheckSum>
+		<preConditions>
+			<sqlCheck expectedResult="0">select count(*) from order_set where order_set_id in (select id from orderextension_order_set)</sqlCheck>
+		</preConditions>
+		<comment>
+			This will migrate order set data into the core table.  If order sets already exist there, this will fail
+			and the migration will need to be undertaken manually
+		</comment>
+		<sql>
+			insert into order_set (
+						order_set_id, uuid, name, description, operator, category,
+						creator, date_created, changed_by, date_changed,
+						retired, retired_by, date_retired, retire_reason
+			)
+			select 		id, uuid, name, description, operator, indication,
+						creator, date_created, changed_by, date_changed,
+						retired, retired_by, date_retired, retire_reason
+			from    	orderextension_order_set
+			;
+
+			select order_type_id into @drug_order_type from order_type where name = 'Drug Order';
+
+			insert into order_set_member (
+						order_set_member_id, uuid, order_set_id, sequence_number,
+						order_type, concept_id, order_template_type, order_template,
+						creator, date_created, changed_by, date_changed,
+						retired, retired_by, date_retired, retire_reason
+			)
+			select  	m.id, m.uuid, m.order_set_id, m.sort_weight,
+						@drug_order_type, m.concept_id, 'org.openmrs.module.orderextension',
+						concat('{',
+						'"title": "', ifnull(m.title, ''), '", ',
+						'"indication": "', ifnull(indic.uuid, 'null'), '", ',
+						'"drug": "', ifnull(d.uuid, 'null'), '", ',
+						'"dose": ', ifnull(m.dose, 'null'), ', ',
+						'"units": "', ifnull(m.units, ''), '", ',
+						'"route": "', ifnull(rt.uuid, 'null'), '", ',
+						'"frequency": "', ifnull(m.frequency, ''), '", ',
+						'"relativeStartDay": ', ifnull(m.relative_start_day, 'null'), ', ',
+						'"lengthInDays": ', ifnull(m.length_days, 'null'), ', ',
+						'"instructions": "', ifnull(m.instructions, ''), '", ',
+						'"administrationInstructions": "', ifnull(m.administration_instructions, ''), '"',
+						'}') as template,
+						s.creator, s.date_created, s.changed_by, s.date_changed,
+						s.retired, s.retired_by, s.date_retired, s.retire_reason
+			from    	orderextension_order_set_member m
+			inner join 	orderextension_order_set s on s.id = m.order_set_id
+			left join 	drug d on m.drug_id = d.drug_id
+			left join   concept indic on m.indication = indic.concept_id
+			left join 	concept rt on m.route = rt.concept_id
+			;
+
+			set @curr_seq = 0;
+			set @curr_order_set = 0;
+
+			update      order_set_member m
+			inner join  (
+				select  	order_set_member_id, uuid,
+							@curr_seq := if (@curr_order_set = order_set_id, @curr_seq+1, 0) as sequence_number,
+							@curr_order_set := order_set_id as order_set_id
+				from    	order_set_member
+				order by 	order_set_id, sequence_number
+			) osm
+				on m.order_set_member_id = osm.order_set_member_id
+			set
+				m.sequence_number = osm.sequence_number;
+			;
+
+			update order_set_member set order_template = replace(order_template, '\r', '\\r');
+			update order_set_member set order_template = replace(order_template, '\n', '\\n');
+			update order_set_member set order_template = replace(order_template, '"null"', 'null');
+
+			alter table orderextension_order_set drop uuid;
+			alter table orderextension_order_set drop name;
+			alter table orderextension_order_set drop description;
+			alter table orderextension_order_set drop operator;
+			alter table orderextension_order_set drop foreign key orderextension_order_set_indication_fk;
+			alter table orderextension_order_set drop indication;
+			alter table orderextension_order_set drop foreign key orderextension_order_set_creator_fk;
+			alter table orderextension_order_set drop creator;
+			alter table orderextension_order_set drop date_created;
+			alter table orderextension_order_set drop foreign key orderextension_order_set_changed_by_fk;
+			alter table orderextension_order_set drop changed_by;
+			alter table orderextension_order_set drop date_changed;
+			alter table orderextension_order_set drop retired;
+			alter table orderextension_order_set drop foreign key orderextension_order_set_retired_by_fk;
+			alter table orderextension_order_set drop retired_by;
+			alter table orderextension_order_set drop date_retired;
+			alter table orderextension_order_set drop retire_reason;
+
+			drop table orderextension_order_set_member;
+		</sql>
+	</changeSet>
+
+</databaseChangeLog>
