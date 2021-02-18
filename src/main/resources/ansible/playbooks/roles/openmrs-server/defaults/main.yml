@@ -16,7 +16,7 @@ openmrs_java_package: "openjdk-8-jdk"
 openmrs_java_home: "/usr/lib/jvm/java-8-openjdk-amd64"
 
 openmrs_tomcat_package: "apache-tomcat-7.0.108"
-openmrs_tomcat_url: "https://mirrors.sonic.net/apache/tomcat/tomcat-7/v7.0.107/bin/apache-tomcat-7.0.108.zip"
+openmrs_tomcat_url: "https://mirrors.sonic.net/apache/tomcat/tomcat-7/v7.0.108/bin/apache-tomcat-7.0.108.zip"
 
 openmrs_tomcat_catalina_opts: "-Xms1024M -Xmx2048M -server -XX:+UseParallelGC -XX:NewSize=128m -DOPENMRS_APPLICATION_DATA_DIRECTORY={{ openmrs_data_dir }}/"
 openmrs_tomcat_java_opts: "-Dfile.encoding=UTF-8 -Djava.security.egd=file:///dev/urandom -Djava.awt.headless=true -Djava.awt.headlesslib=true"
