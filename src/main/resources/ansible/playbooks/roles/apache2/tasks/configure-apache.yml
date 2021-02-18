@@ -1,0 +1,13 @@
+- name: Apache | enabled mod_rewrite
+  apache2_module: name=rewrite state=present
+
+- name: Apache | enabled mod_ssl
+  apache2_module: name=ssl state=present
+
+- name: Apache | enable rewrite
+  shell: a2enmod rewrite
+  ignore_errors: yes
+
+- name: Apache | enable ssl
+  shell: a2enmod ssl
+  ignore_errors: yes

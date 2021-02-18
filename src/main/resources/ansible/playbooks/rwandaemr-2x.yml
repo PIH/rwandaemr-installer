@@ -2,6 +2,12 @@
   become: yes
   gather_facts: false
   roles:
+    - update
     - base-image
     - openmrs-db
     - openmrs-server
+    - cron
+    - apache2
+    - scripts
+    - ssl
+    - users

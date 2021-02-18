@@ -1,0 +1,14 @@
+ssl_certs_folder: /etc/ssl
+ssl_certs_folder_owner: root
+ssl_certs_folder_group: root
+service_name: apache2
+ssl_folder: /etc/ssl
+ssl_certs_mode: enabled
+ssl_conf_path: /etc/apache2/sites-available
+ssl_conf: default-ssl.conf
+CertificateFile: /etc/ssl/certs/45554e4453e21fc.crt
+CertificateKeyFile: /etc/ssl/private/pih-emr.org.key
+CertificateChainFile: /etc/ssl/certs/gd_bundle-g2-g1.crt
+SSLCertificateFile: SSLCertificateFile /etc/ssl/certs/ssl-cert-snakeoil.pem
+SSLCertificateKeyFile: SSLCertificateKeyFile /etc/ssl/private/ssl-cert-snakeoil.key
+SSLCertificateChainFile: '#SSLCertificateChainFile /etc/apache2/ssl.crt/server-ca.crt'

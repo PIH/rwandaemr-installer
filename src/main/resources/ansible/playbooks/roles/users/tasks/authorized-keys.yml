@@ -1,0 +1,4 @@
+- name: Setup authorized key for {{service_user}}
+  template: src="{{ service_user }}.j2" dest="/home/{{ service_user }}/.ssh/authorized_keys" owner={{service_user}} group={{service_user}} mode=0600
+  with_items:
+    - "{{service_user}}"

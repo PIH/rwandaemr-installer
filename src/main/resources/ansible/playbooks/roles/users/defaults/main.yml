@@ -1,0 +1,42 @@
+#Change to real usernames and passwords
+#user: openmrs
+#passord: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user: innocent
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user1: jberchmas
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user2: jbyiringiro
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user3: fgashayija
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user4: fkarambizi
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user5: ekagabo
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user6: tanderson
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user7: bbutati
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user8: pntabgoba
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user9: amuhumuza
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+
+user10: dataofficer
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+service_group: dataofficer
+
+service_user: openmrs_maintenance_rwanda
+password: $6$somereallynicean$loZ6Z.3ftI8SwF6RBRYmiwaI2OHPFvglalXBFdcbP4U4Tkp9IzoCe/57dpQyHwFiqyQPGnzbLcHRlocalMXFL1
+service_group: openmrs_maintenance_rwanda
+sudo_group: sudo
