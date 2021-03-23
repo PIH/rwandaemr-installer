@@ -39,4 +39,4 @@ openmrs_distro_artifact_file: "{{ openmrs_distro_artifact_id }}-{{ openmrs_distr
 openmrs_db_root_password: "root"
 openmrs_db_openmrs_user: "openmrs"
 openmrs_db_openmrs_password: "openmrs"
-openmrs_db_connection_args: "autoReconnect=true&sessionVariables=default_storage_engine%3DInnoDB&useUnicode=true&characterEncoding=UTF-8&useSSL=false&requireSSL=false"
+openmrs_db_connection_args: "autoReconnect=true&sessionVariables=default_storage_engine%3DInnoDB&useUnicode=true&characterEncoding=UTF-8&useSSL=false&requireSSL=false&zeroDateTimeBehavior=convertToNull"
