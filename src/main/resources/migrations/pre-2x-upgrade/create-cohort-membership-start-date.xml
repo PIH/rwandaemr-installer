@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- This is required due to the following core bug: https://issues.openmrs.org/browse/TRUNK-6001  -->
+
+    <changeSet id="rwandaemr-cohort-membership-start-date" author="IMB">
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <columnExists tableName="cohort_member" columnName="start_date"/>
+            </not>
+        </preConditions>
+        <comment>Pre-create and populate cohort_member start_date</comment>
+        <addColumn tableName="cohort_member">
+            <column name="start_date" type="datetime" />
+        </addColumn>
+        <update tableName="cohort_member">
+            <column name="start_date" type="datetime"
+                    valueComputed="(select date_created from cohort where cohort_member.cohort_id = cohort.cohort_id)"/>
+        </update>
+        <addNotNullConstraint tableName="cohort_member" columnName="start_date" columnDataType="datetime" />
+    </changeSet>
+
+</databaseChangeLog>
