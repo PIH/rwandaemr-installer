@@ -109,7 +109,7 @@ cat > $MAVEN_SETTINGS_FILE << EOF
         <repository>
           <id>openmrs-repo</id>
           <name>OpenMRS Nexus Repository</name>
-          <url>http://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+          <url>https://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
         </repository>
       </repositories>
       <id>openmrs</id>
