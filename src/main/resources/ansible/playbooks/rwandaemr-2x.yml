@@ -6,8 +6,8 @@
     - base-image
     - openmrs-db
     - openmrs-server
-    - cron
-    - apache2
-    - scripts
-    - ssl
-    - users
+    
+    
+    
+    
+    
