@@ -1,6 +1,0 @@
-file1: backup-to-usb.sh  
-file2: daily-backup.sh  
-file3: mobile-broadband-connect.sh
-file4: cleanup.sh
-file5: deleteSyncLogs.sh
-file6: default_gateway.sh
