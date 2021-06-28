@@ -1,4 +1,0 @@
-- include: check-service-status.yml
-- include: check-ssl-folder.yml 
-- include: backup-existing-certificate.yml
-- include: install-certs.yml 
