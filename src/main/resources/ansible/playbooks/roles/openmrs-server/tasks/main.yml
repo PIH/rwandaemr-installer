@@ -61,6 +61,12 @@
 - name: openmrs-server | Ensure frontend directory is empty
   shell: rm -fR {{ openmrs_data_dir }}/frontend/*
 
+- name: openmrs-server | Ensure frontend site directory exists
+  file: path={{ openmrs_data_dir }}/frontend/site state=directory owner={{ openmrs_user }} group={{ openmrs_group }}
+
+- name: openmrs-server | Ensure frontend site directory is empty
+  shell: rm -fR {{ openmrs_data_dir }}/frontend/site/*
+
 # Install Distribution Components
 
 - name: openmrs-server | Ensure maven is installed and configured
@@ -89,6 +95,9 @@
 
 - name: openmrs-server | Copy frontend
   shell: cp -r {{ openmrs_distro_artifact_dir }}/frontend/* {{ openmrs_data_dir }}/frontend
+
+- name: openmrs-server | Copy frontend Config
+  shell: cp -r {{ openmrs_distro_artifact_dir }}/openmrs_config/frontend/* {{ openmrs_data_dir }}/frontend/site
 
 # Configure Tomcat
 
