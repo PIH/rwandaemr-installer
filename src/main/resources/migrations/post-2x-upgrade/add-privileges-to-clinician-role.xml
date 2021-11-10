@@ -22,5 +22,39 @@
             );
         </sql>
     </changeSet>
+    <changeSet id="add-get-care-settings-privilege-to-clinician-role" author="tanderson">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from role_privilege where role='Clinician' and privilege='View Order Sets';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            insert into role_privilege (
+            role,
+            privilege
+            )
+            values (
+            'Clinician' ,
+            'View Order Sets'
+            );
+        </sql>
+    </changeSet>
+    <changeSet id="add-get-care-settings-privilege-to-clinician-role" author="tanderson">
+        <preConditions onFail="MARK_RAN">
+            <sqlCheck expectedResult="0">
+                select count(*) from role_privilege where role='Clinician' and privilege='Get Order Frequencies';
+            </sqlCheck>
+        </preConditions>
+        <sql>
+            insert into role_privilege (
+            role,
+            privilege
+            )
+            values (
+            'Clinician' ,
+            'Get Order Frequencies'
+            );
+        </sql>
+    </changeSet>
 
 </databaseChangeLog>
