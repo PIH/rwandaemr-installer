@@ -22,7 +22,7 @@
             );
         </sql>
     </changeSet>
-    <changeSet id="add-get-care-settings-privilege-to-clinician-role" author="tanderson">
+    <changeSet id="add-get-order-sets-privilege-to-clinician-role" author="tanderson">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 select count(*) from role_privilege where role='Clinician' and privilege='View Order Sets';
@@ -39,7 +39,7 @@
             );
         </sql>
     </changeSet>
-    <changeSet id="add-get-care-settings-privilege-to-clinician-role" author="tanderson">
+    <changeSet id="add-get-order-frequencies-privilege-to-clinician-role" author="tanderson">
         <preConditions onFail="MARK_RAN">
             <sqlCheck expectedResult="0">
                 select count(*) from role_privilege where role='Clinician' and privilege='Get Order Frequencies';
