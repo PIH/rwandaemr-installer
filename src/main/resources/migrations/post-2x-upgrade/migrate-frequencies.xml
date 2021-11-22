@@ -445,63 +445,63 @@
             call ensure_concept_and_frequency(@10d2w, '73c1e8ae-3445-4405-877f-5da480579a56', 10, null, '10/day x 2 days/week');
             call migrate_frequency(@10d2w, '10/day x 2 days/week');
 
-			set @30minbefq8  = '18b0b7ee-0fcf-4bf8-895d-918f09da994c;
+			set @30minbefq8  = '18b0b7ee-0fcf-4bf8-895d-918f09da994c';
 			call ensure_concept_and_frequency(@30minbefq8, 'd02dc36f-1562-4563-92c5-5081669143ae', 3, null, 'Day 1, 30 mins before chemo, q8hrs PRN');
 			call migrate_frequency(@30minbefq8, 'Day 1, 30 mins before chemo, q8hrs PRN');
 			call migrate_frequency(@30minbefq8, '30 minutes before chemo, q8 hrs, PRN');
 			call migrate_frequency(@30minbefq8, 'Day 1, 30 mins before chemo, q 8hrs PRN');
 			call migrate_frequency(@30minbefq8, '30 minutes before chemo, q 8 hrs, prn');
 
-			set @BIDD18  = 'd4c9fd12-b835-41ba-8f5c-8689a8f1bac5;
+			set @BIDD18  = 'd4c9fd12-b835-41ba-8f5c-8689a8f1bac5';
 			call ensure_concept_and_frequency(@BIDD18, 'c6bef03f-5912-49f9-a099-d5787420fcac', 2, null, 'BID Days 1-8');
 			call migrate_frequency(@BIDD18, 'BID Days 1-8');
 
-			set @BIDD17  = '76e87131-a54b-4e11-ba60-9169338c3567;
+			set @BIDD17  = '76e87131-a54b-4e11-ba60-9169338c3567';
 			call ensure_concept_and_frequency(@BIDD17, 'c2b21076-2df6-413c-bef0-206aa03f5330', 2, null, 'BID, Days 1-7');
 			call migrate_frequency(@BIDD17, 'BID, Days 1-7');
 
-			set @D130minbef  = '96f26e24-87d6-4d43-89dc-35e4b4dec687;
+			set @D130minbef  = '96f26e24-87d6-4d43-89dc-35e4b4dec687';
 			call ensure_concept_and_frequency(@D130minbef, '91ffc602-6d71-494a-8c01-15f87b3880c4', 1, null, 'Day 1, 30 minutes before chemo');
 			call migrate_frequency(@D130minbef, 'Day 1, 30 minutes before chemo');
 
-			set @D1ev3mo  = 'c290cd59-1f14-41fe-88c9-4db68fe7b9ea;
+			set @D1ev3mo  = 'c290cd59-1f14-41fe-88c9-4db68fe7b9ea';
 			call ensure_concept_and_frequency(@D1ev3mo, '86d64dea-ac19-42be-b77a-11cd9455ee35', 1, null, 'Day 1, every 3 months x 2 years');
 			call migrate_frequency(@D1ev3mo, 'Day 1, every 3 months x 2 years');
 
-			set @D1ev6hr  = '7bfebef9-6e56-4d4f-9048-0837b5069cfe;
+			set @D1ev6hr  = '7bfebef9-6e56-4d4f-9048-0837b5069cfe';
 			call ensure_concept_and_frequency(@D1ev6hr, 'ee006882-58b1-4a48-a4ff-3c71e8128e1b', 4, null, 'Day 1, every 6 hrs, PRN');
 			call migrate_frequency(@D1ev6hr, 'Day 1, every 6 hrs, PRN');
 
-			set @D1PRNq8  = 'f7bac311-7df7-43a2-99a9-460cc388d182;
+			set @D1PRNq8  = 'f7bac311-7df7-43a2-99a9-460cc388d182';
 			call ensure_concept_and_frequency(@D1PRNq8, '51689a89-5182-4bfa-a356-82dc0eb10dd9', 3, null, 'Day 1, prn q8 hours');
 			call migrate_frequency(@D1PRNq8, 'Day 1, prn q8 hours');
 			call migrate_frequency(@D1PRNq8, 'Day 1, PRN q 8 hrs');
 			call migrate_frequency(@D1PRNq8, 'Day 1, PRN, q 8 hrs');
 
-			set @D1q4  = '1c1236fe-d2d8-4d4a-a3b5-d87cc6565d34;
+			set @D1q4  = '1c1236fe-d2d8-4d4a-a3b5-d87cc6565d34';
 			call ensure_concept_and_frequency(@D1q4, '3dea600c-8741-418b-893e-23accb88a991', 6, null, 'Day 1, q4 hrs, PRN');
 			call migrate_frequency(@D1q4, 'Day 1, q4 hrs, PRN');
 
-			set @D1wkly  = '8ce3a256-d402-4dca-a0d3-baece5fff8b1;
-			call ensure_concept_and_frequency(@30minbefq8, 'd02dc36f-1562-4563-92c5-5081669143ae', 3, null, 'Day 1, 30 mins before chemo, q8hrs PRN');
+			set @D1wkly  = '8ce3a256-d402-4dca-a0d3-baece5fff8b1';
+            call ensure_concept_and_frequency(@D1wkly, '1cde3d52-48aa-11ec-8586-001e68a9fdcf', 1, null, 'Day 1, weekly x 4 weeks');
 			call migrate_frequency(@D1wkly, 'Day 1, weekly x 4 weeks');
 
-			set @D18  = 'bf4ee504-517d-4f60-8bad-98ff5cf9ebf2;
+			set @D18  = 'bf4ee504-517d-4f60-8bad-98ff5cf9ebf2';
 			call ensure_concept_and_frequency(@D18, 'c757d1ef-881a-47c2-a0a7-2013ec539220', 1, null, 'Days 1-8');
 			call migrate_frequency(@D18, 'Days 1-8');
 			call migrate_frequency(@D18, 'Days 108');
 
-			set @6hraftmeth  = '5d5ff6dc-0bb3-4b45-ae63-212908d6001b;
+			set @6hraftmeth  = '5d5ff6dc-0bb3-4b45-ae63-212908d6001b';
 			call ensure_concept_and_frequency(@6hraftmeth, '5fed51f5-7edf-442b-b231-8ac69b4a96e1', 4, null, 'Every 6 hours starting 24 hours after IV Methotrexate x 3 days for 12 total doses');
 			call migrate_frequency(@6hraftmeth, 'Every 6 hours starting 24 hours after IV Methotrexate x 3 days for 12 total doses');
 			call migrate_frequency(@6hraftmeth, 'Every 6 hours. Starting 24 hours after IV Methotrexate x 3 days for 12 total doses');
 			call migrate_frequency(@6hraftmeth, 'Every 6 hours tarting 24 hours after IV methotrexate x 3 days for 12 total doses');
 			
-			set @x1dneg2  = 'ffbcd82c-0f3b-497a-8f9b-f7353909544f;
+			set @x1dneg2  = 'ffbcd82c-0f3b-497a-8f9b-f7353909544f';
 			call ensure_concept_and_frequency(@x1dneg2, '55d85c15-25d6-4865-8974-ee329cf20471', 1, null, 'X1, Day -2');
 			call migrate_frequency(@x1dneg2, 'X1, Day -2');
 	
-			set @x1dneg2q4  = '1589f09f-99e9-4b50-82cc-688bce106246;
+			set @x1dneg2q4  = '1589f09f-99e9-4b50-82cc-688bce106246';
 			call ensure_concept_and_frequency(@x1dneg2q4, '47ffe072-1ff5-48ba-86fe-4e3e0d880326', 6, null, 'X1, Day -2 and PRN for reaction q4 hrs');
 			call migrate_frequency(@x1dneg2q4, 'X1, Day -2 and PRN for reaction q4 hrs');
 
