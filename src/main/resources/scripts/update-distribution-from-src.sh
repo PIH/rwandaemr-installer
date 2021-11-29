@@ -65,7 +65,7 @@ git clone https://github.com/Rwanda-EMR/openmrs-module-rwandaprimarycare && mvn 
 git clone https://github.com/PIH/openmrs-distro-rwandaemr-imb && mvn clean install -f ./openmrs-distro-rwandaemr-imb/pom.xml
 popd
 
-unzip ${RUN_SITE_ID}/github/openmrs-distro-rwandaemr-imb/${DISTRIBUTION_ARTIFACT_ID}/target/${DISTRIBUTION_NAME}-distribution.zip ${RUN_SITE_ID}/distribution
+unzip ${RUN_SITE_ID}/github/openmrs-distro-rwandaemr-imb/${DISTRIBUTION_ARTIFACT_ID}/target/${DISTRIBUTION_NAME}-distribution.zip -d ${RUN_SITE_ID}/distribution
 RETURN_CODE=$?
 if [[ $RETURN_CODE != 0 ]]; then
     echo "failed to unzip distribution artifact to $RUN_SITE_ID/distribution"
