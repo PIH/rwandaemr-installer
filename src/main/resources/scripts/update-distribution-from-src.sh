@@ -6,6 +6,7 @@ IFS=$'\n\t'
 RETURN_CODE=0
 
 SITE_NAME=""
+VERSION="2x"
 SCRIPT_DIR=`dirname "$0"`
 
 function usage() {
