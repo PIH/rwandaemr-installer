@@ -54,6 +54,7 @@ popd
 echo "Downloading latest distribution"
 rm -fR $RUN_SITE_ID/distribution
 rm -fR $RUN_SITE_ID/github
+rm -fR ~/.m2
 
 mkdir $RUN_SITE_ID/github
 pushd $RUN_SITE_ID/github
