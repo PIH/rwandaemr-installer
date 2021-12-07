@@ -63,6 +63,7 @@ git clone https://github.com/Rwanda-EMR/openmrs-module-mohtracportal && mvn clea
 git clone https://github.com/Rwanda-EMR/openmrs-module-laboratorymanagement-v2 && mvn clean install -f ./openmrs-module-laboratorymanagement-v2/pom.xml
 git clone https://github.com/Rwanda-EMR/openmrs-module-mohbilling && mvn clean install -f ./openmrs-module-mohbilling/pom.xml
 git clone https://github.com/Rwanda-EMR/openmrs-module-rwandaprimarycare && mvn clean install -f ./openmrs-module-rwandaprimarycare/pom.xml
+git clone https://github.com/Rwanda-EMR/openmrs-module-pharmacymanagement && mvn clean install -f ./openmrs-module-pharmacymanagement/pom.xml
 git clone https://github.com/PIH/openmrs-distro-rwandaemr-imb && mvn clean install -f ./openmrs-distro-rwandaemr-imb/pom.xml
 popd
 
