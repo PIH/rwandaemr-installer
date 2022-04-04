@@ -59,10 +59,10 @@ rm -fR ~/.m2
 mkdir $RUN_SITE_ID/github
 pushd $RUN_SITE_ID/github
 git clone https://github.com/Rwanda-EMR/openmrs-module-mohappointment && mvn clean install -f ./openmrs-module-mohappointment/pom.xml
-git clone https://github.com/Rwanda-EMR/openmrs-module-mohtracportal && mvn clean install -f ./openmrs-module-mohtracportal/pom.xml
+git clone https://github.com/Rwanda-EMR/openmrs-module-mohtracportal && pushd openmrs-module-mohtracportal && git checkout 25x && popd && mvn clean install -f ./openmrs-module-mohtracportal/pom.xml
 git clone https://github.com/Rwanda-EMR/openmrs-module-laboratorymanagement-v2 && mvn clean install -f ./openmrs-module-laboratorymanagement-v2/pom.xml
-git clone https://github.com/Rwanda-EMR/openmrs-module-mohbilling && mvn clean install -f ./openmrs-module-mohbilling/pom.xml
-git clone https://github.com/Rwanda-EMR/openmrs-module-rwandaprimarycare && mvn clean install -f ./openmrs-module-rwandaprimarycare/pom.xml
+git clone https://github.com/Rwanda-EMR/openmrs-module-mohbilling && pushd openmrs-module-billing && git checkout 25x && popd && mvn clean install -f ./openmrs-module-mohbilling/pom.xml
+git clone https://github.com/Rwanda-EMR/openmrs-module-rwandaprimarycare && pushd openmrs-module-rwandaprimarycare && git checkout 25x && popd && mvn clean install -f ./openmrs-module-rwandaprimarycare/pom.xml
 git clone https://github.com/Rwanda-EMR/openmrs-module-pharmacymanagement && mvn clean install -f ./openmrs-module-pharmacymanagement/pom.xml
 git clone https://github.com/PIH/openmrs-distro-rwandaemr-imb && mvn clean install -f ./openmrs-distro-rwandaemr-imb/pom.xml
 popd
