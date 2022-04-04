@@ -95,7 +95,7 @@ function start_mysql_container() {
       --character-set-server=utf8 \
       --collation-server=utf8_general_ci \
       --max_allowed_packet=1G \
-      --innodb-buffer-pool-size=1G
+      --innodb_buffer_pool_size=1G
 
   echo "$(date): Container created. Waiting 60 seconds..."
   sleep 60
