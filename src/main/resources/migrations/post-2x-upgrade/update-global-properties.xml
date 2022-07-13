@@ -25,6 +25,7 @@
             update global_property set property_value = 'c09c623b-83d6-4ea0-b0ec-6e4b94e38254' where property = 'reports.hodkinlymphoma';
             update global_property set property_value = '8b67b07f-e755-41a8-a6d9-105a5960f22b' where property = 'reports.karposisarkomastate';
             update global_property set property_value = '1c1d3792-bd75-492d-9073-5261ea3295c5' where property = 'reports.othernonhodkinlymphoma';
+			update global_property set property_value = '3' where property = 'laboratorymanagement.orderType.labOrderTypeId';
         </sql>
     </changeSet>
 
