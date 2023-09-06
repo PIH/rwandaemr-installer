@@ -109,9 +109,19 @@ cat > $MAVEN_SETTINGS_FILE << EOF
         <repository>
           <id>openmrs-repo</id>
           <name>OpenMRS Nexus Repository</name>
-          <url>https://mavenrepo.openmrs.org/nexus/content/repositories/public</url>
+          <url>https://openmrs.jfrog.io/artifactory/public</url>
         </repository>
       </repositories>
+      <repository>
+          <id>ossrh</id>
+          <url>https://oss.sonatype.org/content/repositories/public</url>
+      </repository>
+      <repository>
+          <id>mks-repo</id>
+          <name>Mekom Solutions Maven repository</name>
+          <url>https://nexus.mekomsolutions.net/repository/maven-public</url>
+      </repository>
+    </repositories>
       <id>openmrs</id>
     </profile>
   </profiles>
